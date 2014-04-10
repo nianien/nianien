@@ -1,0 +1,9 @@
+<servlets xmlns="http://www.nianien.com/Servlet" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.nianien.com/Servlet http://www.nianien.com/Servlet/Servlet-1.2.1.xsd">
+	<package prefix="" suffix=""></package>
+	<servlet name="MyServler" class="com.test.Servlet"
+		load-on-startup="true">
+		<init-param name="config" value="" />
+		<mapping pattern="aa/bb/cc/DD" />
+	</servlet>
+</servlets>

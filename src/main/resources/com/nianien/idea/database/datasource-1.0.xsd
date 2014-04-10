@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<schema xmlns="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.nianien.com/datasource"
+	xmlns:nianien="http://www.nianien.com/datasource" elementFormDefault="qualified">
+	<!-- default元素 -->
+	<element name="default">
+		<complexType>
+			<attribute name="source" type="token" use="required">
+			</attribute>
+		</complexType>
+	</element>
+
+	<!-- jndi元素 -->
+	<element name="jndi">
+		<complexType>
+			<attribute name="jndi-name" type="token" use="required" />
+		</complexType>
+	</element>
+
+	<!-- config元素 -->
+	<element name="config">
+		<complexType>
+			<attribute name="driver" type="token" use="required" />
+			<attribute name="url" type="token" use="required" />
+			<attribute name="user" type="token" use="optional" />
+			<attribute name="password" type="token" use="optional" />
+		</complexType>
+	</element>
+	<!-- source元素 -->
+	<element name="source">
+		<complexType>
+			<choice minOccurs="1" maxOccurs="1" >
+				<element ref="nianien:jndi" />
+				<element ref="nianien:config" />
+			</choice>
+			<attribute name="name" type="token" use="required" />
+			<attribute name="description" type="token" use="optional" />
+		</complexType>
+	</element>
+
+	<!-- datasource根元素-->
+	<element name="datasource">
+		<complexType>
+			<sequence>
+				<element minOccurs="1" maxOccurs="1"  ref="nianien:default" />
+				<element minOccurs="1" maxOccurs="unbounded" ref="nianien:source" />
+			</sequence>
+		</complexType>
+		<!-- 数据源必须唯一-->
+		<unique name="unique-source">
+			<selector xpath="nianien:source" />
+			<field xpath="@name" />
+		</unique>
+		<!-- 默认数据源必须存在-->
+		<keyref name="default-source" refer="nianien:unique-source">
+			<selector xpath="nianien:default" />
+			<field xpath="@source" />
+		</keyref>
+	</element>
+</schema>
