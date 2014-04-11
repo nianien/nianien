@@ -30,9 +30,6 @@ public class TestReflect {
         return list;
     }
 
-    public static String getFullName(Method method) {
-        return method.getDeclaringClass().getName() + "" + method.getName();
-    }
     /**
      * @param args
      */

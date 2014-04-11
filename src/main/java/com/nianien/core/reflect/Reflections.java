@@ -1,8 +1,8 @@
 package com.nianien.core.reflect;
 
 import com.nianien.core.annotation.Property;
+import com.nianien.core.function.BooleanSelector;
 import com.nianien.core.function.Selector;
-import com.nianien.core.reflect.selector.ChainSelector;
 import com.nianien.core.reflect.selector.GetterSelector;
 import com.nianien.core.reflect.selector.SetterSelector;
 import com.nianien.core.util.EnumUtils;
@@ -180,7 +180,7 @@ public class Reflections {
      * @return
      */
     public static List<Method> getDefinedMethods(Class<?> clazz, Selector<Method> selector) {
-        return getMethods(clazz, new ChainSelector<Method>(notObjectSelector, selector));
+        return getMethods(clazz, new BooleanSelector<Method>(notObjectSelector).and(selector));
     }
 
 
@@ -417,7 +417,7 @@ public class Reflections {
      * @return getter方法列表
      */
     public static List<Method> getters(Class<?> clazz, Selector<Method> selector) {
-        return getDefinedMethods(clazz, new ChainSelector<Method>(getterSelector, selector));
+        return getDefinedMethods(clazz, new BooleanSelector<Method>(getterSelector).and(selector));
     }
 
     /**
@@ -437,7 +437,7 @@ public class Reflections {
      * @return getter方法列表
      */
     public static List<Method> setters(Class<?> clazz, Selector<Method> selector) {
-        return getDefinedMethods(clazz, new ChainSelector<Method>(setterSelector, selector));
+        return getDefinedMethods(clazz, new BooleanSelector<Method>(setterSelector).and(selector));
     }
 
     /**

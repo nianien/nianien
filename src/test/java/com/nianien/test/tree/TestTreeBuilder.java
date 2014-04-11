@@ -1,11 +1,18 @@
 package com.nianien.test.tree;
 
 import com.nianien.core.collection.map.KeyValue;
-import com.nianien.core.tree.*;
+import com.nianien.core.function.Selector;
+import com.nianien.core.tree.TreeBuilder;
+import com.nianien.core.tree.TreeNode;
+import com.nianien.core.tree.TreeNodeHandler;
 import org.junit.Test;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+
+import static org.junit.Assert.assertTrue;
 
 /**
  * @author skyfalling
@@ -47,7 +54,7 @@ public class TestTreeBuilder {
                 System.out.println(node);
             }
         });
-        TreeBuilder.minimize(tree, new TreeNodeSelector<KeyValue>() {
+        TreeBuilder.minimize(tree, new Selector<TreeNode<KeyValue>>() {
             @Override
             public boolean select(TreeNode<KeyValue> node) {
                 if (node.value() != null) {
@@ -58,11 +65,15 @@ public class TestTreeBuilder {
                 return false;
             }
         });
+       final List<TreeNode> treeNodes=new ArrayList<TreeNode>();
         TreeBuilder.traversal(tree, new TreeNodeHandler() {
             @Override
             public void handle(TreeNode node) {
+                treeNodes.add(node);
                 System.out.println(node);
             }
         });
+
+        assertTrue(treeNodes.size()==6);
     }
 }
