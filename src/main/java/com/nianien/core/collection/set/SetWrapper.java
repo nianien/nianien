@@ -1,5 +1,7 @@
 package com.nianien.core.collection.set;
 
+import com.nianien.core.collection.CollectionWrapper;
+
 import java.util.*;
 
 /**
@@ -8,46 +10,33 @@ import java.util.*;
  *
  * @author skyfalling
  */
-public class SetWrapper<E> implements Set<E> {
-
-    private Set<E> setObject;
-
+public class SetWrapper<E> extends CollectionWrapper<E> implements Set<E> {
 
     /**
-     * 默认包装HashSet实例
+     * 构造方法,默认Set实例
      */
     public SetWrapper() {
         this(new HashSet<E>());
     }
 
     /**
-     * 指定Set实例
+     * 构造方法,指定Set实例
      *
      * @param set
      */
     public SetWrapper(Set<E> set) {
-        this.setObject = set;
+        super(set);
     }
 
     /**
-     * 指定默认元素
+     * 构造方法,默认Set实例,并提供初始元素
      *
      * @param elements
      */
     public SetWrapper(E... elements) {
-        this(new HashSet<E>(), elements);
+        super(new HashSet<E>(), elements);
     }
 
-    /**
-     * 指定Set实例和默认元素
-     *
-     * @param set
-     * @param elements
-     */
-    protected SetWrapper(Set<E> set, E... elements) {
-        this.setObject = set;
-        this.append(elements);
-    }
 
     /**
      * 调用{@link Set#addAll(java.util.Collection)}方法
@@ -56,7 +45,8 @@ public class SetWrapper<E> implements Set<E> {
      * @return 返回当前对象
      */
     public SetWrapper<E> append(E... elements) {
-        return append(Arrays.asList(elements));
+        super.append(elements);
+        return this;
     }
 
     /**
@@ -66,7 +56,7 @@ public class SetWrapper<E> implements Set<E> {
      * @return 返回当前对象
      */
     public SetWrapper<E> append(Collection<E> elements) {
-        this.addAll(elements);
+        super.append(elements);
         return this;
     }
 
@@ -77,7 +67,8 @@ public class SetWrapper<E> implements Set<E> {
      * @return 返回当前对象
      */
     public SetWrapper<E> keep(E... elements) {
-        return keep(Arrays.asList(elements));
+        super.keep(elements);
+        return this;
     }
 
     /**
@@ -87,7 +78,7 @@ public class SetWrapper<E> implements Set<E> {
      * @return 返回当前对象
      */
     public SetWrapper<E> keep(Collection<E> elements) {
-        this.retainAll(elements);
+        super.keep(elements);
         return this;
     }
 
@@ -98,7 +89,8 @@ public class SetWrapper<E> implements Set<E> {
      * @return 返回当前对象
      */
     public SetWrapper<E> delete(E... elements) {
-        return delete(Arrays.asList(elements));
+        super.delete(elements);
+        return this;
     }
 
     /**
@@ -108,7 +100,7 @@ public class SetWrapper<E> implements Set<E> {
      * @return 返回当前对象
      */
     public SetWrapper<E> delete(Collection<E> elements) {
-        this.removeAll(elements);
+        super.delete(elements);
         return this;
     }
 
@@ -137,90 +129,4 @@ public class SetWrapper<E> implements Set<E> {
         return this;
     }
 
-    @Override
-    public int size() {
-        return setObject.size();
-    }
-
-    @Override
-    public boolean isEmpty() {
-        return setObject.isEmpty();
-    }
-
-    @Override
-    public boolean contains(Object o) {
-        return setObject.contains(o);
-    }
-
-    @Override
-    public Iterator<E> iterator() {
-        return setObject.iterator();
-    }
-
-    @Override
-    public Object[] toArray() {
-        return setObject.toArray();
-    }
-
-    @Override
-    public <T> T[] toArray(T[] a) {
-        return setObject.toArray(a);
-    }
-
-    @Override
-    public boolean add(E e) {
-        return setObject.add(e);
-    }
-
-    @Override
-    public boolean remove(Object o) {
-        return setObject.remove(o);
-    }
-
-    @Override
-    public boolean containsAll(Collection<?> c) {
-        return setObject.containsAll(c);
-    }
-
-    @Override
-    public boolean addAll(Collection<? extends E> c) {
-        return setObject.addAll(c);
-    }
-
-    @Override
-    public boolean retainAll(Collection<?> c) {
-        return setObject.retainAll(c);
-    }
-
-    @Override
-    public boolean removeAll(Collection<?> c) {
-        return setObject.removeAll(c);
-    }
-
-    @Override
-    public void clear() {
-        setObject.clear();
-    }
-
-    @Override
-    public String toString() {
-        return setObject.toString();
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof SetWrapper)) return false;
-
-        SetWrapper that = (SetWrapper) o;
-
-        if (!setObject.equals(that.setObject)) return false;
-
-        return true;
-    }
-
-    @Override
-    public int hashCode() {
-        return setObject.hashCode();
-    }
 }
