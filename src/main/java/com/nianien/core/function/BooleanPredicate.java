@@ -10,7 +10,6 @@ public class BooleanPredicate<T> implements Predicate<T> {
 
     private Predicate<T> predicate;
 
-
     /**
      * 默认函数式
      *
@@ -20,25 +19,12 @@ public class BooleanPredicate<T> implements Predicate<T> {
         this.predicate = predicate;
     }
 
-    /**
-     * 自动生成默认函数式
-     *
-     * @param predicate 自动生成函数式的默认结果
-     */
-    public BooleanPredicate(final boolean predicate) {
-        this.predicate = new Predicate<T>() {
-            @Override
-            public boolean call(T t) {
-                return predicate;
-            }
-        };
-    }
 
     /**
      * AND操作,支持短路
      *
      * @param predicates
-     * @return
+     * @return a new BooleanPredicate
      */
     public BooleanPredicate and(final Predicate... predicates) {
         return new BooleanPredicate(new Predicate<T>() {
@@ -60,7 +46,7 @@ public class BooleanPredicate<T> implements Predicate<T> {
      * OR操作,支持短路
      *
      * @param predicates
-     * @return
+     * @return a new BooleanPredicate
      */
     public BooleanPredicate or(final Predicate... predicates) {
         return new BooleanPredicate(new Predicate<T>() {
@@ -80,7 +66,7 @@ public class BooleanPredicate<T> implements Predicate<T> {
     /**
      * 非操作
      *
-     * @return
+     * @return a new BooleanPredicate
      */
     public BooleanPredicate not() {
         return new BooleanPredicate(new Predicate<T>() {
