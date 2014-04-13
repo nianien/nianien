@@ -18,25 +18,12 @@ public class BooleanSelector<T> implements Selector<T> {
         this.selector = selector;
     }
 
-    /**
-     * 构造方法,构建默认选择器
-     *
-     * @param select 指定默认是否匹配选择条件
-     */
-    public BooleanSelector(final boolean select) {
-        this.selector = new Selector<T>() {
-            @Override
-            public boolean select(T target) {
-                return select;
-            }
-        };
-    }
 
     /**
      * 当前选择条件与selectors的选择条件进行AND组合
      *
      * @param selectors
-     * @return
+     * @return a new BooleanSelector
      */
     public BooleanSelector and(final Selector<T>... selectors) {
         return new BooleanSelector(new Selector<T>() {
@@ -58,7 +45,7 @@ public class BooleanSelector<T> implements Selector<T> {
      * 当前选择条件与selectors的选择条件进行OR组合
      *
      * @param selectors
-     * @return
+     * @return a new BooleanSelector
      */
     public BooleanSelector or(final Selector<T>... selectors) {
         return new BooleanSelector(new Selector<T>() {
@@ -78,7 +65,7 @@ public class BooleanSelector<T> implements Selector<T> {
     /**
      * 当前选择条件取反
      *
-     * @return
+     * @return a new BooleanSelector
      */
     public BooleanSelector not() {
         return new BooleanSelector(new Selector<T>() {
