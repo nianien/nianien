@@ -99,6 +99,12 @@ public class CaseInsensitiveMap<K, V> extends HashMap<K, V> {
         return super.remove(findRealKey(key));
     }
 
+    @Override
+    public void clear() {
+        super.clear();
+        keyMap.clear();
+    }
+
     /**
      * 根据给定的Key查找Map中存在的Key值
      *
@@ -113,11 +119,5 @@ public class CaseInsensitiveMap<K, V> extends HashMap<K, V> {
         return key;
     }
 
-
-    @Override
-    public void clear() {
-        super.clear();
-        keyMap.clear();
-    }
 
 }
