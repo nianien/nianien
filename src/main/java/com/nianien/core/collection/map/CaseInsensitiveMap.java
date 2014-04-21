@@ -113,4 +113,11 @@ public class CaseInsensitiveMap<K, V> extends HashMap<K, V> {
         return key;
     }
 
+
+    @Override
+    public void clear() {
+        super.clear();
+        keyMap.clear();
+    }
+
 }
