@@ -65,8 +65,9 @@ public class CaseInsensitiveMap<K, V> extends HashMap<K, V> {
      */
     @Override
     public V put(K key, V value) {
-        if (key != null && key instanceof String) {
-            String oldKey = keyMap.put(key.toString().toLowerCase(), key.toString());
+        if (key instanceof String) {
+            String keyStr = key.toString();
+            String oldKey = keyMap.put(keyStr.toLowerCase(), keyStr);
             if (oldKey != null) {
                 super.remove(oldKey);
             }
@@ -93,7 +94,7 @@ public class CaseInsensitiveMap<K, V> extends HashMap<K, V> {
      */
     @Override
     public V remove(Object key) {
-        if (key != null && key instanceof String) {
+        if (key instanceof String) {
             keyMap.remove(key.toString().toLowerCase());
         }
         return super.remove(findRealKey(key));
@@ -112,12 +113,11 @@ public class CaseInsensitiveMap<K, V> extends HashMap<K, V> {
      * @return
      */
     private Object findRealKey(Object key) {
-        if (key != null && key instanceof String) {
+        if (key instanceof String) {
             String realKey = keyMap.get(key.toString().toLowerCase());
             if (realKey != null) return realKey;
         }
         return key;
     }
-
 
 }
