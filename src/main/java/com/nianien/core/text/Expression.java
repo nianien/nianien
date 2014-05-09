@@ -70,21 +70,21 @@ public class Expression {
     /**
      * 表达式的左边界
      */
-    private String left;
+    private final String left;
     /**
      * 表达式的右边界;
      */
-    private String right;
+    private final String right;
 
     /**
      * 指定保留未知变量,如果不保留未知变量,则置为null
      */
-    private boolean keepUnknownVariable;
+    private final boolean keepUnknownVariable;
 
     /**
      * 默认实例
      */
-    private static Expression defaultExpression = new Expression("{", "}");
+    private final static Expression defaultExpression = new Expression("{", "}");
 
     /**
      * 将形如"{n}"的表达式代入对应索引位置的变量<br/>
@@ -193,7 +193,7 @@ public class Expression {
      * @param keepUnknownVariable 是否保留未知变量,如果为false,则未知变量被置为null
      */
     public Expression(String left, String right, boolean keepUnknownVariable) {
-        ExceptionHandler.throwIf(StringUtils.anyEmpty(left, right), "表达式的左右边界符不能为空!");
+        ExceptionHandler.throwIf(StringUtils.anyEmpty(left, right), "the left and right borders cannot be empty!");
         this.left = left;
         this.right = right;
         this.keepUnknownVariable = keepUnknownVariable;
