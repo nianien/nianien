@@ -3,7 +3,7 @@ package com.nianien.core.annotation;
 import java.lang.annotation.*;
 
 /**
- * 是否忽略
+ * 用示是否忽略
  *
  * @author skyfalling
  */
@@ -12,7 +12,7 @@ import java.lang.annotation.*;
 @Inherited
 public @interface Ignore {
     /**
-     * 属性名称
+     * 是否忽略
      *
      * @return
      */
