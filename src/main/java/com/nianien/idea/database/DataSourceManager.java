@@ -121,7 +121,7 @@ public class DataSourceManager {
             InitialContext ctx = new InitialContext();
             return (DataSource) ctx.lookup(jndiName);
         } catch (Exception e) {
-            throw  ExceptionHandler.throwException(e);
+            throw ExceptionHandler.throwException(e);
         }
     }
 
@@ -138,7 +138,7 @@ public class DataSourceManager {
         for (XMLNode node : sources) {
             String name = node.getAttribute("name");
             XMLNode child = node.getChild(0);
-            ExceptionHandler.throwIfNull(child, "数据源[" + name + "] 缺少配置!");
+            ExceptionHandler.throwIfNull(child, "dataSource[" + name + "] has no configuration");
             //配置节点类型
             String type = child.getNodeName();
             if (type.equals("config")) {// config节点
@@ -151,12 +151,12 @@ public class DataSourceManager {
                 String jndi = getAttribute(child, "jndi", parameters);
                 this.sourceMapping.put(name, dataSource(jndi));
             } else {
-                ExceptionHandler.throwIfNull(child, "数据源[" + name + "] 配置错误!");
+                ExceptionHandler.throwIf(true, "invalid configuration for dataSource[" + name + "]");
             }
         }
         // 设置默认数据源,default节点
         List<XMLNode> defaults = XMLDocument.getXMLNodes(document, "default");
-        ExceptionHandler.throwIf(defaults.size() > 1, "指定多个默认数据源!");
+        ExceptionHandler.throwIf(defaults.size() > 1, "only one dataSource can be defined as default");
         if (defaults.size() == 1) {
             this.defaultSource = defaults.get(0).getAttribute("source");
         }
@@ -172,6 +172,6 @@ public class DataSourceManager {
      */
     private String getAttribute(XMLNode node, String attribute, Map<String, String> parameters) {
         String value = node.getAttribute(attribute);
-        return value == null || parameters == null ? value : expression.valueOf(value, parameters);
+        return value == null || parameters == null ? value : expression.eval(value, parameters);
     }
 }
