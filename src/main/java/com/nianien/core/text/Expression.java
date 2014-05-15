@@ -8,7 +8,7 @@ import java.util.*;
 /**
  * 变量表达式解析类,变量表达式是指由左右边界符和变量名组成的字符串<br/>
  * 如: left="${",right="}",则变量表达式可表示为:"${variable}"<br/>
- * 变量表达式支持嵌套和有限递归<br/>
+ * 变量表达式支持嵌套和递归<br/>
  * <code>
  * <ol>
  * <li>
@@ -303,7 +303,7 @@ public class Expression {
                 @Override
                 public Object handle(String variable) {
                     if (variableStack.contains(variable))
-                        throw new IllegalArgumentException("recursive variable: " + buildExpression(variable));
+                        throw new IllegalArgumentException("recursive loop variable: " + buildExpression(variable));
                     Object value = map.get(variable);
                     if (value instanceof String) {
                         variableStack.add(variable);
