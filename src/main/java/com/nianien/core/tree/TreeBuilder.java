@@ -1,6 +1,6 @@
 package com.nianien.core.tree;
 
-import com.nianien.core.function.Selector;
+import com.nianien.core.function.Predicate;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -74,7 +74,7 @@ public class TreeBuilder {
      * @param selector
      * @return 当前节点是否保留
      */
-    public static <T> boolean minimize(TreeNode tree, Selector<TreeNode<T>> selector) {
+    public static <T> boolean minimize(TreeNode tree, Predicate<TreeNode<T>> selector) {
         //采取后根顺序从底自上进行最小化裁剪
         if (tree == null)
             return false;
@@ -88,7 +88,7 @@ public class TreeBuilder {
         }
 
         //判断当前节点是否保留
-        flag |= selector.select(tree);
+        flag |= selector.apply(tree);
         if (!flag && tree.parent() != null) {
             //当前节点需要被裁剪
             TreeNode parent = tree.parent();

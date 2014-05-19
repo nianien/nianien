@@ -1,8 +1,8 @@
 package com.nianien.core.reflect;
 
 import com.nianien.core.annotation.Property;
-import com.nianien.core.function.BooleanSelector;
-import com.nianien.core.function.Selector;
+import com.nianien.core.function.BooleanPredicate;
+import com.nianien.core.function.Predicate;
 import com.nianien.core.reflect.selector.GetterSelector;
 import com.nianien.core.reflect.selector.SetterSelector;
 import com.nianien.core.util.EnumUtils;
@@ -68,21 +68,21 @@ public class Reflections {
     /**
      * 选择非Object定义的方法
      */
-    public static final Selector<Method> notObjectSelector = new Selector<Method>() {
+    public static final Predicate<Method> notObjectSelector = new Predicate<Method>() {
         @Override
-        public boolean select(Method method) {
+        public boolean apply(Method method) {
             return method.getDeclaringClass() != Object.class;
         }
     };
     /**
      * 选择getter方法
      */
-    public static final Selector<Method> getterSelector = new GetterSelector();
+    public static final Predicate<Method> getterSelector = new GetterSelector();
 
     /**
      * 选择setter方法
      */
-    public static final Selector<Method> setterSelector = new SetterSelector();
+    public static final Predicate<Method> setterSelector = new SetterSelector();
 
     /**
      * 查找指定名称和参数类型的方法<br/>
@@ -152,10 +152,10 @@ public class Reflections {
      * @param selector
      * @return
      */
-    public static List<Method> getMethods(Class<?> clazz, Selector<Method> selector) {
+    public static List<Method> getMethods(Class<?> clazz, Predicate<Method> selector) {
         List<Method> list = new ArrayList<Method>();
         for (Method method : clazz.getMethods()) {
-            if (selector.select(method))
+            if (selector.apply(method))
                 list.add(method);
         }
         return list;
@@ -179,8 +179,8 @@ public class Reflections {
      * @param selector
      * @return
      */
-    public static List<Method> getDefinedMethods(Class<?> clazz, Selector<Method> selector) {
-        return getMethods(clazz, new BooleanSelector<Method>(notObjectSelector).and(selector));
+    public static List<Method> getDefinedMethods(Class<?> clazz, Predicate<Method> selector) {
+        return getMethods(clazz, new BooleanPredicate<Method>(notObjectSelector).and(selector));
     }
 
 
@@ -202,11 +202,11 @@ public class Reflections {
      * @param selector
      * @return
      */
-    public static List<Method> getAllMethods(Class<?> clazz, Selector<Method> selector) {
+    public static List<Method> getAllMethods(Class<?> clazz, Predicate<Method> selector) {
         List<Method> list = new ArrayList<Method>();
         for (; clazz != null; clazz = clazz.getSuperclass()) {
             for (Method method : clazz.getDeclaredMethods()) {
-                if (selector == null || selector.select(method)) {
+                if (selector == null || selector.apply(method)) {
                     list.add(method);
                 }
             }
@@ -232,10 +232,10 @@ public class Reflections {
      * @param selector
      * @return
      */
-    public static List<Field> getFields(Class<?> clazz, Selector<Field> selector) {
+    public static List<Field> getFields(Class<?> clazz, Predicate<Field> selector) {
         List<Field> list = new ArrayList<Field>();
         for (Field field : clazz.getFields()) {
-            if (selector == null || selector.select(field))
+            if (selector == null || selector.apply(field))
                 list.add(field);
         }
         return list;
@@ -259,11 +259,11 @@ public class Reflections {
      * @param selector
      * @return
      */
-    public static List<Field> getAllFields(Class<?> clazz, Selector<Field> selector) {
+    public static List<Field> getAllFields(Class<?> clazz, Predicate<Field> selector) {
         List<Field> list = new ArrayList<Field>();
         for (; clazz != null; clazz = clazz.getSuperclass()) {
             for (Field field : clazz.getDeclaredFields()) {
-                if (selector == null || selector.select(field)) {
+                if (selector == null || selector.apply(field)) {
                     list.add(field);
                 }
             }
@@ -313,7 +313,7 @@ public class Reflections {
      * @return
      */
     public static boolean isGetter(Method method) {
-        return getterSelector.select(method);
+        return getterSelector.apply(method);
     }
 
 
@@ -324,7 +324,7 @@ public class Reflections {
      * @return
      */
     public static boolean isSetter(Method method) {
-        return setterSelector.select(method);
+        return setterSelector.apply(method);
     }
 
 
@@ -392,9 +392,9 @@ public class Reflections {
      * @param clazz
      * @return
      */
-    public static Method method(Class<?> clazz, Selector<Method> selector) {
+    public static Method method(Class<?> clazz, Predicate<Method> selector) {
         for (Method method : clazz.getMethods()) {
-            if (selector.select(method))
+            if (selector.apply(method))
                 return method;
         }
         return null;
@@ -416,8 +416,8 @@ public class Reflections {
      * @param clazz
      * @return getter方法列表
      */
-    public static List<Method> getters(Class<?> clazz, Selector<Method> selector) {
-        return getDefinedMethods(clazz, new BooleanSelector<Method>(getterSelector).and(selector));
+    public static List<Method> getters(Class<?> clazz, Predicate<Method> selector) {
+        return getDefinedMethods(clazz, new BooleanPredicate<Method>(getterSelector).and(selector));
     }
 
     /**
@@ -436,8 +436,8 @@ public class Reflections {
      * @param clazz
      * @return getter方法列表
      */
-    public static List<Method> setters(Class<?> clazz, Selector<Method> selector) {
-        return getDefinedMethods(clazz, new BooleanSelector<Method>(setterSelector).and(selector));
+    public static List<Method> setters(Class<?> clazz, Predicate<Method> selector) {
+        return getDefinedMethods(clazz, new BooleanPredicate<Method>(setterSelector).and(selector));
     }
 
     /**

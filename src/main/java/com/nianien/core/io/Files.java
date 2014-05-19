@@ -1,7 +1,7 @@
 package com.nianien.core.io;
 
 import com.nianien.core.exception.ExceptionHandler;
-import com.nianien.core.text.StringHandler;
+import com.nianien.core.function.Function;
 import com.nianien.core.util.StringUtils;
 
 import java.io.*;
@@ -16,12 +16,12 @@ import java.util.List;
  * @author skyfalling
  */
 public class Files {
-    public static class LinesStringHandler implements StringHandler {
+    public static class LinesStringHandler implements Function<String, String> {
 
         private List<String> lines = new ArrayList<String>();
 
         @Override
-        public String handle(String str) {
+        public String apply(String str) {
             lines.add(str);
             return str;
         }
@@ -31,11 +31,11 @@ public class Files {
         }
     }
 
-    public static class ContactStringHandler implements StringHandler {
+    public static class ContactStringHandler implements  Function<String, String> {
         private StringBuilder sb = new StringBuilder();
 
         @Override
-        public String handle(String str) {
+        public String apply(String str) {
             sb.append(str).append(newLine);
             return null;
         }
@@ -404,15 +404,15 @@ public class Files {
      * 以指定字符编码格式读取文件的每行内容
      *
      * @param file
-     * @param handler
+     * @param function
      * @param charset
      */
-    public static void readLines(File file, StringHandler handler,
+    public static void readLines(File file, Function<String, String> function,
                                  String charset) {
         try {
             readLines(
                     new InputStreamReader(new FileInputStream(file), charset),
-                    handler);
+                    function);
         } catch (Exception e) {
             throw ExceptionHandler.throwException(e);
         }
@@ -437,11 +437,11 @@ public class Files {
      * 读取文件对象每行内容
      *
      * @param file
-     * @param handler
+     * @param function
      */
-    public static void readLines(File file, StringHandler handler) {
+    public static void readLines(File file, Function<String, String> function) {
         try {
-            readLines(new FileReader(file), handler);
+            readLines(new FileReader(file), function);
         } catch (Exception e) {
             throw ExceptionHandler.throwException(e);
         }
@@ -466,13 +466,13 @@ public class Files {
      * 以指定编码格式读取InputStream对象的每行内容, 然后关闭InputStream对象
      *
      * @param inputStream
-     * @param handler
+     * @param function
      * @param charset
      */
-    public static void readLines(InputStream inputStream, StringHandler handler,
+    public static void readLines(InputStream inputStream, Function<String, String> function,
                                  String charset) {
         try {
-            readLines(new InputStreamReader(inputStream, charset), handler);
+            readLines(new InputStreamReader(inputStream, charset), function);
         } catch (Exception e) {
             throw ExceptionHandler.throwException(e);
         }
@@ -491,10 +491,10 @@ public class Files {
      * 读取InputStream对象内容的每行内容
      *
      * @param inputStream
-     * @param handler
+     * @param function
      */
-    public static void readLines(InputStream inputStream, StringHandler handler) {
-        readLines(new InputStreamReader(inputStream), handler);
+    public static void readLines(InputStream inputStream, Function<String, String> function) {
+        readLines(new InputStreamReader(inputStream), function);
     }
 
     /**
@@ -512,14 +512,14 @@ public class Files {
      * 读取Reader对象内容的每行内容, 然关闭reader对象
      *
      * @param reader
-     * @param handler
+     * @param function
      */
-    public static void readLines(Reader reader, StringHandler handler) {
+    public static void readLines(Reader reader, Function<String, String> function) {
         try {
             BufferedReader buffer = new BufferedReader(reader);
             String line;
             while ((line = buffer.readLine()) != null) {
-                handler.handle(line);
+                function.apply(line);
             }
         } catch (Exception e) {
             ExceptionHandler.throwException(e);

@@ -6,6 +6,5 @@ package com.nianien.core.function;
  * @author skyfalling
  */
 public interface Consumer<T> {
-
-    void call(T t);
+    void apply(T t);
 }

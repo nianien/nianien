@@ -29,10 +29,10 @@ public class BooleanPredicate<T> implements Predicate<T> {
     public BooleanPredicate and(final Predicate... predicates) {
         return new BooleanPredicate(new Predicate<T>() {
             @Override
-            public boolean call(T t) {
-                boolean bl = BooleanPredicate.this.call(t);
+            public boolean apply(T t) {
+                boolean bl = BooleanPredicate.this.apply(t);
                 for (Predicate predicate : predicates) {
-                    bl &= predicate.call(t);
+                    bl &= predicate.apply(t);
                     if (!bl)
                         return bl;
                 }
@@ -51,10 +51,10 @@ public class BooleanPredicate<T> implements Predicate<T> {
     public BooleanPredicate or(final Predicate... predicates) {
         return new BooleanPredicate(new Predicate<T>() {
             @Override
-            public boolean call(T t) {
-                boolean bl = BooleanPredicate.this.call(t);
+            public boolean apply(T t) {
+                boolean bl = BooleanPredicate.this.apply(t);
                 for (Predicate predicate : predicates) {
-                    bl |= predicate.call(t);
+                    bl |= predicate.apply(t);
                     if (bl)
                         return bl;
                 }
@@ -71,14 +71,14 @@ public class BooleanPredicate<T> implements Predicate<T> {
     public BooleanPredicate not() {
         return new BooleanPredicate(new Predicate<T>() {
             @Override
-            public boolean call(T t) {
-                return !BooleanPredicate.this.call(t);
+            public boolean apply(T t) {
+                return !BooleanPredicate.this.apply(t);
             }
         });
     }
 
     @Override
-    public boolean call(T t) {
-        return predicate.call(t);
+    public boolean apply(T t) {
+        return predicate.apply(t);
     }
 }

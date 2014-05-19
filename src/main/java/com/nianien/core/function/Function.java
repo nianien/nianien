@@ -6,5 +6,5 @@ package com.nianien.core.function;
  * @author skyfalling
  */
 public interface Function<T, R> {
-    R call(T t);
+    R apply(T t);
 }

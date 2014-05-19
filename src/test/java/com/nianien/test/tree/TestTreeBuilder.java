@@ -1,7 +1,7 @@
 package com.nianien.test.tree;
 
 import com.nianien.core.collection.map.KeyValue;
-import com.nianien.core.function.Selector;
+import com.nianien.core.function.Predicate;
 import com.nianien.core.tree.TreeBuilder;
 import com.nianien.core.tree.TreeNode;
 import com.nianien.core.tree.TreeNodeHandler;
@@ -54,9 +54,9 @@ public class TestTreeBuilder {
                 System.out.println(node);
             }
         });
-        TreeBuilder.minimize(tree, new Selector<TreeNode<KeyValue>>() {
+        TreeBuilder.minimize(tree, new Predicate<TreeNode<KeyValue>>() {
             @Override
-            public boolean select(TreeNode<KeyValue> node) {
+            public boolean apply(TreeNode<KeyValue> node) {
                 if (node.value() != null) {
                     KeyValue keyValue = node.value();
                     Object key = keyValue.getKey();

@@ -2,7 +2,7 @@ package com.nianien.alpha.ognl;
 
 import com.nianien.core.collection.map.MapWrapper;
 import com.nianien.core.exception.ExceptionHandler;
-import com.nianien.core.function.Selector;
+import com.nianien.core.function.Predicate;
 import com.nianien.core.reflect.Reflections;
 import com.nianien.demo.A;
 
@@ -20,9 +20,9 @@ public class PropertiesBean {
     public PropertiesBean(Object obj) {
         this.bean = obj;
         this.type = obj.getClass();
-        Reflections.getters(type, new Selector<Method>() {
+        Reflections.getters(type, new Predicate<Method>() {
             @Override
-            public boolean select(Method target) {
+            public boolean apply(Method target) {
                 addProperty(target);
                 return false;
             }

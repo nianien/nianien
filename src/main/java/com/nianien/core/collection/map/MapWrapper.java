@@ -124,7 +124,7 @@ public class MapWrapper<K, V> implements Map<K, V> {
      */
     public MapWrapper<K, V> putIfAbsent(K key, Function<K, V> function) {
         if (!containsKey(key)) {
-            this.put(key, function.call(key));
+            this.put(key, function.apply(key));
         }
         return this;
     }

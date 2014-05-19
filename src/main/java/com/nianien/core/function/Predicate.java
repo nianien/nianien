@@ -6,5 +6,5 @@ package com.nianien.core.function;
  * @author skyfalling
  */
 public interface Predicate<T> {
-    boolean call(T t);
+    boolean apply(T t);
 }

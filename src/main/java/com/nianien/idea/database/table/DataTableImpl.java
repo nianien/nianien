@@ -3,8 +3,8 @@ package com.nianien.idea.database.table;
 import com.nianien.core.annotation.Ignore;
 import com.nianien.core.collection.map.CaseInsensitiveMap;
 import com.nianien.core.exception.ExceptionHandler;
+import com.nianien.core.function.Predicate;
 import com.nianien.core.reflect.Reflections;
-import com.nianien.core.function.Selector;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -39,9 +39,9 @@ class DataTableImpl<T> implements DataTable<T> {
     public DataTableImpl(Class<T> entityClass) {
         this.type = entityClass;
         this.name = TableHelper.getTableName(entityClass);
-        Reflections.getters(entityClass, new Selector<Method>() {
+        Reflections.getters(entityClass, new Predicate<Method>() {
 
-            public boolean select(Method method) {
+            public boolean apply(Method method) {
                 if (!method.isAnnotationPresent(Ignore.class)) {
                     addFieldProperty(method);
                 }

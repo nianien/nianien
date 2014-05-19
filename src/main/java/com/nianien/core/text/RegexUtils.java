@@ -1,5 +1,6 @@
 package com.nianien.core.text;
 
+import com.nianien.core.function.Function;
 import com.nianien.core.util.ArrayUtils;
 
 import java.util.ArrayList;
@@ -194,10 +195,10 @@ public class RegexUtils {
      */
     public static String replace(String source, String regex,
                                  final Map<String, String> map) {
-        return replace(source, regex, new StringHandler() {
+        return replace(source, regex, new Function<String, String>() {
 
             @Override
-            public String handle(String matched) {
+            public String apply(String matched) {
                 return map.containsKey(matched) ? map.get(matched) : matched;
             }
         });
@@ -215,10 +216,10 @@ public class RegexUtils {
      */
     public static String replace(String source, String regex,
                                  final Map<String, String> map, final String instead) {
-        return replace(source, regex, new StringHandler() {
+        return replace(source, regex, new Function<String, String>() {
 
             @Override
-            public String handle(String matched) {
+            public String apply(String matched) {
                 return map.containsKey(matched) ? map.get(matched) : instead;
             }
         });
@@ -234,10 +235,10 @@ public class RegexUtils {
      */
     public static String replace(String source, String regex,
                                  final String replacement) {
-        return replace(source, regex, new StringHandler() {
+        return replace(source, regex, new Function<String, String>() {
 
             @Override
-            public String handle(String matched) {
+            public String apply(String matched) {
                 return replacement;
             }
         });
@@ -248,11 +249,11 @@ public class RegexUtils {
      *
      * @param source
      * @param regex
-     * @param handler
+     * @param function
      * @return 替换后的字符串
      */
     public static String replace(String source, String regex,
-                                 StringHandler handler) {
+                                 Function<String,String> function) {
         StringBuilder sb = new StringBuilder();
         Pattern pattern = Pattern.compile(regex);
         Matcher matcher = pattern.matcher(source);
@@ -263,7 +264,7 @@ public class RegexUtils {
         while (matcher.find()) {
             matched = matcher.group();
             sb.append(source.substring(i, matcher.start())).append(
-                    handler.handle(matched));
+                    function.apply(matched));
             i = matcher.end();
         }
         // 剩余未匹配的字符串

@@ -303,7 +303,7 @@ public class Expression {
                 @Override
                 public Object handle(String variable) {
                     if (variableStack.contains(variable))
-                        throw new IllegalArgumentException("recursive loop variable: " + buildExpression(variable));
+                        throw new IllegalArgumentException("circular variable expression: " + buildExpression(variable));
                     Object value = map.get(variable);
                     if (value instanceof String) {
                         variableStack.add(variable);

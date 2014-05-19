@@ -1,6 +1,6 @@
 package com.nianien.core.reflect.selector;
 
-import com.nianien.core.function.Selector;
+import com.nianien.core.function.Predicate;
 import com.nianien.core.reflect.Reflections;
 
 import java.lang.reflect.Method;
@@ -10,7 +10,7 @@ import java.lang.reflect.Method;
  *
  * @author skyfalling
  */
-public class GetterSelector implements Selector<Method> {
+public class GetterSelector implements Predicate<Method> {
 
     private final String propertyName;
     private final Class<?> propertyType;
@@ -25,7 +25,7 @@ public class GetterSelector implements Selector<Method> {
     }
 
     @Override
-    public boolean select(Method method) {
+    public boolean apply(Method method) {
         String methodName = method.getName();
         boolean isGetter = method.getReturnType() != Void.TYPE && method.getParameterTypes().length == 0 &&
                 (methodName.startsWith("get") && methodName.length() > 3 ||
