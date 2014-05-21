@@ -27,9 +27,9 @@ public class PropertyComparator<T> extends NamedComparator<T> {
 	@SuppressWarnings("unchecked")
 	@Override
 	public int compare(T t1, T t2) {
-		Comparable<Object> c1 = (Comparable<Object>) Reflections.getPropertyValue(t1,
+		Comparable<Object> c1 = (Comparable<Object>) Reflections.getProperty(t1,
                 getComparableName());
-		Comparable<Object> c2 = (Comparable<Object>) Reflections.getPropertyValue(t2,
+		Comparable<Object> c2 = (Comparable<Object>) Reflections.getProperty(t2,
                 getComparableName());
 		return c1.compareTo(c2);
 	}

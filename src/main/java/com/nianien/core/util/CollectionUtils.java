@@ -1,9 +1,7 @@
 package com.nianien.core.util;
 
 import com.nianien.core.exception.ExceptionHandler;
-import org.apache.commons.beanutils.BeanUtilsBean;
-import org.apache.commons.beanutils.PropertyUtils;
-import org.apache.commons.beanutils.PropertyUtilsBean;
+import com.nianien.core.reflect.Reflections;
 
 import java.lang.reflect.Array;
 import java.util.*;
@@ -302,8 +300,8 @@ public class CollectionUtils {
         Map<K, V> map = new HashMap<K, V>();
         for (Object obj : list) {
             try {
-                K keyObj = (K) PropertyUtils.getProperty(obj, keyProperty);
-                V valueObj = (V) PropertyUtils.getProperty(obj, valueProperty);
+                K keyObj = (K) Reflections.getProperty(obj, keyProperty);
+                V valueObj = (V) Reflections.getProperty(obj, valueProperty);
                 map.put(keyObj, valueObj);
             } catch (Exception e) {
                 ExceptionHandler.throwException(e);
@@ -323,11 +321,10 @@ public class CollectionUtils {
      * @return
      */
     public static <K, V> Map<K, V> map(Iterable<V> list, String keyProperty, Class<K> keyType) {
-        PropertyUtilsBean bean = BeanUtilsBean.getInstance().getPropertyUtils();
         Map<K, V> map = new HashMap<K, V>();
         for (V obj : list) {
             try {
-                K keyObj = (K) PropertyUtils.getProperty(obj, keyProperty);
+                K keyObj = (K) Reflections.getProperty(obj, keyProperty);
                 map.put(keyObj, obj);
             } catch (Exception e) {
                 ExceptionHandler.throwException(e);
@@ -351,7 +348,7 @@ public class CollectionUtils {
         Map<K, List<V>> map = new HashMap<K, List<V>>();
         for (V obj : list) {
             try {
-                K keyObj = (K) PropertyUtils.getProperty(obj, keyProperty);
+                K keyObj = (K) Reflections.getProperty(obj, keyProperty);
                 List<V> values = map.get(keyObj);
                 if (values == null) {
                     values = new ArrayList<V>();

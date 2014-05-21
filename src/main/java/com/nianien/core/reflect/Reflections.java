@@ -488,7 +488,7 @@ public class Reflections {
      * @param propertyName
      * @return 属性值
      */
-    public static Object getPropertyValue(Object obj, String propertyName) {
+    public static Object getProperty(Object obj, String propertyName) {
         Method getter = getter(obj.getClass(), propertyName);
         throwIfNull(getter, new NoSuchMethodException("No such getter Method for property: " + propertyName));
         return invoke(getter, obj);
