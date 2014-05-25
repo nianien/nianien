@@ -31,7 +31,7 @@ public class Files {
         }
     }
 
-    public static class ContactStringHandler implements  Function<String, String> {
+    public static class ContactStringHandler implements Function<String, String> {
         private StringBuilder sb = new StringBuilder();
 
         @Override
@@ -313,10 +313,13 @@ public class Files {
      * @param from 原文件
      * @param to   目标文件
      */
-    public static void move(File from, File to) {
+    public static boolean move(File from, File to) {
         if (to.isDirectory())
             to = new File(to, from.getName());
-        from.renameTo(to);
+        if (to.exists()) {
+            to.delete();
+        }
+        return from.renameTo(to);
     }
 
     /**
