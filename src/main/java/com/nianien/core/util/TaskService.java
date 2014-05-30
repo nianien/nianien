@@ -1,15 +1,14 @@
 package com.nianien.core.util;
 
+import com.nianien.core.exception.ExceptionHandler;
+
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
-
-import com.nianien.core.exception.ExceptionHandler;
 
 /**
  * 任务队列服务,可以按照一定策略执行队列中的任务,该类是线程安全的
  * 
  * @author skyfalling
- * @param <T>
  */
 public class TaskService {
 
@@ -50,7 +49,7 @@ public class TaskService {
 	/**
 	 * 添加任务
 	 * 
-	 * @param runnable
+	 * @param task
 	 */
 	public synchronized void addTask(Runnable task) {
 		if (ON) {
@@ -162,7 +161,7 @@ public class TaskService {
 	private synchronized void doWait(long timeout) {
 		if (ON) {
 			try {
-				this.wait();
+				this.wait(timeout);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
