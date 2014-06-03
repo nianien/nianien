@@ -55,6 +55,18 @@ public class MessageDigestUtils {
     }
 
     /**
+     * 计算字节数组的MD5值
+     *
+     * @param bytes
+     * @return
+     */
+    public static byte[] md5(byte[] bytes) {
+        MessageDigest md = md5.get();
+        md.reset();
+        return md.digest(bytes);
+    }
+
+    /**
      * 计算文件的SHA值
      *
      * @param file
@@ -78,6 +90,18 @@ public class MessageDigestUtils {
         return ByteUtils.toString(digest(md, content));
     }
 
+
+    /**
+     * 计算字节数组的MD5值
+     *
+     * @param bytes
+     * @return
+     */
+    public static byte[] sha(byte[] bytes) {
+        MessageDigest md = sha.get();
+        md.reset();
+        return md.digest(bytes);
+    }
 
     /**
      * 计算文本的SHA值

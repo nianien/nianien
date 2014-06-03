@@ -75,7 +75,7 @@ public class ConsistentHash<T> {
     private long hashCode(String key) {
         try {
             // 十六位字节数组
-            byte[] bytes = MessageDigestUtils.md5(key).getBytes();
+            byte[] bytes = MessageDigestUtils.md5(key.getBytes());
             // 每隔四位取一个字节
             long code = ((long) (bytes[12] & 0xFF) << 24)
                     | ((long) (bytes[8] & 0xFF) << 16)
