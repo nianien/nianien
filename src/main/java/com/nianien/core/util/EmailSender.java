@@ -1,151 +1,278 @@
 package com.nianien.core.util;
 
 import com.nianien.core.exception.ExceptionHandler;
+import org.apache.commons.lang3.StringUtils;
 
+import javax.activation.DataHandler;
+import javax.activation.FileDataSource;
 import javax.mail.*;
-import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeMessage;
+import javax.mail.Message.RecipientType;
+import javax.mail.internet.*;
+import java.io.File;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Properties;
 
 /**
- * 发送邮件的工具类,不支持附件功能
- * 
+ * 发送邮件的工具类
+ *
  * @author skyfalling
  */
 public class EmailSender {
+    /**
+     * 用户名
+     */
+    private String user;
+    /**
+     * 密码
+     */
+    private String password;
+    /**
+     * 服务器地址
+     */
+    private String host;
+    /**
+     * 端口号
+     */
+    private int port = 25;
+    /**
+     * 发件人
+     */
+    private String from;
+    /**
+     * 收件人列表,以逗号分割
+     */
+    private String to;
+    /**
+     * 抄送列表,以逗号分割
+     */
+    private String cc;
+    /**
+     * 暗送列表,以逗号分割
+     */
+    private String bcc;
+    /**
+     * 标题
+     */
+    private String subject;
+    /**
+     * 正文内容
+     */
+    private String content;
+    /**
+     * 正文类型
+     */
+    private String contentType = "text/plain;charset=utf-8;";
+    /**
+     * 附件列表
+     */
+    private List<File> attachments = new ArrayList<File>();
 
-	/**
-	 * 邮件会话
-	 */
-	private Session session;
+    /**
+     * 默认构造方法
+     */
+    public EmailSender() {
+    }
 
-	/**
-	 * 构造方法<br>
-	 * 
-	 * @param user
-	 *            用户名
-	 * @param password
-	 *            密码,不需要密码时置为null
-	 */
-	public EmailSender(String user, String password) {
-		int index = user.indexOf('@');
-		String host = "smtp." + user.substring(index + 1);
-		this.init(user, password, host);
-	}
+    /**
+     * 构造方法
+     *
+     * @param user     用户名,含@后缀
+     * @param password 密码,如不需密码可置为null
+     */
+    public EmailSender(String user, String password) {
+        this(user, password, "smtp." + user.substring(user.indexOf('@') + 1));
+    }
 
-	/**
-	 * 构造方法<br>
-	 * 
-	 * @param user
-	 *            用户名
-	 * @param password
-	 *            密码,不需要密码时置为null
-	 * @param host
-	 *            邮件服务器的主机地址
-	 */
-	public EmailSender(String user, String password, String host) {
-		this.init(user, password, host);
-	}
+    /**
+     * 构造方法
+     *
+     * @param user     用户名,含@后缀
+     * @param password 密码,如不需密码可置为null
+     * @param host     邮件服务器地址,如 smtp.xxx.com
+     */
+    public EmailSender(String user, String password, String host) {
+        this(user, password, host, 25);
+    }
 
-	/**
-	 * 配置Session信息
-	 * 
-	 * @param user
-	 *            用户
-	 * @param password
-	 *            密码
-	 * @param host
-	 *            主机地址
-	 */
-	public Session init(final String user, final String password,
-			final String host) {
-		boolean needAuth = password != null && !password.isEmpty();
-		Properties props = new Properties();
-		props.setProperty("mail.smtp.auth", needAuth + "");
-		props.setProperty("mail.transport.protocol", "smtp");
-		props.setProperty("mail.smtp.host", host);
-		props.setProperty("mail.smtp.connectiontimeout", "5000");
-		props.setProperty("mail.smtp.timeout", "5000");
-		props.setProperty("mail.from", user);
-		props.setProperty("mail.user", user);
-		session = Session.getDefaultInstance(props,
-				needAuth ? new Authenticator() {
-					protected PasswordAuthentication getPasswordAuthentication() {
-						return new PasswordAuthentication(user, password);
-					}
-				}
-						: null);
-		session.setDebug(true);
-		return session;
-	}
+    /**
+     * 构造方法
+     *
+     * @param user     用户名,含@后缀
+     * @param password 密码,如不需密码可置为null
+     * @param host     邮件服务器地址,如 smtp.xxx.com
+     * @param port     服务器端口号,默认25
+     */
+    public EmailSender(String user, String password, String host, int port) {
+        this.user = user;
+        this.from = user.substring(0, user.indexOf('@')) + "<" + user + ">";
+        this.password = password;
+        this.host = host;
+        this.port = port;
+    }
 
-	/**
-	 * 是否启用调试信息
-	 * 
-	 * @param debug
-	 */
-	public void setDebug(boolean debug) {
-		this.session.setDebug(debug);
-	}
 
-	/**
-	 * 发送HTML邮件
-	 * 
-	 * @param toAddresses
-	 *            收件人地址列表
-	 * @param subject
-	 *            主题
-	 * @param content
-	 *            邮件内容
-	 */
-	public void sendHtml(String[] toAddresses, String subject, String content) {
-		send(toAddresses, subject, content, "text/html;charset=utf-8;");
-	}
+    /**
+     * 发件人
+     *
+     * @param from
+     * @return
+     */
+    public EmailSender from(String from) {
+        this.from = from;
+        return this;
+    }
 
-	/**
-	 * 发送文本邮件
-	 * 
-	 * @param toAddresses
-	 *            收件人地址列表
-	 * @param subject
-	 *            主题
-	 * @param content
-	 *            邮件内容
-	 */
-	public void sendText(String[] toAddresses, String subject, String content) {
-		send(toAddresses, subject, content, "text/plain;charset=utf-8;");
-	}
 
-	/**
-	 * 发送指定类型的邮件
-	 * 
-	 * @param toAddresses
-	 * @param subject
-	 * @param content
-	 */
-	protected void send(String[] toAddresses, String subject, String content,
-			String contentType) {
-		try {
-			List<InternetAddress> list = new ArrayList<InternetAddress>(
-					toAddresses.length);
-			for (int i = 0; i < toAddresses.length; i++) {
-				try {
-					list.add(new InternetAddress(toAddresses[i]));
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-			Message msg = new MimeMessage(this.session);
-			msg.setRecipients(Message.RecipientType.TO,
-					list.toArray(new InternetAddress[0]));
-			msg.setContent(content, contentType);
-			msg.setSubject(subject);
-			Transport.send(msg);
-		} catch (MessagingException e) {
-			ExceptionHandler.throwException(e);
-		}
-	}
+    /**
+     * 发送列表,逗号","分隔
+     *
+     * @param to
+     * @return
+     */
+    public EmailSender to(String to) {
+        this.to = to;
+        return this;
+    }
+
+    /**
+     * 抄送列表,逗号","分隔
+     *
+     * @param cc
+     * @return
+     */
+    public EmailSender cc(String cc) {
+        this.cc = cc;
+        return this;
+    }
+
+    /**
+     * 暗送列表,逗号","分隔
+     *
+     * @param bcc
+     * @return
+     */
+    public EmailSender bcc(String bcc) {
+        this.bcc = bcc;
+        return this;
+    }
+
+
+    /**
+     * 主题
+     *
+     * @param subject
+     * @return
+     */
+    public EmailSender subject(String subject) {
+        this.subject = subject;
+        return this;
+    }
+
+
+    /**
+     * 正文内容
+     *
+     * @param content
+     * @return
+     */
+    public EmailSender content(String content) {
+        this.content = content;
+        return this;
+    }
+
+    /**
+     * 正文内容
+     *
+     * @param content
+     * @return
+     */
+    public EmailSender content(String content, String contentType) {
+        this.content = content;
+        this.contentType = contentType;
+        return this;
+    }
+
+    /**
+     * 添加附件
+     *
+     * @param attachment
+     * @return
+     */
+    public EmailSender addAttachments(File attachment) {
+        this.attachments.add(attachment);
+        return this;
+    }
+
+    /**
+     * 发送邮件
+     */
+    public void send() {
+        Session session = createSession(user, password, host, port);
+        try {
+            // 创建邮件
+            MimeMessage message = new MimeMessage(session);
+            // 设置发件人地址
+            message.setFrom(new InternetAddress(from));
+            // 设置收件人地址（多个邮件地址）
+            message.addRecipients(Message.RecipientType.TO, InternetAddress.parse(to));
+            if (StringUtils.isNotBlank(cc)) {
+                message.addRecipients(RecipientType.CC, InternetAddress.parse(cc));
+            }
+            if (StringUtils.isNotBlank(bcc)) {
+                message.addRecipients(RecipientType.BCC, InternetAddress.parse(bcc));
+            }
+            // 设置邮件主题
+            message.setSubject(subject);
+            // 设置发送时间
+            message.setSentDate(new Date());
+            // 设置发送内容
+            Multipart multipart = new MimeMultipart();
+            MimeBodyPart contentPart = new MimeBodyPart();
+            contentPart.setContent(content, contentType);
+            multipart.addBodyPart(contentPart);
+            //设置附件
+            for (File attachment : attachments) {
+                MimeBodyPart attachmentPart = new MimeBodyPart();
+                FileDataSource source = new FileDataSource(attachment);
+                attachmentPart.setDataHandler(new DataHandler(source));
+                attachmentPart.setFileName(MimeUtility.encodeWord(attachment.getName(), "GBK", null));
+                multipart.addBodyPart(attachmentPart);
+            }
+            message.setContent(multipart);
+            Transport.send(message);
+        } catch (Exception e) {
+            ExceptionHandler.throwException(e);
+        }
+    }
+
+
+
+    /**
+     * 创建邮件会话
+     *
+     * @param user
+     * @param password
+     * @param host
+     * @param port
+     * @return
+     */
+    protected Session createSession(final String user, final String password, String host, int port) {
+        boolean needAuth = StringUtils.isNotBlank(user);
+        Properties props = System.getProperties();
+        props.put("mail.smtp.host", host);
+        props.put("mail.smtp.sendpartial", true);
+        props.put("mail.smtp.port", port);
+        props.put("mail.smtp.auth", needAuth);
+        props.put("mail.transport.protocol", "smtp");
+        Authenticator authenticator = needAuth ? new Authenticator() {
+            protected PasswordAuthentication getPasswordAuthentication() {
+                return new PasswordAuthentication(user, password);
+            }
+        } : null;
+        return Session.getDefaultInstance(props, authenticator);
+    }
+
 
 }
