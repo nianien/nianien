@@ -2,14 +2,31 @@ package com.nianien.core.util;
 
 /**
  * 基本类型转字节数组
- * 
+ *
  * @author skyfalling
  */
 public class ByteUtils {
 
     /**
+     * 将字节数组转化成十六进制字符串
+     *
+     * @param bytes
+     * @return
+     */
+    public static String toString(byte[] bytes) {
+        char[] hexChar = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'};
+        StringBuilder sb = new StringBuilder(bytes.length * 2);
+        for (int i = 0; i < bytes.length; i++) {
+            // 四位的十六进制数表示一个字节
+            sb.append(hexChar[(bytes[i] & 0xf0) >>> 4]);
+            sb.append(hexChar[bytes[i] & 0x0f]);
+        }
+        return sb.toString();
+    }
+
+    /**
      * char型转字节数组,高位在前,低位在后
-     * 
+     *
      * @param ch
      * @return
      */
@@ -19,7 +36,7 @@ public class ByteUtils {
 
     /**
      * short型转字节数组,高位在前,低位在后
-     * 
+     *
      * @param s
      * @return
      */
@@ -29,7 +46,7 @@ public class ByteUtils {
 
     /**
      * int型转字节数组,高位在前,低位在后
-     * 
+     *
      * @param i
      * @return
      */
@@ -39,7 +56,7 @@ public class ByteUtils {
 
     /**
      * long型转字节数组,高位在前,低位在后
-     * 
+     *
      * @param l
      * @return
      */
@@ -47,9 +64,10 @@ public class ByteUtils {
         return getBytes(l, 8);
     }
 
+
     /**
      * 将long类型数字转换成bytes字节数的数组
-     * 
+     *
      * @param l
      * @param bytes
      * @return
@@ -64,7 +82,7 @@ public class ByteUtils {
 
     /**
      * 字节数为bytes,bit位值全为1,对应的十进制数
-     * 
+     *
      * @param bytes
      * @return
      */

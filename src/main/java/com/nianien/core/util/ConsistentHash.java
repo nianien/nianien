@@ -17,11 +17,6 @@ public class ConsistentHash<T> {
      */
     private TreeMap<Long, T> keysMap = new TreeMap<Long, T>();
 
-    /**
-     * 计算MD5值
-     */
-    private MD5Generator md5Gen = new MD5Generator();
-
 
     /**
      * 构造方法,指定需要散列的节点,以及每个节点对应的虚拟节点数
@@ -34,13 +29,13 @@ public class ConsistentHash<T> {
             size = 1;
         for (T key : nodes) {
             // 将key映射到虚拟节点
-            String virtualKey = md5Gen.md5ToString(key.toString());
+            String virtualKey = MessageDigestUtils.md5(key.toString());
             for (int i = 0; i < size; i++) {
                 // 计算第i个虚拟节点的哈希值
                 long m = hashCode(virtualKey);
                 keysMap.put(m, key);
                 // 映射下一个虚拟节点
-                virtualKey = md5Gen.md5ToString(virtualKey);
+                virtualKey = MessageDigestUtils.md5(virtualKey);
             }
         }
     }
@@ -80,7 +75,7 @@ public class ConsistentHash<T> {
     private long hashCode(String key) {
         try {
             // 十六位字节数组
-            byte[] bytes = md5Gen.md5(key);
+            byte[] bytes = MessageDigestUtils.md5(key).getBytes();
             // 每隔四位取一个字节
             long code = ((long) (bytes[12] & 0xFF) << 24)
                     | ((long) (bytes[8] & 0xFF) << 16)

@@ -112,35 +112,36 @@ public class Encryptor {
     }
 
     /**
-     * 根据进制获取字符表示所需的位数
+     * 根据进制基数计算表示一个Unicode字符所需要的位数<br/>
+     * 如二进制需要16位来表示一个Unicode字符
      *
-     * @param N
+     * @param base
      * @return N进制数的位数
      */
-    private static int getDigit(int N) {
-        int len = 0;
-        if (N == 2) {
+    private static int getDigit(int base) {
+        int len;
+        if (base == 2) {
             len = 16;
-        } else if (N == 3) {
+        } else if (base == 3) {
             len = 11;
-        } else if (N == 4) {
+        } else if (base == 4) {
             len = 8;
-        } else if (N >= 5 && N <= 6) {
+        } else if (base >= 5 && base <= 6) {
             len = 7;
-        } else if (N >= 7 && N <= 9) {
+        } else if (base >= 7 && base <= 9) {
             len = 6;
-        } else if (N >= 10 && N <= 15) {
+        } else if (base >= 10 && base <= 15) {
             len = 5;
-        } else if (N >= 16 && N <= 40) {
+        } else if (base >= 16 && base <= 40) {
             len = 4;
-        } else if (N >= 41 && N <= 255) {
+        } else if (base >= 41 && base <= 255) {
             len = 3;
-        } else if (N >= 256 && N <= 65535) {
+        } else if (base >= 256 && base <= 65535) {
             len = 2;
-        } else if (N >= 65536) {
+        } else if (base >= 65536) {
             len = 1;
         } else {
-            throw new IllegalArgumentException("进制数不能小于2!");
+            throw new IllegalArgumentException("the base of hex must be no less than 2.");
         }
         return len;
     }
