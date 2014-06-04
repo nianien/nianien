@@ -55,7 +55,7 @@ public class XMLBuilder {
      */
     public static String xmlHeader(String content, String encoding) {
         return new StringBuilder().append("<?xml version=\"1.0\" encoding=\"")
-                .append(StringUtils.emptyInstead(encoding, "UTF-8"))
+                .append(StringUtils.defaultIfEmpty(encoding, "UTF-8"))
                 .append("\"?>").append(content).toString();
     }
 

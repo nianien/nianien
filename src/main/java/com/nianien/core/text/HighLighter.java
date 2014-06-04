@@ -167,7 +167,7 @@ public class HighLighter {
      */
     protected String highLight(String keyword) {
         StringBuilder sb = new StringBuilder();
-        sb.append("<span ").append(StringUtils.emptyInstead(cssStyle, "")).append(" >").append(keyword).append("</span>");
+        sb.append("<span ").append(StringUtils.defaultIfEmpty(cssStyle, "")).append(" >").append(keyword).append("</span>");
         return sb.toString();
     }
 

@@ -442,25 +442,35 @@ public class StringUtils {
     }
 
     /**
-     * 如果source为空则返回instead,否则返回source
+     * 如果source为空则返回defaultValue,否则返回source
      *
      * @param source
-     * @param instead
+     * @param defaultValue
      * @return
      */
-    public static String emptyInstead(String source, String instead) {
-        return isEmpty(source) ? instead : source;
+    public static String defaultIfEmpty(String source, String defaultValue) {
+        return isEmpty(source) ? defaultValue : source;
     }
 
     /**
-     * 如果source为null则返回instead,否则返回source
+     * 如果source为null则返回defaultValue,否则返回source
      *
      * @param source
-     * @param instead
+     * @param defaultValue
      * @return
      */
-    public static String nullInstead(String source, String instead) {
-        return source == null ? instead : source;
+    public static String defaultIfNull(String source, String defaultValue) {
+        return source == null ? defaultValue : source;
+    }
+
+    /**
+     * 如果source为null则返回"",否则返回source
+     *
+     * @param source
+     * @return
+     */
+    public static String defaultString(String source) {
+        return source == null ? "" : source;
     }
 
     /**
@@ -470,7 +480,17 @@ public class StringUtils {
      * @return 如果字符串为null或"",返回true,否则返回false
      */
     public static boolean isEmpty(String source) {
-        return (source == null || source.isEmpty());
+        return source == null || source.isEmpty();
+    }
+
+    /**
+     * 判断字符串是否为空白字符
+     *
+     * @param source
+     * @return 如果字符串为空白字符, 返回true, 否则返回false
+     */
+    public static boolean isBlank(String source) {
+        return source == null || source.trim().isEmpty();
     }
 
     /**
@@ -590,6 +610,16 @@ public class StringUtils {
      */
     public static boolean notEmpty(String source) {
         return !isEmpty(source);
+    }
+
+    /**
+     * 判断字符串source是否空白字符
+     *
+     * @param source
+     * @return 如果字符串不为空白字符, 返回true, 否则返回false.
+     */
+    public static boolean notBlank(String source) {
+        return !isBlank(source);
     }
 
     /**

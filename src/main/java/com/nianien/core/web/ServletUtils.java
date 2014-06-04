@@ -296,7 +296,7 @@ public class ServletUtils {
      */
     public static String[] getParameterValues(HttpServletRequest request,
                                               String paraName, String encode) {
-        String encoding = StringUtils.nullInstead(
+        String encoding = StringUtils.defaultIfNull(
                 request.getCharacterEncoding(), "iso-8859-1");
         String[] values = request.getParameterValues(paraName);
         if (!encoding.equals(encode) && values != null) {

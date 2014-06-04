@@ -105,7 +105,7 @@ public class TestSqlBuilder {
         System.out.println(sqlStatement.originalSql());
         assertThat(sqlStatement.preparedSql(), equalTo("select * from user where 1=1 and name=? and desc=':0' and (age>? and age<2*?) and date in (?,?) --注释"));
         System.out.println(sqlStatement.preparedSql());
-        assertThat(sqlStatement.expandSql(), equalTo("select * from user where 1=1 and name='" + StringUtils.nullInstead(name, "") + "' and desc=':0' and (age>28 and age<2*28) and date in ('2014-02-08 10:00:00','" + DateFormatter.format(now) + "') --注释"));
+        assertThat(sqlStatement.expandSql(), equalTo("select * from user where 1=1 and name='" + StringUtils.defaultIfNull(name, "") + "' and desc=':0' and (age>28 and age<2*28) and date in ('2014-02-08 10:00:00','" + DateFormatter.format(now) + "') --注释"));
         System.out.println(sqlStatement.expandSql());
         System.out.println(Arrays.toString(sqlStatement.preparedParameters()));
 
