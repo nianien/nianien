@@ -82,7 +82,7 @@ public class EmailSender {
      * @param password 密码,如不需密码可置为null
      */
     public EmailSender(String user, String password) {
-        this(user, password, "smtp." + user.substring(user.indexOf('@') + 1));
+        this(user, password, null);
     }
 
     /**
@@ -108,8 +108,8 @@ public class EmailSender {
         this.user = user;
         this.from = user.substring(0, user.indexOf('@')) + "<" + user + ">";
         this.password = password;
-        this.host = host;
-        this.port = port;
+        this.host = host != null ? host : "smtp." + user.substring(user.indexOf('@') + 1);
+        this.port = port > 0 ? port : 25;
     }
 
 
@@ -246,7 +246,6 @@ public class EmailSender {
             ExceptionHandler.throwException(e);
         }
     }
-
 
 
     /**
