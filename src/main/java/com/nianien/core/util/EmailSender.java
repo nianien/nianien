@@ -200,8 +200,18 @@ public class EmailSender {
      * @param attachment
      * @return
      */
-    public EmailSender addAttachments(File attachment) {
+    public EmailSender addAttachment(File attachment) {
         this.attachments.add(attachment);
+        return this;
+    }
+
+    /**
+     * 清空附件
+     *
+     * @return
+     */
+    public EmailSender clearAttachments() {
+        this.attachments.clear();
         return this;
     }
 
