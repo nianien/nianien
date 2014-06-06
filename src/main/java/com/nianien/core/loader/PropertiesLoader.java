@@ -3,6 +3,7 @@ package com.nianien.core.loader;
 import com.nianien.core.exception.ExceptionHandler;
 import com.nianien.core.io.Closer;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -16,17 +17,16 @@ import java.util.Properties;
 public class PropertiesLoader {
 
     /**
-     * 加载properties属性配置文件,返回属性对象
+     * 加载properties文件
      *
-     * @param fileName
+     * @param file
      * @return Properties对象
      */
-    public static Properties load(String fileName) {
+    public static Properties load(File file) {
         InputStream is = null;
         try {
-            is = ResourceLoader.getInputStream(fileName);
             Properties p = new Properties();
-            p.load(is);
+            p.load((is = new FileInputStream(file)));
             return p;
         } catch (Exception e) {
             throw ExceptionHandler.throwException(e);
@@ -35,19 +35,19 @@ public class PropertiesLoader {
         }
     }
 
+
     /**
-     * 加载properties属性配置文件,返回属性对象
+     * 加载properties文件,并指定编码
      *
-     * @param fileName
+     * @param file
      * @param charset
      * @return Properties对象
      */
-    public static Properties load(String fileName, String charset) {
+    public static Properties load(File file, String charset) {
         InputStreamReader reader = null;
         try {
-            reader = new InputStreamReader(new FileInputStream(fileName), charset);
             Properties p = new Properties();
-            p.load(reader);
+            p.load(reader = new InputStreamReader(new FileInputStream(file), charset));
             return p;
         } catch (Exception e) {
             throw ExceptionHandler.throwException(e);
@@ -57,17 +57,16 @@ public class PropertiesLoader {
     }
 
     /**
-     * 加载XML配置文件,返回属性对象
+     * 加载XML文件
      *
-     * @param fileName
+     * @param file
      * @return Properties对象
      */
-    public static Properties loadXML(String fileName) {
+    public static Properties loadXML(File file) {
         InputStream is = null;
         try {
             Properties p = new Properties();
-            is = ResourceLoader.getInputStream(fileName);
-            p.loadFromXML(is);
+            p.loadFromXML(is = new FileInputStream(file));
             return p;
         } catch (Exception e) {
             throw ExceptionHandler.throwException(e);
