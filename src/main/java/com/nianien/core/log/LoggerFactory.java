@@ -10,22 +10,20 @@ import java.util.logging.LogManager;
 import java.util.logging.Logger;
 
 /**
- * {@link java.util.logging.Logger}对象的工厂类,优先加载classpath中的logging.properties文件中的配置,如果配置文件不存在,则加载系统配置
+ * {@link java.util.logging.Logger}对象的工厂类,修改{@link LogManager}对象读取日志配置文件的顺序<br/>
+ * <ol>
+ * <li>系统属性(system property):java.util.logging.config.file</li>
+ * <li>当前路径下的log.properties文件</li>
+ * <li>classpath中的log.properties文件</li>
+ * <li>系统默认配置</li>
+ * </ol>
  *
  * @author skyfalling
  */
-public class Loggers {
+public class LoggerFactory {
     static {
-        try {
-            File file = new File("logging.properties");
-            if (!file.exists()) {
-                file = ResourceLoader.getFile("logging.properties");
-            }
-            if (file != null && file.exists()) {
-                LogManager.getLogManager().readConfiguration(new FileInputStream(file));
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
+        if (System.getProperty("java.util.logging.config.file") == null) {
+            load("logging.properties");
         }
     }
 
@@ -86,5 +84,25 @@ public class Loggers {
      */
     public static Logger getLogger(String namespace, String resourceBundleName) {
         return Logger.getLogger(namespace, resourceBundleName);
+    }
+
+
+    /**
+     * 加载日志配置文件
+     *
+     * @param path
+     */
+    private static void load(String path) {
+        try {
+            File file = new File(path);
+            if (!file.exists()) {
+                file = ResourceLoader.getFile(path);
+            }
+            if (file != null && file.exists()) {
+                LogManager.getLogManager().readConfiguration(new FileInputStream(file));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }
