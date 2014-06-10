@@ -16,34 +16,7 @@ import java.util.List;
  * @author skyfalling
  */
 public class Files {
-    public static class LinesStringHandler implements Function<String, String> {
 
-        private List<String> lines = new ArrayList<String>();
-
-        @Override
-        public String apply(String str) {
-            lines.add(str);
-            return str;
-        }
-
-        public List<String> getLines() {
-            return lines;
-        }
-    }
-
-    public static class ContactStringHandler implements Function<String, String> {
-        private StringBuilder sb = new StringBuilder();
-
-        @Override
-        public String apply(String str) {
-            sb.append(str).append(newLine);
-            return null;
-        }
-
-        public String getContactString() {
-            return sb.toString();
-        }
-    }
 
     /**
      * 换行符, windows:"\r\n", linux: "\n"
@@ -54,44 +27,65 @@ public class Files {
      */
     private final static int bufferSize = 1024 * 8;
 
-    /**
-     * 关闭Closeable对象
-     *
-     * @param closeable
-     */
-    public static void close(Closeable closeable) {
-        Closer.close(closeable);
-    }
 
     /**
-     * 将文件from复制到to<br>
-     * 如果to表示目录,则复制成to目录下的同名文件,如果to存在,则覆盖
+     * 将文件from移动为文件to,如果to存在,则覆盖
      *
      * @param from 原文件
      * @param to   目标文件
-     * @throws Exception
+     */
+    public static boolean move(File from, File to) {
+        File dir = to.getParentFile();
+        if (!dir.exists()) {
+            dir.mkdirs();
+        }
+        if (to.exists()) {
+            delete(to);
+        }
+        return from.renameTo(to);
+    }
+
+    /**
+     * 将文件from复制为文件to,如果to存在,则覆盖
+     *
+     * @param from
+     * @param to
      */
     public static void copy(File from, File to) {
-        if (to.isDirectory())
-            to = new File(to, from.getName());
-        OutputStream out = null;
-        InputStream in = null;
-        try {
-            out = new FileOutputStream(to);
-            in = new FileInputStream(to);
-            // 8M缓冲区
-            byte[] buffer = new byte[bufferSize];
-            // 读取字节数
-            int length = -1;
-            while ((length = in.read(buffer)) != -1) {
-                out.write(buffer, 0, length);
+        File dir = to.getParentFile();
+        if (!dir.exists()) {
+            dir.mkdirs();
+        }
+        if (to.exists()) {
+            delete(to);
+        }
+        if (from.isDirectory()) {
+            to.mkdirs();
+            File[] files = from.listFiles();
+            for (File file : files) {
+                copy(file, new File(to, file.getName()));
             }
-        } catch (Exception e) {
-            ExceptionHandler.throwException(e);
-        } finally {
-            Closer.close(out, in);
+        } else {
+            OutputStream out = null;
+            InputStream in = null;
+            try {
+                out = new FileOutputStream(to);
+                in = new FileInputStream(from);
+                // 8M缓冲区
+                byte[] buffer = new byte[bufferSize];
+                // 读取字节数
+                int length;
+                while ((length = in.read(buffer)) != -1) {
+                    out.write(buffer, 0, length);
+                }
+            } catch (Exception e) {
+                ExceptionHandler.throwException(e);
+            } finally {
+                Closer.close(out, in);
+            }
         }
     }
+
 
     /**
      * 创建指定路径所对应的目录<br>
@@ -144,53 +138,6 @@ public class Files {
     }
 
     /**
-     * 获取文件的字节内容
-     *
-     * @param file
-     * @return 文件字节内容
-     */
-    public static byte[] getBytes(File file) {
-        try {
-            return getBytes(new FileInputStream(file));
-        } catch (Exception e) {
-            throw ExceptionHandler.throwException(e);
-        }
-    }
-
-    /**
-     * 获取InputStream对象指定长度的字节内容
-     *
-     * @param inputStream
-     * @return 文件字节内容
-     */
-    public static byte[] getBytes(InputStream inputStream) {
-        try {
-            List<byte[]> buffers = new ArrayList<byte[]>();
-            int size = 0;
-            int read = -1;
-            do {
-                byte[] buffer = new byte[bufferSize];
-                read = inputStream.read(buffer);
-                if (read > 0) {
-                    size += read;
-                    buffers.add(Arrays.copyOf(buffer, read));
-                }
-            } while (read == bufferSize);
-            byte[] bytes = new byte[size];
-            int position = 0;
-            for (byte[] buffer : buffers) {
-                System.arraycopy(buffer, 0, bytes, position, buffer.length);
-                position += buffer.length;
-            }
-            return bytes;
-        } catch (Exception e) {
-            throw ExceptionHandler.throwException(e);
-        } finally {
-            Closer.close(inputStream);
-        }
-    }
-
-    /**
      * 获取系统标准规范路径
      *
      * @param path
@@ -206,6 +153,16 @@ public class Files {
     }
 
     /**
+     * 获取指定路径的父路径
+     *
+     * @param path
+     * @return 上一级路径
+     */
+    public static String getParentPath(String path) {
+        return new File(path).getParent();
+    }
+
+    /**
      * 获取当前路径
      *
      * @return 当前路径
@@ -216,6 +173,7 @@ public class Files {
             current = new File("").getAbsolutePath();
         return current;
     }
+
 
     /**
      * 获取路径所在的目录<br>
@@ -253,18 +211,6 @@ public class Files {
     }
 
     /**
-     * 获取文件名后缀
-     *
-     * @param path
-     * @return 文件名后缀, 含"."
-     */
-    public static String getFileExt(String path) {
-        String fileName = getFileName(path);
-        int index = fileName.lastIndexOf('.');
-        return index == -1 ? "" : fileName.substring(index);
-    }
-
-    /**
      * 获取指定路径的文件名
      *
      * @param path
@@ -287,14 +233,17 @@ public class Files {
     }
 
     /**
-     * 获取指定路径的父路径
+     * 获取文件名后缀
      *
      * @param path
-     * @return 上一级路径
+     * @return 文件名后缀, 含"."
      */
-    public static String getParent(String path) {
-        return new File(path).getParent();
+    public static String getFileExt(String path) {
+        String fileName = getFileName(path);
+        int index = fileName.lastIndexOf('.');
+        return index == -1 ? "" : fileName.substring(index);
     }
+
 
     /**
      * 判断指定的路径是否为绝对路径
@@ -307,20 +256,53 @@ public class Files {
     }
 
     /**
-     * 将文件from移动到to<br>
-     * 如果to表示目录,则移动为to目录下的同名文件,如果to存在,则覆盖
+     * 获取文件的字节内容
      *
-     * @param from 原文件
-     * @param to   目标文件
+     * @param file
+     * @return 文件字节内容
      */
-    public static boolean move(File from, File to) {
-        if (to.isDirectory())
-            to = new File(to, from.getName());
-        if (to.exists()) {
-            to.delete();
+    public static byte[] getBytes(File file) {
+        try {
+            return getBytes(new FileInputStream(file));
+        } catch (Exception e) {
+            throw ExceptionHandler.throwException(e);
         }
-        return from.renameTo(to);
     }
+
+
+    /**
+     * 获取InputStream对象指定长度的字节内容
+     *
+     * @param inputStream
+     * @return 文件字节内容
+     */
+    public static byte[] getBytes(InputStream inputStream) {
+        try {
+            List<byte[]> buffers = new ArrayList<byte[]>();
+            int size = 0;
+            int read = -1;
+            do {
+                byte[] buffer = new byte[bufferSize];
+                read = inputStream.read(buffer);
+                if (read > 0) {
+                    size += read;
+                    buffers.add(Arrays.copyOf(buffer, read));
+                }
+            } while (read == bufferSize);
+            byte[] bytes = new byte[size];
+            int position = 0;
+            for (byte[] buffer : buffers) {
+                System.arraycopy(buffer, 0, bytes, position, buffer.length);
+                position += buffer.length;
+            }
+            return bytes;
+        } catch (Exception e) {
+            throw ExceptionHandler.throwException(e);
+        } finally {
+            Closer.close(inputStream);
+        }
+    }
+
 
     /**
      * 读取文件内容
@@ -383,9 +365,15 @@ public class Files {
      * @return
      */
     public static String read(Reader reader) {
-        ContactStringHandler handler = new ContactStringHandler();
-        readLines(reader, handler);
-        return handler.getContactString();
+        final StringBuilder sb = new StringBuilder();
+        readLines(reader, new Function<String, String>() {
+            @Override
+            public String apply(String s) {
+                sb.append(s);
+                return null;
+            }
+        });
+        return sb.toString();
     }
 
     /**
@@ -506,9 +494,15 @@ public class Files {
      * @param reader
      */
     public static List<String> readLines(Reader reader) {
-        LinesStringHandler handler = new LinesStringHandler();
-        readLines(reader, handler);
-        return handler.getLines();
+        final List<String> lines = new ArrayList<String>();
+        readLines(reader, new Function<String, String>() {
+            @Override
+            public String apply(String s) {
+                lines.add(s);
+                return null;
+            }
+        });
+        return lines;
     }
 
     /**
@@ -690,5 +684,11 @@ public class Files {
         } finally {
             Closer.close(writer);
         }
+    }
+
+
+    public static void main(String[] args) {
+
+        copy(new File("D:\\AppData\\dataHunter\\iPageView"), new File("D:\\AppData\\dataHunter\\job2"));
     }
 }
