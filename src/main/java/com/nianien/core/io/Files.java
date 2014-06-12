@@ -31,11 +31,12 @@ public class Files {
 
 
     /**
-     * 移动src文件为dest文件<br/>
-     * 注: dest是移动后的目标文件,而不是目标文件所在的目录.
+     * 将源文件src移动至目标文件dest所表示的路径<br/>
+     * 这里dest对应文件为移动后的路径,如果目标路径存在,则会被覆盖
      *
-     * @param src  原文件
-     * @param dest 目标文件
+     * @param src
+     * @param dest
+     * @return 如果移动成功返回true, 否则返回false
      */
     public static boolean move(File src, File dest) {
         File dir = dest.getParentFile();
@@ -49,8 +50,8 @@ public class Files {
     }
 
     /**
-     * 复制src文件为dest文件,支持目录拷贝<br/>
-     * 注: dest是复制后的目标文件,而不是目标文件所在的目录.目标文件如果存在,则会被覆盖
+     * 复制源文件src文件至目标我呢就dest所表示的路径,支持目录拷贝<br/>
+     * 这里dest对应文件为复制后的路径,如果目标路径存在,则会被覆盖
      *
      * @param src
      * @param dest
@@ -63,6 +64,17 @@ public class Files {
         if (dest.exists()) {
             delete(dest);
         }
+        //这里定义copy0方法,是为了不用每次都判断目标路径是否存在
+        copy0(src, dest);
+    }
+
+    /**
+     * 递归复制文件
+     *
+     * @param src
+     * @param dest
+     */
+    private static void copy0(File src, File dest) {
         if (src.isDirectory()) {
             dest.mkdirs();
             File[] files = src.listFiles();
@@ -90,14 +102,16 @@ public class Files {
         }
     }
 
-
     /**
-     * 删除指定文件,支持目录操作<br>
+     * 删除指定文件,支持目录操作<br/>
      * 如果指定路径为文件夹,则递归删除子文件夹及其内容
      *
      * @param file
+     * @return 如果删除成功, 返回true, 否则返回false. 如果文件不存在,返回true
      */
     public static boolean delete(File file) {
+        if (!file.exists())
+            return true;
         if (file.isDirectory()) {
             for (File f : file.listFiles())
                 if (!delete(f))
@@ -107,10 +121,10 @@ public class Files {
     }
 
     /**
-     * 获取文件的字节数组
+     * 获取文件内容的字节数组
      *
      * @param file
-     * @return 文件字节内容
+     * @return 表示文件内容的字节数组
      */
     public static byte[] getBytes(File file) {
         try {
@@ -122,10 +136,10 @@ public class Files {
 
 
     /**
-     * 获取InputStream对象指定长度的字节内容
+     * 获取InputStream对象输出的字节数组
      *
      * @param inputStream
-     * @return 文件字节内容
+     * @return
      */
     public static byte[] getBytes(InputStream inputStream) {
         try {
@@ -156,7 +170,7 @@ public class Files {
 
 
     /**
-     * 读取文件内容
+     * 读取文件文本内容,默认编码
      *
      * @param file
      * @return
@@ -170,10 +184,10 @@ public class Files {
     }
 
     /**
-     * 以指定编码格式读取文件内容
+     * 以指定编码格式读取文件文本内容
      *
      * @param file
-     * @param charset
+     * @param charset 文本编码格式
      * @return
      */
     public static String read(File file, String charset) {
@@ -186,7 +200,7 @@ public class Files {
     }
 
     /**
-     * 读取InputStream对象内容,读取后关闭InputStream对象
+     * 读取InputStream对象的输出文本,读取后关闭InputStream对象
      *
      * @param inputStream
      * @return
@@ -196,10 +210,10 @@ public class Files {
     }
 
     /**
-     * 以指定编码格式读取InputStream对象内容,读取后关闭InputStream对象
+     * 以指定编码格式读取InputStream对象的输出文本内容,读取后关闭InputStream对象
      *
      * @param inputStream
-     * @param charset
+     * @param charset     文本编码格式
      * @return
      */
     public static String read(InputStream inputStream, String charset) {
@@ -211,7 +225,7 @@ public class Files {
     }
 
     /**
-     * 读取Reader对象内容,读取后关闭Reader对象
+     * 读取Reader对象的文本内容,读取后关闭Reader对象
      *
      * @param reader
      * @return
@@ -229,10 +243,25 @@ public class Files {
     }
 
     /**
-     * 以指定字符编码格式读取文件的每行内容
+     * 按行读取文件内容
+     *
+     * @param file
+     * @return 按行返回文本内容列表
+     */
+    public static List<String> readLines(File file) {
+        try {
+            return readLines(new FileReader(file));
+        } catch (Exception e) {
+            throw ExceptionHandler.throwException(e);
+        }
+    }
+
+    /**
+     * 以指定字符编码格式按行读取文件内容
      *
      * @param file
      * @param charset
+     * @return 按行返回文本内容列表
      */
     public static List<String> readLines(File file, String charset) {
         try {
@@ -244,7 +273,21 @@ public class Files {
     }
 
     /**
-     * 以指定字符编码格式读取文件的每行内容
+     * 读取文件对象,处理每行的文本内容
+     *
+     * @param file
+     * @param function
+     */
+    public static void readLines(File file, Function<String, String> function) {
+        try {
+            readLines(new FileReader(file), function);
+        } catch (Exception e) {
+            throw ExceptionHandler.throwException(e);
+        }
+    }
+
+    /**
+     * 以指定字符编码格式读取文件对象,处理每行的文本内容
      *
      * @param file
      * @param function
@@ -261,40 +304,33 @@ public class Files {
         }
     }
 
-
     /**
-     * 以指定编码格式读取文件的每行内容
+     * 按行读取InputStream对象的文本内容, 然后关闭InputStream对象
      *
-     * @param file
+     * @param inputStream
+     * @return 按行返回文本内容列表
      */
-    public static List<String> readLines(File file) {
-        try {
-            return readLines(new FileReader(file));
-        } catch (Exception e) {
-            throw ExceptionHandler.throwException(e);
-        }
+    public static List<String> readLines(InputStream inputStream) {
+        return readLines(new InputStreamReader(inputStream));
     }
 
-
     /**
-     * 读取文件对象的每行内容
+     * 读取InputStream对象内容的每行内容, 然后关闭InputStream对象
      *
-     * @param file
+     * @param inputStream
      * @param function
      */
-    public static void readLines(File file, Function<String, String> function) {
-        try {
-            readLines(new FileReader(file), function);
-        } catch (Exception e) {
-            throw ExceptionHandler.throwException(e);
-        }
+    public static void readLines(InputStream inputStream, Function<String, String> function) {
+        readLines(new InputStreamReader(inputStream), function);
     }
 
+
     /**
-     * 以指定编码格式读取InputStream对象的每行内容, 然后关闭InputStream对象
+     * 以指定编码格式按行读取InputStream对象的文本内容, 然后关闭InputStream对象
      *
      * @param inputStream
      * @param charset
+     * @return 按行返回文本内容列表
      */
     public static List<String> readLines(InputStream inputStream,
                                          String charset) {
@@ -306,7 +342,7 @@ public class Files {
     }
 
     /**
-     * 以指定编码格式读取InputStream对象的每行内容, 然后关闭InputStream对象
+     * 以指定编码格式读取InputStream对象,按行处理文本内容 然后关闭InputStream对象
      *
      * @param inputStream
      * @param function
@@ -321,29 +357,12 @@ public class Files {
         }
     }
 
-    /**
-     * 读取InputStream对象内容的每行内容
-     *
-     * @param inputStream
-     */
-    public static List<String> readLines(InputStream inputStream) {
-        return readLines(new InputStreamReader(inputStream));
-    }
-
-    /**
-     * 读取InputStream对象内容的每行内容
-     *
-     * @param inputStream
-     * @param function
-     */
-    public static void readLines(InputStream inputStream, Function<String, String> function) {
-        readLines(new InputStreamReader(inputStream), function);
-    }
 
     /**
      * 读取Reader对象内容的每行内容, 然关闭reader对象
      *
      * @param reader
+     * @return 按行返回文本内容列表
      */
     public static List<String> readLines(Reader reader) {
         final List<String> lines = new ArrayList<String>();
@@ -358,7 +377,7 @@ public class Files {
     }
 
     /**
-     * 读取Reader对象内容的每行内容, 然关闭reader对象
+     * 读取Reader对象,按行处理文本内容, 然关闭reader对象
      *
      * @param reader
      * @param function
@@ -379,15 +398,15 @@ public class Files {
 
 
     /**
-     * 向文件写入内容
+     * 向文件对象写入指定内容
      *
-     * @param file
-     * @param content
-     * @param isAppend
+     * @param file     目标文件
+     * @param content  待写入文本
+     * @param isAppend 是否追加
      */
     public static void write(File file, String content, boolean isAppend) {
-        createParent(file);
         try {
+            createParent(file);
             write(new FileWriter(file, isAppend), content);
         } catch (Exception e) {
             ExceptionHandler.throwException(e);
@@ -395,17 +414,17 @@ public class Files {
     }
 
     /**
-     * 以指定编码格式向文件写入内容
+     * 以指定编码格式向文件对象写入文本内容
      *
-     * @param file
-     * @param content
-     * @param charset
-     * @param isAppend
+     * @param file     目标文件
+     * @param content  待写入文本
+     * @param charset  编码格式
+     * @param isAppend 是否追加
      */
     public static void write(File file, String content, String charset,
                              boolean isAppend) {
-        createParent(file);
         try {
+            createParent(file);
             OutputStream outputStream = new FileOutputStream(file, isAppend);
             Writer writer = new OutputStreamWriter(outputStream, charset);
             write(writer, content);
@@ -415,14 +434,14 @@ public class Files {
     }
 
     /**
-     * 向OutputStream对象写入从InputStream对象读取的内容, 之后关闭OutputStream和InputStream对象
+     * 读取InputStream对象,写入OutputStream对象, 然后关闭OutputStream和InputStream对象
      *
      * @param outputStream
      * @param inputStream
      */
     public static void write(OutputStream outputStream, InputStream inputStream) {
         try {
-            int read = 0;
+            int read;
             byte[] buffer = new byte[bufferSize];
             while ((read = inputStream.read(buffer)) != -1) {
                 outputStream.write(buffer, 0, read);
@@ -437,7 +456,7 @@ public class Files {
     }
 
     /**
-     * 向OutputStream对象写入内容后关闭OutputStream对象
+     * 向OutputStream对象写入文本内容,然后关闭OutputStream对象
      *
      * @param outputStream
      * @param content
@@ -451,7 +470,7 @@ public class Files {
     }
 
     /**
-     * 以指定编码格式向OutputStream对象写入内容后关闭OutputStream对象
+     * 以指定编码格式向OutputStream对象写入文本内容,然后关闭OutputStream对象
      *
      * @param outputStream
      * @param content
@@ -467,7 +486,7 @@ public class Files {
     }
 
     /**
-     * 向writer对象写入从reader对象读取的内容, 之后关闭Writer和Reader对象
+     * 读取reader对象, 写入writer对象,然后关闭Writer和Reader对象
      *
      * @param writer
      * @param reader
@@ -486,7 +505,7 @@ public class Files {
     }
 
     /**
-     * 向Writer对象写入内容后关闭Writer对象
+     * 向Writer对象写入文本内容,然后关闭Writer对象
      *
      * @param writer
      * @param content
@@ -549,10 +568,10 @@ public class Files {
 
 
     /**
-     * 获取指定的绝对路径
+     * 获取指定的绝对路径,并尝试解析为标准路径
      *
      * @param path
-     * @return 返回标准路径, 不含"."或".."
+     * @return 返回绝对路径
      */
     public static String getAbsolutePath(String path) {
         File file = new File(path);
@@ -567,7 +586,7 @@ public class Files {
      * 获取指定路径的上级路径
      *
      * @param path
-     * @return 上一级路径
+     * @return 返回上一级路径
      */
     public static String getParentPath(String path) {
         return new File(path).getParent();
@@ -604,10 +623,10 @@ public class Files {
     }
 
     /**
-     * 多个路径组合构建文件对象
+     * 多个路径组合构建文件对象<br/>
      *
      * @param paths
-     * @return 拼装后的路径指向的文件对象
+     * @return 组合路径所表示的文件对象. 如果给定路径集合为空,则返回null
      */
     public static File getFile(String... paths) {
         File file = null;
