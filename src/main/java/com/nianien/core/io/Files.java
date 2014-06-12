@@ -6,6 +6,8 @@ import com.nianien.core.util.StringUtils;
 
 import java.io.*;
 import java.net.URL;
+import java.nio.ByteBuffer;
+import java.nio.channels.FileChannel;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -29,234 +31,83 @@ public class Files {
 
 
     /**
-     * 将文件from移动为文件to,如果to存在,则覆盖
+     * 移动src文件为dest文件<br/>
+     * 注: dest是移动后的目标文件,而不是目标文件所在的目录.
      *
-     * @param from 原文件
-     * @param to   目标文件
+     * @param src  原文件
+     * @param dest 目标文件
      */
-    public static boolean move(File from, File to) {
-        File dir = to.getParentFile();
+    public static boolean move(File src, File dest) {
+        File dir = dest.getParentFile();
         if (!dir.exists()) {
             dir.mkdirs();
         }
-        if (to.exists()) {
-            delete(to);
+        if (dest.exists()) {
+            delete(dest);
         }
-        return from.renameTo(to);
+        return src.renameTo(dest);
     }
 
     /**
-     * 将文件from复制为文件to,如果to存在,则覆盖
+     * 复制src文件为dest文件,支持目录拷贝<br/>
+     * 注: dest是复制后的目标文件,而不是目标文件所在的目录.目标文件如果存在,则会被覆盖
      *
-     * @param from
-     * @param to
+     * @param src
+     * @param dest
      */
-    public static void copy(File from, File to) {
-        File dir = to.getParentFile();
+    public static void copy(File src, File dest) {
+        File dir = dest.getParentFile();
         if (!dir.exists()) {
             dir.mkdirs();
         }
-        if (to.exists()) {
-            delete(to);
+        if (dest.exists()) {
+            delete(dest);
         }
-        if (from.isDirectory()) {
-            to.mkdirs();
-            File[] files = from.listFiles();
+        if (src.isDirectory()) {
+            dest.mkdirs();
+            File[] files = src.listFiles();
             for (File file : files) {
-                copy(file, new File(to, file.getName()));
+                copy(file, new File(dest, file.getName()));
             }
         } else {
-            OutputStream out = null;
-            InputStream in = null;
+            FileChannel inChannel = null;
+            FileChannel outChannel = null;
             try {
-                out = new FileOutputStream(to);
-                in = new FileInputStream(from);
+                inChannel = new FileInputStream(src).getChannel();
+                outChannel = new FileOutputStream(dest).getChannel();
                 // 8M缓冲区
-                byte[] buffer = new byte[bufferSize];
-                // 读取字节数
-                int length;
-                while ((length = in.read(buffer)) != -1) {
-                    out.write(buffer, 0, length);
+                ByteBuffer buffer = ByteBuffer.allocate(bufferSize);
+                while (inChannel.read(buffer) != -1) {
+                    buffer.flip();
+                    outChannel.write(buffer);
+                    buffer.clear();//prepare for reading;清空缓冲区；
                 }
             } catch (Exception e) {
                 ExceptionHandler.throwException(e);
             } finally {
-                Closer.close(out, in);
+                Closer.close(inChannel, outChannel);
             }
         }
     }
 
 
     /**
-     * 创建指定路径所对应的目录<br>
-     * 如果路径指向已存在的文件,则删除该文件并创建目录
-     *
-     * @param path
-     */
-    public static void createDirectory(File path) {
-        // 如果存在且不是目录,则删除后在创建
-        if (!path.isDirectory()) {
-            if (path.exists()) {
-                path.delete();
-            }
-            path.mkdirs();
-        }
-    }
-
-    /**
-     * 创建指定路径的上一级目录<br>
-     *
-     * @param file
-     * @return 文件对象
-     */
-    public static void createParent(File file) {
-        createDirectory(file.getParentFile());
-    }
-
-    /**
-     * 删除指定文件或文件夹<br>
+     * 删除指定文件,支持目录操作<br>
      * 如果指定路径为文件夹,则递归删除子文件夹及其内容
      *
      * @param file
      */
-    public static void delete(File file) {
+    public static boolean delete(File file) {
         if (file.isDirectory()) {
             for (File f : file.listFiles())
-                delete(f);
+                if (!delete(f))
+                    return false;
         }
-        file.delete();
+        return file.delete();
     }
 
     /**
-     * 获取指定路径的绝对路径
-     *
-     * @param path
-     * @return 返回绝对路径
-     */
-    public static String getAbsolutePath(String path) {
-        return new File(path).getAbsolutePath();
-    }
-
-    /**
-     * 获取系统标准规范路径
-     *
-     * @param path
-     * @return 返回标准路径, 不含"."或".."
-     */
-    public static String getCanonicalPath(String path) {
-        File file = new File(path);
-        try {
-            return file.getCanonicalPath();
-        } catch (Exception e) {
-            return file.getAbsolutePath();
-        }
-    }
-
-    /**
-     * 获取指定路径的父路径
-     *
-     * @param path
-     * @return 上一级路径
-     */
-    public static String getParentPath(String path) {
-        return new File(path).getParent();
-    }
-
-    /**
-     * 获取当前路径
-     *
-     * @return 当前路径
-     */
-    public static String getCurrentPath() {
-        String current = System.getProperty("user.dir");
-        if (StringUtils.isEmpty(current))
-            current = new File("").getAbsolutePath();
-        return current;
-    }
-
-
-    /**
-     * 获取路径所在的目录<br>
-     * 如果路径本身代表目录,则返回路径本身,否则返回路径的父路径
-     *
-     * @param path
-     * @return 指定路径所在的目录
-     */
-    public static String getDirectory(String path) {
-        File file = new File(path);
-        if (file.isDirectory())
-            return file.getAbsolutePath();
-        String filename = file.getName();
-        if (filename.endsWith("/") || filename.endsWith("\\"))
-            return file.getName();
-        return file.getParent();
-    }
-
-    /**
-     * 根据指定多个路径进行组合拼装获取文件对象
-     *
-     * @param paths
-     * @return 拼装后的路径指向的文件对象
-     */
-    public static File getFile(String... paths) {
-        File f = null;
-        for (String str : paths) {
-            if (f == null) {
-                f = new File(str);
-            } else {
-                f = new File(f, str);
-            }
-        }
-        return f;
-    }
-
-    /**
-     * 获取指定路径的文件名
-     *
-     * @param path
-     * @return 文件名称
-     */
-    public static String getFileName(String path) {
-        return new File(path).getName();
-    }
-
-    /**
-     * 获取不含后缀名的文件名称
-     *
-     * @param path
-     * @return 不含后缀的文件名称
-     */
-    public static String getFileNameWithoutExt(String path) {
-        String fileName = getFileName(path);
-        int index = fileName.lastIndexOf('.');
-        return index == -1 ? fileName : fileName.substring(0, index);
-    }
-
-    /**
-     * 获取文件名后缀
-     *
-     * @param path
-     * @return 文件名后缀, 含"."
-     */
-    public static String getFileExt(String path) {
-        String fileName = getFileName(path);
-        int index = fileName.lastIndexOf('.');
-        return index == -1 ? "" : fileName.substring(index);
-    }
-
-
-    /**
-     * 判断指定的路径是否为绝对路径
-     *
-     * @param path
-     * @return 如果是返回true, 否则返回false
-     */
-    public static boolean isAbsolutePath(String path) {
-        return new File(path).isAbsolute();
-    }
-
-    /**
-     * 获取文件的字节内容
+     * 获取文件的字节数组
      *
      * @param file
      * @return 文件字节内容
@@ -280,7 +131,7 @@ public class Files {
         try {
             List<byte[]> buffers = new ArrayList<byte[]>();
             int size = 0;
-            int read = -1;
+            int read;
             do {
                 byte[] buffer = new byte[bufferSize];
                 read = inputStream.read(buffer);
@@ -307,7 +158,7 @@ public class Files {
     /**
      * 读取文件内容
      *
-     * @param
+     * @param file
      * @return
      */
     public static String read(File file) {
@@ -335,9 +186,9 @@ public class Files {
     }
 
     /**
-     * 读取InputStream对象内容后关闭InputStream对象
+     * 读取InputStream对象内容,读取后关闭InputStream对象
      *
-     * @param
+     * @param inputStream
      * @return
      */
     public static String read(InputStream inputStream) {
@@ -345,9 +196,10 @@ public class Files {
     }
 
     /**
-     * 以指定编码格式读取InputStream对象内容后关闭InputStream对象
+     * 以指定编码格式读取InputStream对象内容,读取后关闭InputStream对象
      *
-     * @param
+     * @param inputStream
+     * @param charset
      * @return
      */
     public static String read(InputStream inputStream, String charset) {
@@ -359,7 +211,7 @@ public class Files {
     }
 
     /**
-     * 读取Reader对象内容后关闭Reader对象
+     * 读取Reader对象内容,读取后关闭Reader对象
      *
      * @param reader
      * @return
@@ -411,7 +263,7 @@ public class Files {
 
 
     /**
-     * 以指定编码格式读取InputStream对象的每行内容, 然后关闭InputStream对象
+     * 以指定编码格式读取文件的每行内容
      *
      * @param file
      */
@@ -425,7 +277,7 @@ public class Files {
 
 
     /**
-     * 读取文件对象每行内容
+     * 读取文件对象的每行内容
      *
      * @param file
      * @param function
@@ -489,7 +341,7 @@ public class Files {
     }
 
     /**
-     * 读取Reader对象内容的每行内容
+     * 读取Reader对象内容的每行内容, 然关闭reader对象
      *
      * @param reader
      */
@@ -525,41 +377,6 @@ public class Files {
         }
     }
 
-
-    /**
-     * 重命名文件,如果目标名称已存在,则进行覆盖
-     *
-     * @param file
-     * @param newName
-     * @return 更名后的文件对象
-     */
-    public static File rename(File file, String newName) {
-        File newFile = new File(newName);
-        if (newFile.exists()) {
-            ExceptionHandler.throwIf(newFile.delete(), "File already exists but cannot be deleted: "
-                    + newFile.getAbsolutePath());
-        }
-        ExceptionHandler.throwIf(
-                file.renameTo(newFile),
-                "File: " + file.getAbsolutePath() + " cannot be renamed to: "
-                        + newFile.getAbsolutePath());
-        return newFile;
-    }
-
-    /**
-     * 获取URL对象对应的系统路径,如果是压缩包,则获取压缩包所在路径
-     *
-     * @param url
-     * @return URL对象对应的系统路径
-     */
-    public static String urlToPath(URL url) {
-        String path = url.getPath();
-        int location = path.indexOf("!/");
-        if (location != -1) {
-            path = path.substring(0, location);
-        }
-        return path;
-    }
 
     /**
      * 向文件写入内容
@@ -658,7 +475,7 @@ public class Files {
     public static void write(Writer writer, Reader reader) {
         try {
             char[] buffer = new char[bufferSize];
-            int read = -1;
+            int read;
             while ((read = reader.read(buffer)) != -1) {
                 writer.write(buffer, 0, read);
                 writer.flush();
@@ -687,8 +504,167 @@ public class Files {
     }
 
 
-    public static void main(String[] args) {
-
-        copy(new File("D:\\AppData\\dataHunter\\iPageView"), new File("D:\\AppData\\dataHunter\\job2"));
+    /**
+     * 获取URL对象对应的系统路径,如果是压缩包,则获取压缩包所在路径
+     *
+     * @param url
+     * @return URL对象对应的系统路径
+     */
+    public static String urlToPath(URL url) {
+        String path = url.getPath();
+        int location = path.indexOf("!/");
+        if (location != -1) {
+            path = path.substring(0, location);
+        }
+        return path;
     }
+
+    /**
+     * 创建指定路径所表示的目录<br/>
+     * 如果路径指向已存在的非目录文件,则删除该文件并创建目录
+     *
+     * @param path
+     */
+    public static void createDirectory(File path) {
+        // 如果存在且不是目录,则删除后在创建
+        if (!path.isDirectory()) {
+            if (path.exists()) {
+                path.delete();
+            }
+            path.mkdirs();
+        }
+    }
+
+    /**
+     * 创建并返回指定文件所在的目录文件<br/>
+     *
+     * @param file
+     * @return 文件对象
+     */
+    public static File createParent(File file) {
+        File parent = file.getParentFile();
+        createDirectory(parent);
+        return parent;
+    }
+
+
+    /**
+     * 获取指定的绝对路径
+     *
+     * @param path
+     * @return 返回标准路径, 不含"."或".."
+     */
+    public static String getAbsolutePath(String path) {
+        File file = new File(path);
+        try {
+            return file.getCanonicalPath();
+        } catch (Exception e) {
+            return file.getAbsolutePath();
+        }
+    }
+
+    /**
+     * 获取指定路径的上级路径
+     *
+     * @param path
+     * @return 上一级路径
+     */
+    public static String getParentPath(String path) {
+        return new File(path).getParent();
+    }
+
+    /**
+     * 获取当前路径
+     *
+     * @return 当前路径
+     */
+    public static String getCurrentPath() {
+        String current = System.getProperty("user.dir");
+        if (StringUtils.isEmpty(current))
+            current = getAbsolutePath(".");
+        return current;
+    }
+
+
+    /**
+     * 获取路径所在的目录<br/>
+     * 如果路径本身代表目录,则返回路径本身,否则路径所在目录
+     *
+     * @param path
+     * @return 指定路径所在的目录
+     */
+    public static String getDirectory(String path) {
+        File file = new File(path);
+        if (file.isDirectory())
+            return getAbsolutePath(path);
+        //路径本身表示路径
+        if (path.endsWith("/") || path.endsWith("\\"))
+            return file.getAbsolutePath();
+        return file.getParent();
+    }
+
+    /**
+     * 多个路径组合构建文件对象
+     *
+     * @param paths
+     * @return 拼装后的路径指向的文件对象
+     */
+    public static File getFile(String... paths) {
+        File file = null;
+        for (String path : paths) {
+            if (file == null) {
+                file = new File(path);
+            } else {
+                file = new File(file, path);
+            }
+        }
+        return file;
+    }
+
+
+    /**
+     * 获取指定路径的文件名
+     *
+     * @param path
+     * @return 文件名称
+     */
+    public static String getFileName(String path) {
+        return new File(path).getName();
+    }
+
+    /**
+     * 获取不含后缀的文件名
+     *
+     * @param path
+     * @return 不含后缀的文件名
+     */
+    public static String getFileNameWithoutExt(String path) {
+        String fileName = getFileName(path);
+        int index = fileName.lastIndexOf('.');
+        return index == -1 ? fileName : fileName.substring(0, index);
+    }
+
+    /**
+     * 获取文件名后缀
+     *
+     * @param path
+     * @return 文件名后缀, 含"."
+     */
+    public static String getFileExt(String path) {
+        String fileName = getFileName(path);
+        int index = fileName.lastIndexOf('.');
+        return index == -1 ? "" : fileName.substring(index);
+    }
+
+
+    /**
+     * 判断指定路径是否为绝对路径
+     *
+     * @param path
+     * @return 如果是返回true, 否则返回false
+     */
+    public static boolean isAbsolutePath(String path) {
+        return new File(path).isAbsolute();
+    }
+
 }
