@@ -4,14 +4,22 @@ import com.nianien.core.annotation.Ignore;
 import com.nianien.core.collection.map.CaseInsensitiveMap;
 import com.nianien.core.exception.ExceptionHandler;
 import com.nianien.core.function.Predicate;
+import com.nianien.core.log.LoggerFactory;
 import com.nianien.core.reflect.Reflections;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.logging.Logger;
 
+/**
+ * 接口{@link DataTable}的默认实现
+ *
+ * @param <T>
+ */
 class DataTableImpl<T> implements DataTable<T> {
+    private static Logger logger = LoggerFactory.getLogger(DataTableImpl.class);
     /**
      * 表名
      */
@@ -51,7 +59,7 @@ class DataTableImpl<T> implements DataTable<T> {
         if (idField == null && hasField("id")) {
             idField = fieldProperty("id").name;
         } else {
-            System.err.println("no id field defined in table[" + type + "]");
+            logger.warning("no id field defined in table[" + type + "]");
         }
     }
 

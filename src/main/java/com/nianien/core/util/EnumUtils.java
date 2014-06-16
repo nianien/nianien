@@ -1,9 +1,12 @@
 package com.nianien.core.util;
 
+import com.nianien.core.log.LoggerFactory;
+
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.logging.Logger;
 
 /**
  * 枚举工具类
@@ -11,6 +14,8 @@ import java.util.List;
  * @author skyfalling
  */
 public class EnumUtils {
+
+    private static Logger logger = LoggerFactory.getLogger(EnumUtils.class);
 
     /**
      * 返回字段名"value",值为value的枚举值<br/>
@@ -45,7 +50,7 @@ public class EnumUtils {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        System.err.println("cannot find enum type: " + enumClass.getName() + "[" + fieldName + "=" + fieldValue + "]");
+        logger.warning("cannot find enum type: " + enumClass.getName() + "[" + fieldName + "=" + fieldValue + "]");
         return null;
     }
 
