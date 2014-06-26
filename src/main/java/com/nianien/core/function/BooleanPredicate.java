@@ -27,16 +27,19 @@ public class BooleanPredicate<T> implements Predicate<T> {
      * @return a new BooleanPredicate
      */
     public BooleanPredicate and(final Predicate... predicates) {
+        if (predicates == null || predicates.length == 0)
+            return this;
         return new BooleanPredicate(new Predicate<T>() {
             @Override
             public boolean apply(T t) {
                 boolean bl = BooleanPredicate.this.apply(t);
+                if (!bl)
+                    return false;
                 for (Predicate predicate : predicates) {
-                    bl &= predicate.apply(t);
-                    if (!bl)
-                        return bl;
+                    if (!predicate.apply(t))
+                        return false;
                 }
-                return bl;
+                return true;
             }
         });
     }
@@ -49,16 +52,19 @@ public class BooleanPredicate<T> implements Predicate<T> {
      * @return a new BooleanPredicate
      */
     public BooleanPredicate or(final Predicate... predicates) {
+        if (predicates == null || predicates.length == 0)
+            return this;
         return new BooleanPredicate(new Predicate<T>() {
             @Override
             public boolean apply(T t) {
                 boolean bl = BooleanPredicate.this.apply(t);
+                if (bl)
+                    return true;
                 for (Predicate predicate : predicates) {
-                    bl |= predicate.apply(t);
-                    if (bl)
-                        return bl;
+                    if (predicate.apply(t))
+                        return true;
                 }
-                return bl;
+                return false;
             }
         });
     }
