@@ -320,23 +320,6 @@ public class ResultSetAdapter {
 
     }
 
-    /**
-     * 判断字段列表fields中是否包含目标字段target<br>
-     * 这里的字段名不分大小写
-     *
-     * @param fields 字段数组
-     * @param target 目标字段
-     * @return 如果包含返回true, 否则返回false
-     */
-    public static boolean containsIgnoreCase(List<String> fields, String target) {
-        for (String field : fields) {
-            if (field.equalsIgnoreCase(target)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
 
     /**
      * 根据列名获取列的索引值

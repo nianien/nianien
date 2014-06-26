@@ -18,8 +18,14 @@ import java.util.Map;
  * @author skyfalling
  */
 public class SqlQuery implements Query {
+    /**
+     * 数据源
+     */
     protected DataSource dataSource;
-    private ThreadLocal<SqlStatement> sqlStatement = new ThreadLocal<SqlStatement>();
+    /**
+     * SqlStatement对象
+     */
+    protected ThreadLocal<SqlStatement> sqlStatement = new ThreadLocal<SqlStatement>();
 
     /**
      * 构建方法,提供数据源
