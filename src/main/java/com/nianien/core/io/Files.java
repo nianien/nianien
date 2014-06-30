@@ -235,7 +235,7 @@ public class Files {
         readLines(reader, new Function<String, String>() {
             @Override
             public String apply(String s) {
-                sb.append(s);
+                sb.append(s).append(newLine);
                 return null;
             }
         });
