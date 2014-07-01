@@ -18,23 +18,23 @@ public class CaseInsensitiveSet<E> extends HashSet<E> {
     }
 
     /**
-     * 构造方法
+     * 构造方法,提供初始数据
      *
-     * @param c
+     * @param iterable
      */
-    public CaseInsensitiveSet(Collection<E> c) {
-        for (E e : c) {
+    public CaseInsensitiveSet(Iterable<E> iterable) {
+        for (E e : iterable) {
             add(e);
         }
     }
 
     /**
-     * 构造方法
+     * 构造方法,提供初始数据
      *
-     * @param a
+     * @param array
      */
-    public CaseInsensitiveSet(E[] a) {
-        for (E e : a) {
+    public CaseInsensitiveSet(E[] array) {
+        for (E e : array) {
             add(e);
         }
     }
