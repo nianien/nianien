@@ -26,7 +26,7 @@ public class TestEmailSender {
                 "\t\t<td bgcolor='#F5FAFE' style='border-style:solid;border-width:0 1 1 1;border-color:#CCCCCC;'>ftp://127.0.0.1/xiami/20140530/mysql-proxy.cnf</td>\n" +
                 "\t\t<td bgcolor='#F5FAFE' style='border-style:solid;border-width:0 1 1 0;border-color:#CCCCCC;'>文件不存在</td>\n" +
                 "\t</tr>\n" +
-                "</table>", "text/html;charset=utf-8;").to("lining05@baidu.com").cc("lining05@baidu.com").send();
+                "</table>", "text/html;charset=utf-8;").to("abc<lining05@baidu.com>").cc("lining05@baidu.com").send();
     }
 
 }

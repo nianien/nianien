@@ -1,6 +1,5 @@
 package com.nianien.core.util;
 
-import com.nianien.core.exception.ExceptionHandler;
 import com.nianien.core.reflect.Reflections;
 
 import java.lang.reflect.Array;
@@ -107,7 +106,6 @@ public class CollectionUtils {
      * @return
      */
     public static <T> T[] array(Collection<T> list, Class<T> clazz) {
-        @SuppressWarnings("unchecked")
         T[] array = (T[]) Array.newInstance(clazz, list.size());
         int i = 0;
         for (T t : list) {
@@ -285,50 +283,42 @@ public class CollectionUtils {
 
 
     /**
-     * 集合转Map,属性keyProperty作为key值,属性valueProperty作为value值
+     * 集合转Map,属性keyProperty作为Map的key值,属性valueProperty作为Map的value值
      *
      * @param list
-     * @param keyProperty
-     * @param valueProperty
-     * @param keyType
-     * @param valueType
-     * @param <K>
-     * @param <V>
+     * @param keyProperty   作为key的属性名
+     * @param valueProperty 作为value的属性名
+     * @param keyType       作为key的属性类型
+     * @param valueType     作为value的属性类型
+     * @param <K>           key的泛型约束
+     * @param <V>           value的泛型约束
      * @return
      */
     public static <K, V> Map<K, V> map(Iterable list, String keyProperty, String valueProperty, Class<K> keyType, Class<V> valueType) {
         Map<K, V> map = new HashMap<K, V>();
         for (Object obj : list) {
-            try {
-                K keyObj = (K) Reflections.getProperty(obj, keyProperty);
-                V valueObj = (V) Reflections.getProperty(obj, valueProperty);
-                map.put(keyObj, valueObj);
-            } catch (Exception e) {
-                ExceptionHandler.throwException(e);
-            }
+            K keyObj = (K) Reflections.getProperty(obj, keyProperty);
+            V valueObj = (V) Reflections.getProperty(obj, valueProperty);
+            map.put(keyObj, valueObj);
         }
         return map;
     }
 
     /**
-     * 集合转Map,属性keyProperty作为key值,元素本身作为value值
+     * 集合转Map,属性keyProperty作为Map的key值,元素本身作为Map的value值
      *
      * @param list
-     * @param keyProperty
-     * @param keyType
-     * @param <K>
-     * @param <V>
+     * @param keyProperty 作为key的属性名
+     * @param keyType     作为key的属性类型
+     * @param <K>         key的泛型约束
+     * @param <V>         value的泛型约束
      * @return
      */
     public static <K, V> Map<K, V> map(Iterable<V> list, String keyProperty, Class<K> keyType) {
         Map<K, V> map = new HashMap<K, V>();
         for (V obj : list) {
-            try {
-                K keyObj = (K) Reflections.getProperty(obj, keyProperty);
-                map.put(keyObj, obj);
-            } catch (Exception e) {
-                ExceptionHandler.throwException(e);
-            }
+            K keyObj = (K) Reflections.getProperty(obj, keyProperty);
+            map.put(keyObj, obj);
         }
         return map;
     }
@@ -338,28 +328,40 @@ public class CollectionUtils {
      * 将集合中元素按照指定属性分组
      *
      * @param list
-     * @param keyProperty
-     * @param keyType
-     * @param <K>
-     * @param <V>
+     * @param keyProperty 作为key的属性名
+     * @param keyType     作为key的属性类型
+     * @param <K>         key的泛型约束
+     * @param <V>         value的泛型约束
      * @return
      */
     public static <K, V> Map<K, List<V>> groupBy(Iterable<V> list, String keyProperty, Class<K> keyType) {
         Map<K, List<V>> map = new HashMap<K, List<V>>();
         for (V obj : list) {
-            try {
-                K keyObj = (K) Reflections.getProperty(obj, keyProperty);
-                List<V> values = map.get(keyObj);
-                if (values == null) {
-                    values = new ArrayList<V>();
-                    map.put(keyObj, values);
-                }
-                values.add(obj);
-            } catch (Exception e) {
-                ExceptionHandler.throwException(e);
+            K keyObj = (K) Reflections.getProperty(obj, keyProperty);
+            List<V> values = map.get(keyObj);
+            if (values == null) {
+                values = new ArrayList<V>();
+                map.put(keyObj, values);
             }
+            values.add(obj);
         }
         return map;
     }
 
+    /**
+     * 取元素的某个属性形成新的链表
+     *
+     * @param list
+     * @param propertyName 属性名
+     * @param propertyType 属性类型
+     * @param <T>          属性类型的泛型约束
+     * @return
+     */
+    public static <T> List<T> listFiled(Iterable list, String propertyName, Class<T> propertyType) {
+        List<T> result = new ArrayList<T>();
+        for (Object o : list) {
+            result.add((T) Reflections.getProperty(o, propertyName));
+        }
+        return result;
+    }
 }
