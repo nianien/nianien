@@ -85,6 +85,23 @@ public class CollectionUtils {
 
 
     /**
+     * 取元素的某个属性形成新的链表
+     *
+     * @param list
+     * @param propertyName 属性名
+     * @param propertyType 属性类型
+     * @param <T>          属性类型的泛型约束
+     * @return 属性列表
+     */
+    public static <T> List<T> list(Iterable list, String propertyName, Class<T> propertyType) {
+        List<T> result = new ArrayList<T>();
+        for (Object o : list) {
+            result.add((T) Reflections.getProperty(o, propertyName));
+        }
+        return result;
+    }
+
+    /**
      * 可枚举对象转链表
      *
      * @param <T>
@@ -348,20 +365,5 @@ public class CollectionUtils {
         return map;
     }
 
-    /**
-     * 取元素的某个属性形成新的链表
-     *
-     * @param list
-     * @param propertyName 属性名
-     * @param propertyType 属性类型
-     * @param <T>          属性类型的泛型约束
-     * @return
-     */
-    public static <T> List<T> listFiled(Iterable list, String propertyName, Class<T> propertyType) {
-        List<T> result = new ArrayList<T>();
-        for (Object o : list) {
-            result.add((T) Reflections.getProperty(o, propertyName));
-        }
-        return result;
-    }
+
 }
