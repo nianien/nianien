@@ -26,7 +26,7 @@ public class TestDataBase {
     public void testQuery() {
         User user = new User();
         user.setId(1);
-        List<User> list = getQuery().setSqlStatement(SqlBuilder.selectSql(user, null)).getRows(User.class);
+        List<User> list = getQuery().setSqlStatement(SqlBuilder.selectSql(user,(String[]) null)).getRows(User.class);
         for (User user1 : list) {
             System.out.println(user1);
         }

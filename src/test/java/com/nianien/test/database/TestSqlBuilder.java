@@ -24,7 +24,8 @@ public class TestSqlBuilder {
     @Test
     public void testStatement() {
         SqlStatement sqlStatement1 = new SqlStatement("select * from users where (userName,password) in ?", Arrays.asList(new String[]{"userName1", "password1"}, new String[]{"userName2", "password2"}));
-        SqlStatement sqlStatement2 = new SqlStatement("select * from users where (userName,password) in ?", new Object[][][]{{{"userName1", "password1"}, {"userName2", "password2"}}});
+//        SqlStatement sqlStatement2 = new SqlStatement("select * from users where (userName,password) in ?", new Object[][][]{{{"userName1", "password1"}, {"userName2", "password2"}}});
+        SqlStatement sqlStatement2 = new SqlStatement("select * from users where (userName,password) in ?", new Object[]{new Object[][]{{"userName1", "password1"}, {"userName2", "password2"}}});
         System.out.println(sqlStatement1.expandSql());
         System.out.println(sqlStatement2.expandSql());
         assertThat(sqlStatement1.expandSql(), equalTo(sqlStatement2.expandSql()));
@@ -41,13 +42,13 @@ public class TestSqlBuilder {
         sqlStatement = SqlBuilder.updateSql(user);
 
         assertThat(sqlStatement.expandSql(), equalTo("update users set userId = 'skyfalling' , userName = 'who' , uuid = 1 , password = '' where uuid = 1"));
-        sqlStatement = SqlBuilder.updateSql(user, null);
+        sqlStatement = SqlBuilder.updateSql(user, (String[])null);
         assertThat(sqlStatement.expandSql(), equalTo("update users set userId = 'skyfalling' , userName = 'who' , uuid = 1 , password = ''"));
 
 
         sqlStatement = SqlBuilder.deleteSql(user);
         assertThat(sqlStatement.expandSql(), equalTo("delete from users where userId = 'skyfalling' and userName = 'who' and uuid = 1"));
-        sqlStatement = SqlBuilder.deleteSql(user, null);
+        sqlStatement = SqlBuilder.deleteSql(user,  (String[])null);
         assertThat(sqlStatement.expandSql(), equalTo("delete from users"));
 
 
@@ -56,7 +57,7 @@ public class TestSqlBuilder {
 
         sqlStatement = SqlBuilder.selectSql(user);
         assertThat(sqlStatement.expandSql(), equalTo("select * from users where userId = 'skyfalling' and userName = 'who' and uuid = 1"));
-        sqlStatement = SqlBuilder.selectSql(user, null);
+        sqlStatement = SqlBuilder.selectSql(user,  (String[])null);
         assertThat(sqlStatement.expandSql(), equalTo("select * from users"));
 
         sqlStatement = SqlBuilder.whereSql(new SqlStatement("select * from users"), user, "userId", "userName");
