@@ -268,7 +268,7 @@ public class EmailSender {
      * @return
      */
     protected Session createSession(final String user, final String password, String host, int port) {
-        boolean needAuth = StringUtils.isNotBlank(user);
+        boolean needAuth = StringUtils.isNotBlank(password);
         Properties props = System.getProperties();
         props.put("mail.smtp.host", host);
         props.put("mail.smtp.sendpartial", true);
