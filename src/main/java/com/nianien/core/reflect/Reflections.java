@@ -635,28 +635,28 @@ public class Reflections {
             return (T) valueString;
         }
         if (clazz.equals(Boolean.TYPE) || clazz.equals(Boolean.class)) {
-            return (T) new Boolean(valueString);
+            return (T) Boolean.valueOf(valueString);
         }
         if (clazz.equals(Byte.TYPE) || clazz.equals(Byte.class)) {
-            return (T) new Byte(valueString);
+            return (T) Byte.valueOf(valueString);
         }
         if (clazz.equals(Short.TYPE) || clazz.equals(Short.class)) {
-            return (T) new Short(valueString);
+            return (T) Short.valueOf(valueString);
         }
         if (clazz.equals(Integer.TYPE) || clazz.equals(Integer.class)) {
-            return (T) new Integer(valueString);
+            return (T) Integer.valueOf(valueString);
         }
         if (clazz.equals(Long.TYPE) || clazz.equals(Long.class)) {
-            return (T) new Long(valueString);
+            return (T) Long.valueOf(valueString);
         }
         if (clazz.equals(Float.TYPE) || clazz.equals(Float.class)) {
-            return (T) new Float(valueString);
+            return (T) Float.valueOf(valueString);
         }
         if (clazz.equals(Double.TYPE) || clazz.equals(Double.class)) {
-            return (T) new Double(valueString);
+            return (T) Double.valueOf(valueString);
         }
         if (clazz.equals(Character.TYPE) || clazz.equals(Character.class)) {
-            return (T) new Character(valueString.charAt(0));
+            return (T) Character.valueOf(valueString.charAt(0));
         }
         if (clazz.isEnum()) {
             return (T) Enum.valueOf((Class<Enum>) clazz, valueString);
