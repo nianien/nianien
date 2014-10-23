@@ -6,6 +6,7 @@ import com.nianien.core.io.Closer;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
@@ -31,18 +32,6 @@ public class MessageDigestUtils {
     };
 
     /**
-     * 计算文件的MD5值
-     *
-     * @param file
-     * @return
-     */
-    public static String md5(File file) {
-        MessageDigest md = md5.get();
-        md.reset();
-        return ByteUtils.toString(digest(md, file));
-    }
-
-    /**
      * 计算文本的MD5值
      *
      * @param content
@@ -55,6 +44,32 @@ public class MessageDigestUtils {
     }
 
     /**
+     * 计算文本的MD5值
+     *
+     * @param content
+     * @param charset 文本编码
+     * @return
+     */
+    public static String md5(String content, String charset) {
+        MessageDigest md = md5.get();
+        md.reset();
+        return ByteUtils.toString(digest(md, content, charset));
+    }
+
+    /**
+     * 计算文件的MD5值
+     *
+     * @param file
+     * @return
+     */
+    public static String md5(File file) {
+        MessageDigest md = md5.get();
+        md.reset();
+        return ByteUtils.toString(digest(md, file));
+    }
+
+
+    /**
      * 计算字节数组的MD5值
      *
      * @param bytes
@@ -65,6 +80,33 @@ public class MessageDigestUtils {
         md.reset();
         return md.digest(bytes);
     }
+
+
+    /**
+     * 计算文本的SHA值
+     *
+     * @param content
+     * @return
+     */
+    public static String sha(String content) {
+        MessageDigest md = sha.get();
+        md.reset();
+        return ByteUtils.toString(digest(md, content));
+    }
+
+    /**
+     * 计算文本的SHA值
+     *
+     * @param content
+     * @param charset 文本编码
+     * @return
+     */
+    public static String sha(String content, String charset) {
+        MessageDigest md = sha.get();
+        md.reset();
+        return ByteUtils.toString(digest(md, content, charset));
+    }
+
 
     /**
      * 计算文件的SHA值
@@ -79,20 +121,7 @@ public class MessageDigestUtils {
     }
 
     /**
-     * 计算文本的SHA值
-     *
-     * @param content
-     * @return
-     */
-    public static String sha(String content) {
-        MessageDigest md = sha.get();
-        md.reset();
-        return ByteUtils.toString(digest(md, content));
-    }
-
-
-    /**
-     * 计算字节数组的MD5值
+     * 计算字节数组的SHA值
      *
      * @param bytes
      * @return
@@ -104,7 +133,7 @@ public class MessageDigestUtils {
     }
 
     /**
-     * 计算文本的SHA值
+     * 计算文本摘要
      *
      * @param md
      * @param content
@@ -112,6 +141,22 @@ public class MessageDigestUtils {
      */
     public static byte[] digest(MessageDigest md, String content) {
         return md.digest(content.getBytes());
+    }
+
+    /**
+     * 计算文本摘要
+     *
+     * @param md
+     * @param content
+     * @param charset 文本编码
+     * @return
+     */
+    public static byte[] digest(MessageDigest md, String content, String charset) {
+        try {
+            return md.digest(content.getBytes(charset));
+        } catch (UnsupportedEncodingException e) {
+            throw ExceptionHandler.throwException(e);
+        }
     }
 
     /**
