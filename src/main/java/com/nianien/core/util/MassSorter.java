@@ -114,9 +114,9 @@ public class MassSorter {
 				if (data.isEmpty())
 					break;
 				Collections.sort(data, comparator);
-				File tmpfile = File.createTempFile("~.tmp", "");
-				files.add(tmpfile);
-				write(data, new BufferedWriter(new FileWriter(tmpfile)), true);
+				File tmpFile = File.createTempFile("~.tmp", "");
+				files.add(tmpFile);
+				write(data, new BufferedWriter(new FileWriter(tmpFile)), true);
 			} while (true);
 		} catch (Exception e) {
 			for (File file : files) {
