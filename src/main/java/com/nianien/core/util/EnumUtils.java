@@ -18,7 +18,7 @@ public class EnumUtils {
     private static Logger logger = LoggerFactory.getLogger(EnumUtils.class);
 
     /**
-     * 返回字段名"value",值为value的枚举值<br/>
+     * 返回字段名为"value"且值为value的枚举值<br/>
      * 如果不存在则返回null
      *
      * @param enumClass
@@ -28,6 +28,21 @@ public class EnumUtils {
      */
     public static <T extends Enum<T>> T valueOf(Class<T> enumClass, Object value) {
         return find(enumClass, "value", value);
+    }
+
+    /**
+     * 返回字段名为"value"且值为value的枚举值<br/>
+     * 如果不存在则返回默认枚举值
+     *
+     * @param enumClass
+     * @param value
+     * @param defaultEnum
+     * @param <T>
+     * @return
+     */
+    public static <T extends Enum<T>> T valueOf(Class<T> enumClass, Object value, T defaultEnum) {
+        T t = valueOf(enumClass, value);
+        return t != null ? t : defaultEnum;
     }
 
     /**
