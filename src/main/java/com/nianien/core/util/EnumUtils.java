@@ -15,8 +15,6 @@ import java.util.logging.Logger;
  */
 public class EnumUtils {
 
-    private static Logger logger = LoggerFactory.getLogger(EnumUtils.class);
-
 
     /**
      * 返回"value"字段值为value的枚举值<br/>
@@ -77,7 +75,7 @@ public class EnumUtils {
             field = enumClass.getDeclaredField(fieldName);
             field.setAccessible(true);
         } catch (NoSuchFieldException e) {
-            logger.warning("field not found in enum[" + enumClass.getName() + "]: " + fieldName);
+            System.err.println("field not found in enum[" + enumClass.getName() + "]: " + fieldName);
             return null;
         }
         for (T t : types) {
@@ -88,7 +86,7 @@ public class EnumUtils {
                 e.printStackTrace();
             }
         }
-        logger.warning("enum not found: " + enumClass.getName() + "[" + fieldName + "=" + fieldValue + "]");
+        System.err.println("enum not found: " + enumClass.getName() + "[" + fieldName + "=" + fieldValue + "]");
         return null;
     }
 
