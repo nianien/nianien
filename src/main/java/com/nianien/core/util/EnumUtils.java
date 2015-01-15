@@ -19,7 +19,7 @@ public class EnumUtils {
 
 
     /**
-     * 返回字段名为"value"且值为value的枚举值<br/>
+     * 返回"value"字段值为value的枚举值<br/>
      * 如果不存在则返回默认值defaultEnum
      *
      * @param enumClass
@@ -33,7 +33,7 @@ public class EnumUtils {
     }
 
     /**
-     * 返回字段名为"value"且值为value的枚举值<br/>
+     * 返回"value"字段值为value的枚举值<br/>
      * 如果不存在则返回null
      *
      * @param enumClass
