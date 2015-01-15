@@ -21,7 +21,7 @@ public class TestEnumUtils {
 
     @Test
     public void test() {
-        assert EnumUtils.find(TimeUnit.class, "C0", 1) == null;
-        assert EnumUtils.find(Goat.class, "value", (int) 'A') == Goat.A;
+        assert EnumUtils.withField(TimeUnit.class, "C0", 1) == null;
+        assert EnumUtils.withField(Goat.class, "value", (int) 'A') == Goat.A;
     }
 }

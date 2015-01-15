@@ -55,11 +55,11 @@ public class Reflections {
         }
 
         public static Primitive get(String name) {
-            return EnumUtils.find(Primitive.class, "name", name);
+            return EnumUtils.withField(Primitive.class, "name", name);
         }
 
         public static Primitive get(Class clazz) {
-            return EnumUtils.find(Primitive.class, "clazz", clazz);
+            return EnumUtils.withField(Primitive.class, "clazz", clazz);
         }
 
     }
