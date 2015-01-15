@@ -1,12 +1,9 @@
 package com.nianien.core.util;
 
-import com.nianien.core.log.LoggerFactory;
-
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.logging.Logger;
 
 /**
  * 枚举工具类
@@ -101,12 +98,21 @@ public class EnumUtils {
      */
     public static <T extends Enum<T>> List<T> list(Class<T> enumClass, T... excludes) {
         List<T> list = new ArrayList<T>(Arrays.asList(enumClass.getEnumConstants()));
-        list.removeAll(Arrays.asList(excludes));
+        for (T exclude : excludes) {
+            list.remove(exclude);
+        }
         return list;
     }
 
     /**
-     * 取枚举对象除exclude和others之外的实例,是{@link #list(Class, Enum[])}方法的便捷形式
+     * 取枚举对象除exclude和others之外的实例<br/>
+     * 该方法等价于
+     * <pre>
+     * <code>List list=Arrays.asList(others);
+     * list.add(exclude)
+     * EnumUtils.list(exclude.getDeclaringClass(),list.toArray())
+     * </code>
+     * </pre>
      *
      * @param exclude
      * @param others
@@ -116,7 +122,9 @@ public class EnumUtils {
     public static <T extends Enum<T>> List<T> except(T exclude, T... others) {
         List<T> list = new ArrayList<T>(Arrays.asList(exclude.getDeclaringClass().getEnumConstants()));
         list.remove(exclude);
-        list.removeAll(Arrays.asList(others));
+        for (T other : others) {
+            list.remove(other);
+        }
         return list;
     }
 }
