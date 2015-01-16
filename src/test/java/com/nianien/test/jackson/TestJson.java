@@ -14,9 +14,14 @@ import java.util.Map.Entry;
 @SuppressWarnings({"unchecked", "rawtypes"})
 public class TestJson {
 
-
     @Test
-    public void testBease() {
+    public void testPrimitive() {
+        JsonParser jp = new JsonParser();
+        FinanceDecimal financeDecimal=new FinanceDecimal("3.1415926");
+        System.out.println(jp.toJson(financeDecimal));
+    }
+    @Test
+    public void testBase() {
         JsonParser jp = new JsonParser();
         String json = "[1,2]";
         Object obj = jp.toObject(json);
@@ -119,8 +124,8 @@ public class TestJson {
             }
         }
         System.out.println(">>>>>>>>>>>>>>>>>>>>>>");
-        Object olist = jp.toBean(json, Object.class);
-        for (Object l : (List) olist) {
+        Object objList = jp.toBean(json, Object.class);
+        for (Object l : (List) objList) {
             Map m = (Map) l;
             for (Object o : m.entrySet()) {
                 Entry en = (Entry) o;
