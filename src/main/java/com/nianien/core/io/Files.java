@@ -143,24 +143,28 @@ public class Files {
      */
     public static byte[] getBytes(InputStream inputStream) {
         try {
+           /* ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+            int read;
+            byte[] buffer = new byte[bufferSize];
+            while ((read = inputStream.read(buffer)) != -1) {
+                byteArrayOutputStream.write(buffer, 0, read);
+            }
+            return byteArrayOutputStream.toByteArray();*/
             List<byte[]> buffers = new ArrayList<byte[]>();
             int size = 0;
             int read;
-            do {
-                byte[] buffer = new byte[bufferSize];
-                read = inputStream.read(buffer);
-                if (read > 0) {
-                    size += read;
-                    buffers.add(Arrays.copyOf(buffer, read));
-                }
-            } while (read == bufferSize);
-            byte[] bytes = new byte[size];
-            int position = 0;
-            for (byte[] buffer : buffers) {
-                System.arraycopy(buffer, 0, bytes, position, buffer.length);
-                position += buffer.length;
+            byte[] buffer = new byte[bufferSize];
+            while ((read = inputStream.read(buffer)) != -1) {
+                size += read;
+                buffers.add(Arrays.copyOf(buffer, read));
             }
-            return bytes;
+            byte[] result = new byte[size];
+            int position = 0;
+            for (byte[] byteArray : buffers) {
+                System.arraycopy(byteArray, 0, result, position, byteArray.length);
+                position += byteArray.length;
+            }
+            return result;
         } catch (Exception e) {
             throw ExceptionHandler.throwException(e);
         } finally {
