@@ -40,7 +40,7 @@ public class MessageDigestUtils {
     public static String md5(String content) {
         MessageDigest md = md5.get();
         md.reset();
-        return ByteUtils.toString(digest(md, content));
+        return ByteUtils.byte2Hex(digest(md, content));
     }
 
     /**
@@ -53,7 +53,7 @@ public class MessageDigestUtils {
     public static String md5(String content, String charset) {
         MessageDigest md = md5.get();
         md.reset();
-        return ByteUtils.toString(digest(md, content, charset));
+        return ByteUtils.byte2Hex(digest(md, content, charset));
     }
 
     /**
@@ -65,7 +65,7 @@ public class MessageDigestUtils {
     public static String md5(File file) {
         MessageDigest md = md5.get();
         md.reset();
-        return ByteUtils.toString(digest(md, file));
+        return ByteUtils.byte2Hex(digest(md, file));
     }
 
 
@@ -91,7 +91,7 @@ public class MessageDigestUtils {
     public static String sha(String content) {
         MessageDigest md = sha.get();
         md.reset();
-        return ByteUtils.toString(digest(md, content));
+        return ByteUtils.byte2Hex(digest(md, content));
     }
 
     /**
@@ -104,7 +104,7 @@ public class MessageDigestUtils {
     public static String sha(String content, String charset) {
         MessageDigest md = sha.get();
         md.reset();
-        return ByteUtils.toString(digest(md, content, charset));
+        return ByteUtils.byte2Hex(digest(md, content, charset));
     }
 
 
@@ -117,7 +117,7 @@ public class MessageDigestUtils {
     public static String sha(File file) {
         MessageDigest md = sha.get();
         md.reset();
-        return ByteUtils.toString(digest(md, file));
+        return ByteUtils.byte2Hex(digest(md, file));
     }
 
     /**

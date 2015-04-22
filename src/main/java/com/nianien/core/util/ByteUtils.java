@@ -1,5 +1,7 @@
 package com.nianien.core.util;
 
+import java.io.ByteArrayOutputStream;
+
 /**
  * 基本类型转字节数组
  *
@@ -7,21 +9,40 @@ package com.nianien.core.util;
  */
 public class ByteUtils {
 
+    private static final String hexString = "0123456789ABCDEF";
+
     /**
-     * 将字节数组转化成十六进制字符串
+     * 将字节数组转成编码成16进制数字
      *
      * @param bytes
      * @return
      */
-    public static String toString(byte[] bytes) {
-        char[] hexChar = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'};
-        StringBuilder sb = new StringBuilder(bytes.length * 2);
-        for (int i = 0; i < bytes.length; i++) {
-            // 四位的十六进制数表示一个字节
-            sb.append(hexChar[(bytes[i] & 0xf0) >>> 4]);
-            sb.append(hexChar[bytes[i] & 0x0f]);
+    public static String byte2Hex(byte[] bytes) {
+        char[] buffer = new char[bytes.length * 2];
+        for (int i = 0, j = 0; i < bytes.length; ++i) {
+            int u = unsigned(bytes[i]);
+            buffer[j++] = hexString.charAt(u >>> 4);
+            buffer[j++] = hexString.charAt(u & 0xf);
         }
-        return sb.toString();
+        return new String(buffer);
+    }
+
+
+    /**
+     * 将16进制数字二进制数组
+     *
+     * @param bytes
+     * @return
+     */
+    public static byte[] hex2Byte(String bytes) {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream(bytes.length() / 2);
+        // 将每2位16进制整数组装成一个字节
+        for (int i = 0; i < bytes.length(); i += 2)
+            baos.write(
+                    hexString.indexOf(bytes.charAt(i)) << 4
+                            | hexString.indexOf(bytes.charAt(i + 1))
+            );
+        return baos.toByteArray();
     }
 
     /**
@@ -92,6 +113,10 @@ public class ByteUtils {
         for (int i = 0; i < n; i++)
             s *= 16;
         return s - 1;
+    }
+
+    public static int unsigned(byte b) {
+        return b < 0 ? b + 256 : b;
     }
 
 }
