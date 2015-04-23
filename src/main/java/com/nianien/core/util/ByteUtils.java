@@ -9,7 +9,7 @@ import java.io.ByteArrayOutputStream;
  */
 public class ByteUtils {
 
-    private static final String hexString = "0123456789ABCDEF";
+    private static final String hexString = "0123456789abcdef";
 
     /**
      * 将字节数组转成编码成16进制数字
@@ -31,16 +31,17 @@ public class ByteUtils {
     /**
      * 将16进制数字二进制数组
      *
-     * @param bytes
+     * @param hex 十六进制字符串
      * @return
      */
-    public static byte[] hex2Byte(String bytes) {
-        ByteArrayOutputStream baos = new ByteArrayOutputStream(bytes.length() / 2);
+    public static byte[] hex2Byte(String hex) {
+        String lowerCase = hex.toLowerCase();
+        ByteArrayOutputStream baos = new ByteArrayOutputStream(lowerCase.length() / 2);
         // 将每2位16进制整数组装成一个字节
-        for (int i = 0; i < bytes.length(); i += 2)
+        for (int i = 0; i < lowerCase.length(); i += 2)
             baos.write(
-                    hexString.indexOf(bytes.charAt(i)) << 4
-                            | hexString.indexOf(bytes.charAt(i + 1))
+                    hexString.indexOf(lowerCase.charAt(i)) << 4
+                            | hexString.indexOf(lowerCase.charAt(i + 1))
             );
         return baos.toByteArray();
     }
