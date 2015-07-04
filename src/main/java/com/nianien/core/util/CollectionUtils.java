@@ -1,9 +1,17 @@
 package com.nianien.core.util;
 
-import com.nianien.core.reflect.Reflections;
-
 import java.lang.reflect.Array;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
+import com.nianien.core.reflect.Reflections;
 
 /**
  * 集合工具类,提供对集合各种扩展操作的支持
@@ -11,12 +19,43 @@ import java.util.*;
  * @author skyfalling
  */
 public class CollectionUtils {
+    /**
+     * 集合处理接口定义
+     *
+     * @author skyfalling
+     */
+    public interface CollectionHandler<T> {
+        void handle(Collection<T> list);
+    }
+
+    /**
+     * 分批处理集合元素
+     *
+     * @param list    集合
+     * @param limit   每次处理元素的最大限制
+     * @param handler 集合处理类
+     * @param <T>
+     */
+    public static <T> void batchHandle(Collection<T> list, int limit, CollectionHandler<T> handler) {
+        List<T> subList = new ArrayList<T>(limit);
+        for (T it : list) {
+            subList.add(it);
+            if (subList.size() == limit) {
+                handler.handle(subList);
+                subList.clear();
+            }
+        }
+        if (subList.size() > 0) {
+            handler.handle(subList);
+        }
+    }
 
     /**
      * 将Iterator对象转化成Enumeration对象
      *
      * @param <T>
      * @param iterator Iterator对象实例
+     *
      * @return Enumeration对象实例
      */
     public static <T> Enumeration<T> enumeration(final Iterator<T> iterator) {
@@ -42,6 +81,7 @@ public class CollectionUtils {
      *
      * @param <T>
      * @param enumeration Enumeration对象实例
+     *
      * @return Iterator对象实例
      */
     public static <T> Iterator<T> iterator(Enumeration<T> enumeration) {
@@ -57,6 +97,7 @@ public class CollectionUtils {
      * 数组转链表
      *
      * @param <T>
+     *
      * @return List泛型实例
      */
     public static <T> List<T> list(T[] array) {
@@ -71,18 +112,19 @@ public class CollectionUtils {
      * 可枚举对象转链表
      *
      * @param <T>
+     *
      * @return List泛型实例
      */
     public static <T> List<T> list(Iterable<T> iterable) {
-        if (iterable instanceof List)
+        if (iterable instanceof List) {
             return (List<T>) iterable;
+        }
         List<T> list = new ArrayList<T>();
         for (T t : iterable) {
             list.add(t);
         }
         return list;
     }
-
 
     /**
      * 取元素的某个属性形成新的链表
@@ -91,6 +133,7 @@ public class CollectionUtils {
      * @param propertyName 属性名
      * @param propertyType 属性类型
      * @param <T>          属性类型的泛型约束
+     *
      * @return 属性列表
      */
     public static <T> List<T> list(Iterable list, String propertyName, Class<T> propertyType) {
@@ -105,6 +148,7 @@ public class CollectionUtils {
      * 可枚举对象转链表
      *
      * @param <T>
+     *
      * @return List泛型实例
      */
     public static <T> List<T> list(Iterator<T> iterator) {
@@ -115,11 +159,11 @@ public class CollectionUtils {
         return list;
     }
 
-
     /**
      * 集合转数组
      *
      * @param list
+     *
      * @return
      */
     public static <T> T[] array(Collection<T> list, Class<T> clazz) {
@@ -135,6 +179,7 @@ public class CollectionUtils {
      * 集合转数组
      *
      * @param list
+     *
      * @return
      */
     public static boolean[] booleanArray(Collection<Boolean> list) {
@@ -150,6 +195,7 @@ public class CollectionUtils {
      * 集合转数组
      *
      * @param list
+     *
      * @return
      */
     public static byte[] byteArray(Collection<Byte> list) {
@@ -165,6 +211,7 @@ public class CollectionUtils {
      * 集合转数组
      *
      * @param list
+     *
      * @return
      */
     public static char[] charArray(Collection<Character> list) {
@@ -180,6 +227,7 @@ public class CollectionUtils {
      * 集合转数组
      *
      * @param list
+     *
      * @return
      */
     public static short[] shortArray(Collection<Short> list) {
@@ -195,6 +243,7 @@ public class CollectionUtils {
      * 集合转数组
      *
      * @param list
+     *
      * @return
      */
     public static int[] intArray(Collection<Integer> list) {
@@ -210,6 +259,7 @@ public class CollectionUtils {
      * 集合转数组
      *
      * @param list
+     *
      * @return
      */
     public static long[] longArray(Collection<Long> list) {
@@ -225,6 +275,7 @@ public class CollectionUtils {
      * 集合转数组
      *
      * @param list
+     *
      * @return
      */
     public static float[] floatArray(Collection<Float> list) {
@@ -240,6 +291,7 @@ public class CollectionUtils {
      * 集合转数组
      *
      * @param list
+     *
      * @return
      */
     public static double[] doubleArray(Collection<Double> list) {
@@ -293,11 +345,11 @@ public class CollectionUtils {
     public static <K, V> void removeNull(Map<K, V> map) {
         Iterator<V> iterator = map.values().iterator();
         while (iterator.hasNext()) {
-            if (iterator.next() == null)
+            if (iterator.next() == null) {
                 iterator.remove();
+            }
         }
     }
-
 
     /**
      * 集合转Map,属性keyProperty作为Map的key值,属性valueProperty作为Map的value值
@@ -309,9 +361,11 @@ public class CollectionUtils {
      * @param valueType     作为value的属性类型
      * @param <K>           key的泛型约束
      * @param <V>           value的泛型约束
+     *
      * @return
      */
-    public static <K, V> Map<K, V> map(Iterable list, String keyProperty, String valueProperty, Class<K> keyType, Class<V> valueType) {
+    public static <K, V> Map<K, V> map(Iterable list, String keyProperty, String valueProperty, Class<K> keyType,
+                                       Class<V> valueType) {
         Map<K, V> map = new HashMap<K, V>();
         for (Object obj : list) {
             K keyObj = (K) Reflections.getProperty(obj, keyProperty);
@@ -329,6 +383,7 @@ public class CollectionUtils {
      * @param keyType     作为key的属性类型
      * @param <K>         key的泛型约束
      * @param <V>         value的泛型约束
+     *
      * @return
      */
     public static <K, V> Map<K, V> map(Iterable<V> list, String keyProperty, Class<K> keyType) {
@@ -340,7 +395,6 @@ public class CollectionUtils {
         return map;
     }
 
-
     /**
      * 将集合中元素按照指定属性分组
      *
@@ -349,6 +403,7 @@ public class CollectionUtils {
      * @param keyType     作为key的属性类型
      * @param <K>         key的泛型约束
      * @param <V>         value的泛型约束
+     *
      * @return
      */
     public static <K, V> Map<K, List<V>> groupBy(Iterable<V> list, String keyProperty, Class<K> keyType) {
@@ -364,6 +419,5 @@ public class CollectionUtils {
         }
         return map;
     }
-
 
 }
