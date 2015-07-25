@@ -1,10 +1,10 @@
 package com.nianien.core.loader;
 
-import com.nianien.core.exception.ExceptionHandler;
-
 import java.io.File;
 import java.net.URL;
 import java.net.URLClassLoader;
+
+import com.nianien.core.exception.ExceptionHandler;
 
 /**
  * 按文件路径进行加载的类加载器
@@ -17,10 +17,10 @@ public class FilePathClassLoader extends URLClassLoader {
 	/**
 	 * 构造方法,字符串数组指定classpath<br>
 	 * 
-	 * @param pathes
+	 * @param paths
 	 */
-	public FilePathClassLoader(String[] pathes) {
-		super(getUrls(pathes));
+	public FilePathClassLoader(String[] paths) {
+		super(getUrls(paths));
 	}
 
 	/**
@@ -59,14 +59,14 @@ public class FilePathClassLoader extends URLClassLoader {
 	/**
 	 * 将标识路径集合的字符串数组转换成URL数组
 	 * 
-	 * @param pathes
+	 * @param paths
 	 * @return URL数组
 	 */
-	private static URL[] getUrls(String[] pathes) {
+	private static URL[] getUrls(String[] paths) {
 		try {
-			URL[] urls = new URL[pathes.length];
+			URL[] urls = new URL[paths.length];
 			int i = 0;
-			for (String path : pathes) {
+			for (String path : paths) {
 				urls[i++] = classPathToURL(path);
 			}
 			return urls;
