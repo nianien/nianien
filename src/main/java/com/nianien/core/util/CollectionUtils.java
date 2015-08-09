@@ -129,16 +129,16 @@ public class CollectionUtils {
     /**
      * 取元素的某个属性形成新的链表
      *
-     * @param list
+     * @param iterable
      * @param propertyName 属性名
      * @param propertyType 属性类型
      * @param <T>          属性类型的泛型约束
      *
      * @return 属性列表
      */
-    public static <T> List<T> list(Iterable list, String propertyName, Class<T> propertyType) {
+    public static <T> List<T> list(Iterable iterable, String propertyName, Class<T> propertyType) {
         List<T> result = new ArrayList<T>();
-        for (Object o : list) {
+        for (Object o : iterable) {
             result.add((T) Reflections.getProperty(o, propertyName));
         }
         return result;
