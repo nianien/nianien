@@ -3,10 +3,7 @@ package com.nianien.core.loader;
 import com.nianien.core.exception.ExceptionHandler;
 import com.nianien.core.io.Closer;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.util.Properties;
 
 /**
@@ -19,19 +16,14 @@ public class PropertiesLoader {
     /**
      * 加载properties文件
      *
-     * @param file
+     * @param file 文件对象
      * @return Properties对象
      */
     public static Properties load(File file) {
-        InputStream is = null;
         try {
-            Properties p = new Properties();
-            p.load((is = new FileInputStream(file)));
-            return p;
+            return load(new FileInputStream(file));
         } catch (Exception e) {
             throw ExceptionHandler.throwException(e);
-        } finally {
-            Closer.close(is);
         }
     }
 
@@ -39,15 +31,71 @@ public class PropertiesLoader {
     /**
      * 加载properties文件,并指定编码
      *
-     * @param file
-     * @param charset
+     * @param file    文件对象
+     * @param charset 字符编码
      * @return Properties对象
      */
     public static Properties load(File file, String charset) {
-        InputStreamReader reader = null;
+        try {
+            return load(new InputStreamReader(new FileInputStream(file), charset));
+        } catch (Exception e) {
+            throw ExceptionHandler.throwException(e);
+        }
+    }
+
+    /**
+     * 加载properties文件
+     *
+     * @param resource 资源文件
+     * @return Properties对象
+     */
+    public static Properties load(String resource) {
+        return load(ResourceLoader.getInputStream(resource));
+    }
+
+    /**
+     * 加载properties文件
+     *
+     * @param resource 资源文件
+     * @param charset  字符编码
+     * @return Properties对象
+     */
+    public static Properties load(String resource, String charset) {
+        try {
+            return load(new InputStreamReader(ResourceLoader.getInputStream(resource), charset));
+        } catch (Exception e) {
+            throw ExceptionHandler.throwException(e);
+        }
+    }
+
+    /**
+     * 加载properties文件
+     *
+     * @param inputStream 输入流对象
+     * @return Properties对象
+     */
+    public static Properties load(InputStream inputStream) {
         try {
             Properties p = new Properties();
-            p.load(reader = new InputStreamReader(new FileInputStream(file), charset));
+            p.load(inputStream);
+            return p;
+        } catch (Exception e) {
+            throw ExceptionHandler.throwException(e);
+        } finally {
+            Closer.close(inputStream);
+        }
+    }
+
+    /**
+     * 加载properties文件
+     *
+     * @param reader
+     * @return Properties对象
+     */
+    public static Properties load(Reader reader) {
+        try {
+            Properties p = new Properties();
+            p.load(reader);
             return p;
         } catch (Exception e) {
             throw ExceptionHandler.throwException(e);
@@ -56,17 +104,42 @@ public class PropertiesLoader {
         }
     }
 
+
     /**
      * 加载XML文件
      *
-     * @param file
+     * @param file 文件对象
      * @return Properties对象
      */
     public static Properties loadXML(File file) {
+        try {
+            return loadXML(new FileInputStream(file));
+        } catch (Exception e) {
+            throw ExceptionHandler.throwException(e);
+        }
+    }
+
+    /**
+     * 加载XML文件
+     *
+     * @param resource 资源文件
+     * @return Properties对象
+     */
+    public static Properties loadXML(String resource) {
+        return loadXML(ResourceLoader.getInputStream(resource));
+    }
+
+    /**
+     * 加载XML文件
+     *
+     * @param inputStream 输入流
+     * @return Properties对象
+     */
+    public static Properties loadXML(InputStream inputStream) {
         InputStream is = null;
         try {
             Properties p = new Properties();
-            p.loadFromXML(is = new FileInputStream(file));
+            p.loadFromXML(inputStream);
             return p;
         } catch (Exception e) {
             throw ExceptionHandler.throwException(e);
