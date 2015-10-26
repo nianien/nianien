@@ -1,12 +1,17 @@
 package com.nianien.core.reflect;
 
+import java.lang.reflect.Method;
+
 import com.nianien.core.exception.ExceptionHandler;
-import javassist.*;
+
+import javassist.ClassPool;
+import javassist.CtClass;
+import javassist.CtMethod;
+import javassist.Modifier;
+import javassist.NotFoundException;
 import javassist.bytecode.CodeAttribute;
 import javassist.bytecode.LocalVariableAttribute;
 import javassist.bytecode.MethodInfo;
-
-import java.lang.reflect.Method;
 
 /**
  * 获取方法相关信息的工具类
@@ -64,7 +69,8 @@ public class Methods {
      * @return 返回StackTraceElement实例
      */
     private static StackTraceElement getStackTraceElement(int n) {
-        return new Exception().getStackTrace()[n + 2];
+        // return new Exception().getStackTrace()[n + 2];
+        return Thread.currentThread().getStackTrace()[n + 3];
     }
 
     /**

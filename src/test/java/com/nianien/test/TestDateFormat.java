@@ -1,21 +1,18 @@
 package com.nianien.test;
 
-import com.nianien.core.date.DateFormatter;
-
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
 
+import org.junit.Test;
+
+import com.nianien.core.date.DateFormatter;
+
 public class TestDateFormat {
 
-    /**
-     * @param args
-     */
-    public static void main(String[] args) {
+    @Test
+    public void test() {
         System.out.println(DateFormatter.format(DateFormatter.getDate("2012-12-12 00:00:00")));
-
-        SimpleDateFormat format = new SimpleDateFormat();
-
         SimpleDateFormat sdf = new SimpleDateFormat() {
 
             private static final long serialVersionUID = 1L;

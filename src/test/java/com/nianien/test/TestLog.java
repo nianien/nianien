@@ -1,19 +1,18 @@
 package com.nianien.test;
 
-import com.nianien.core.log.LoggerFactory;
-
 import java.util.logging.Logger;
+
+import org.junit.Test;
+
+import com.nianien.core.log.LoggerFactory;
 
 public class TestLog {
 
 	private static Logger LOG1 = LoggerFactory.getLogger("a.b");
 	private static Logger LOG2 = LoggerFactory.getLogger("a.b.c");
 
-	/**
-	 * @param args
-	 * @throws java.io.IOException
-	 */
-	public static void main(String[] args) throws Exception {
+	@Test
+	public void testLog() throws Exception {
 //		LoggerFactory.setLevel(Level.WARNING);
 		LOG1.info("dddd");
 		LOG1.warning("dddd");

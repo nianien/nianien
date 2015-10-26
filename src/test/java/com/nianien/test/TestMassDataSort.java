@@ -3,10 +3,14 @@ package com.nianien.test;
 import java.io.File;
 import java.util.Comparator;
 
+import org.junit.Test;
+
+import com.nianien.core.loader.ResourceLoader;
 import com.nianien.core.util.MassSorter;
 
 public class TestMassDataSort {
-	public static void main(String[] args) throws Exception {
+	@Test
+	public void test() throws Exception {
 
 		MassSorter mds = new MassSorter(10000,
 				new Comparator<String>() {
@@ -23,11 +27,10 @@ public class TestMassDataSort {
 								- Integer.parseInt(str2.trim());
 					}
 				});
-		mds.sort(
-				new File(
-						"D:\\Workspaces\\Skyfalling\\NiaNienTest\\all200000.txt"),
-				new File(
-						"D:\\Workspaces\\Skyfalling\\NiaNienTest\\all200000-sort3.txt"));
+
+		File f1 = ResourceLoader.getFile("all200000.txt");
+		File f2 = ResourceLoader.getFile("all200000.txt");
+		mds.sort(f1, f2);
 
 	}
 }

@@ -1,15 +1,19 @@
 package com.nianien.test;
 
-import com.nianien.core.tree.LoserTree;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Iterator;
+import java.util.List;
 
-import java.util.*;
+import org.junit.Test;
+
+import com.nianien.core.tree.LoserTree;
 
 public class TestSort {
 
-	/**
-	 * @param args
-	 */
-	public static void main(String[] args) {
+	@Test
+	public void test() {
 		Comparator<Integer> cmpr = new Comparator<Integer>() {
 
 			@Override
@@ -40,11 +44,9 @@ public class TestSort {
 		list.add(list2.iterator());
 		list.add(list3.iterator());
 		LoserTree<Integer> ls = new LoserTree<Integer>(list, cmpr);
-		Integer n = null;
+		Integer n;
 		while ((n = ls.pop()) != null)
 			System.out.print(n + " ");
-		// for (int i : list)
-		// System.out.print(i + " ");
 	}
 
 }

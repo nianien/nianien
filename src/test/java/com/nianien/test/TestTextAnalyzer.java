@@ -1,15 +1,16 @@
 package com.nianien.test;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.junit.Test;
+
 import com.nianien.core.text.HighLighter;
 import com.nianien.core.text.RegexUtils;
 import com.nianien.core.text.TextAnalyzer;
 import com.nianien.core.text.TextAnalyzer.Fragment;
 import com.nianien.core.text.TextAnalyzer.FragmentHandler;
-import org.junit.Test;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 /**
  * @author skyfalling
@@ -32,7 +33,8 @@ public class TestTextAnalyzer {
         System.out.println(result);
     }
 
-    public static void main(String[] args) {
+    @Test
+    public void test2()  {
         String str = "abcd中国民党美国啊，中美国啊中国，啊我爱你~";
         List<Fragment> list = TextAnalyzer.analyzeOccur(str, new String[]{
                 "国民党", "中国", "ABCD"}, true);

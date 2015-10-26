@@ -1,11 +1,5 @@
 package com.nianien.test;
 
-import com.nianien.core.exception.ExceptionHandler;
-import com.nianien.core.io.Closer;
-import com.nianien.core.io.Files;
-import com.nianien.core.loader.ResourceLoader;
-import com.nianien.core.util.TimeCounter;
-
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -14,13 +8,19 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.junit.Test;
+
+import com.nianien.core.exception.ExceptionHandler;
+import com.nianien.core.io.Closer;
+import com.nianien.core.io.Files;
+import com.nianien.core.loader.ResourceLoader;
+import com.nianien.core.util.TimeCounter;
+
 public class TestIo {
     private final static int bufferSize = 1024 * 8;
 
-    /**
-     * @param args
-     */
-    public static void main(String[] args) {
+    @Test
+    public void test() {
         File file = ResourceLoader.getFile("all200000.txt");// all200000.txt
         int time = 100;
         assert file.exists();

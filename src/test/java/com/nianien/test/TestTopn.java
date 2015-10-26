@@ -1,21 +1,19 @@
 package com.nianien.test;
 
-import com.nianien.core.io.Files;
-import com.nianien.core.util.PriorityHeap;
-
 import java.io.File;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 
+import org.junit.Test;
+
+import com.nianien.core.io.Files;
+import com.nianien.core.util.PriorityHeap;
+
 public class TestTopn {
 
-    /**
-     * @param args
-     * @throws java.io.IOException
-     */
-    public static void main(String[] args) throws IOException {
-        @SuppressWarnings("unchecked")
+    @Test
+    public void test() throws IOException {
         List<String> list = Files.readLines(new File("all200000.txt"));
         PriorityHeap<String> heap = new PriorityHeap<String>(list.size(), String.class);
 

@@ -1,6 +1,6 @@
 package com.nianien.test;
 
-import java.io.IOException;
+import org.junit.Test;
 
 import com.nianien.core.loader.FilePathClassLoader;
 
@@ -10,19 +10,14 @@ import com.nianien.core.loader.FilePathClassLoader;
  */
 public class TestLoader {
 
-	/**
-	 * @param args
-	 * @throws java.io.IOException
-	 * @throws Exception
-	 */
-	public static void main(String[] args) throws IOException, Exception {
-		String str = "D:\\Programming\\Java\\Workspace\\NiaNienTest\\bin;";
-		ClassLoader loader = new FilePathClassLoader(str);
+	@Test
+	public void testLoader() throws Exception {
+		ClassLoader loader = new FilePathClassLoader(".");
 		Class<?> cl = loader.loadClass("com.nianien.test.TestLoader");
-		cl.getMethod("test").invoke(null);
+		cl.getMethod("test0").invoke(null);
 	}
-	
-	public static void test(){
+
+	public static void test0() {
 		System.out.println("hello,world");
 	}
 
