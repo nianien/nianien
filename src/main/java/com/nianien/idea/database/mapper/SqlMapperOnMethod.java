@@ -130,7 +130,7 @@ public abstract class SqlMapperOnMethod implements SqlMapper {
      *
      * @return
      */
-    public final String[] getSqls() {
+    public String[] getSqls() {
         return getNotNullSql(getKeyByCallerMethod(null)).split(splitter);
     }
 
