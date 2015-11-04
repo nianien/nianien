@@ -107,7 +107,7 @@ public abstract class SqlMapperOnMethod implements SqlMapper {
      *
      * @return
      */
-    public final String getSql() {
+    public String getSql() {
         return getNotNullSql(getKeyByCallerMethod(null));
     }
 
