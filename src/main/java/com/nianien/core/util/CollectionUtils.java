@@ -90,7 +90,6 @@ public class CollectionUtils {
             list.add(enumeration.nextElement());
         }
         return list.iterator();
-
     }
 
     /**
@@ -139,7 +138,7 @@ public class CollectionUtils {
     public static <T> List<T> list(Iterable iterable, String propertyName, Class<T> propertyType) {
         List<T> result = new ArrayList<T>();
         for (Object o : iterable) {
-            result.add((T) Reflections.getProperty(o, propertyName));
+            result.add((T) getProperty(o, propertyName));
         }
         return result;
     }
@@ -152,6 +151,9 @@ public class CollectionUtils {
      * @return List泛型实例
      */
     public static <T> List<T> list(Iterator<T> iterator) {
+        if (iterator instanceof List) {
+            return (List<T>) iterator;
+        }
         List<T> list = new ArrayList<T>();
         while (iterator.hasNext()) {
             list.add(iterator.next());
@@ -368,9 +370,9 @@ public class CollectionUtils {
                                        Class<V> valueType) {
         Map<K, V> map = new HashMap<K, V>();
         for (Object obj : list) {
-            K keyObj = (K) Reflections.getProperty(obj, keyProperty);
-            V valueObj = (V) Reflections.getProperty(obj, valueProperty);
-            map.put(keyObj, valueObj);
+            Object keyObj = getProperty(obj, keyProperty);
+            Object valueObj = getProperty(obj, valueProperty);
+            map.put((K) keyObj, (V) valueObj);
         }
         return map;
     }
@@ -389,8 +391,8 @@ public class CollectionUtils {
     public static <K, V> Map<K, V> map(Iterable<V> list, String keyProperty, Class<K> keyType) {
         Map<K, V> map = new HashMap<K, V>();
         for (V obj : list) {
-            K keyObj = (K) Reflections.getProperty(obj, keyProperty);
-            map.put(keyObj, obj);
+            Object keyObj = getProperty(obj, keyProperty);
+            map.put((K) keyObj, obj);
         }
         return map;
     }
@@ -409,7 +411,7 @@ public class CollectionUtils {
     public static <K, V> Map<K, List<V>> groupBy(Iterable<V> list, String keyProperty, Class<K> keyType) {
         Map<K, List<V>> map = new HashMap<K, List<V>>();
         for (V obj : list) {
-            K keyObj = (K) Reflections.getProperty(obj, keyProperty);
+            K keyObj = (K) getProperty(obj, keyProperty);
             List<V> values = map.get(keyObj);
             if (values == null) {
                 values = new ArrayList<V>();
@@ -418,6 +420,18 @@ public class CollectionUtils {
             values.add(obj);
         }
         return map;
+    }
+
+    /**
+     * 获取对象属性
+     *
+     * @param obj
+     * @param property
+     *
+     * @return
+     */
+    private static Object getProperty(Object obj, String property) {
+        return obj instanceof Map ? ((Map) obj).get(property) : Reflections.getProperty(obj, property);
     }
 
 }
