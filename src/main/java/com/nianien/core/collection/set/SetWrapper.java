@@ -1,8 +1,10 @@
 package com.nianien.core.collection.set;
 
-import com.nianien.core.collection.CollectionWrapper;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
-import java.util.*;
+import com.nianien.core.collection.CollectionWrapper;
 
 /**
  * {@link Set}接口的包装类,包装Set实例以支持链式语法<br/>
@@ -37,11 +39,11 @@ public class SetWrapper<E> extends CollectionWrapper<E> implements Set<E> {
         super(new HashSet<E>(), elements);
     }
 
-
     /**
      * 调用{@link Set#addAll(java.util.Collection)}方法
      *
      * @param elements
+     *
      * @return 返回当前对象
      */
     public SetWrapper<E> append(E... elements) {
@@ -53,9 +55,10 @@ public class SetWrapper<E> extends CollectionWrapper<E> implements Set<E> {
      * 调用{@link Set#addAll(java.util.Collection)}方法
      *
      * @param elements
+     *
      * @return 返回当前对象
      */
-    public SetWrapper<E> append(Collection<E> elements) {
+    public SetWrapper<E> append(Collection<? extends E> elements) {
         super.append(elements);
         return this;
     }
@@ -64,6 +67,7 @@ public class SetWrapper<E> extends CollectionWrapper<E> implements Set<E> {
      * 调用{@link Set#retainAll(java.util.Collection)}方法
      *
      * @param elements
+     *
      * @return 返回当前对象
      */
     public SetWrapper<E> keep(E... elements) {
@@ -75,9 +79,10 @@ public class SetWrapper<E> extends CollectionWrapper<E> implements Set<E> {
      * 调用{@link Set#retainAll(java.util.Collection)}方法
      *
      * @param elements
+     *
      * @return 返回当前对象
      */
-    public SetWrapper<E> keep(Collection<E> elements) {
+    public SetWrapper<E> keep(Collection<? extends E> elements) {
         super.keep(elements);
         return this;
     }
@@ -86,6 +91,7 @@ public class SetWrapper<E> extends CollectionWrapper<E> implements Set<E> {
      * 调用{@link Set#removeAll(java.util.Collection)}
      *
      * @param elements
+     *
      * @return 返回当前对象
      */
     public SetWrapper<E> delete(E... elements) {
@@ -97,13 +103,13 @@ public class SetWrapper<E> extends CollectionWrapper<E> implements Set<E> {
      * 调用{@link Set#removeAll(java.util.Collection)}
      *
      * @param elements
+     *
      * @return 返回当前对象
      */
-    public SetWrapper<E> delete(Collection<E> elements) {
+    public SetWrapper<E> delete(Collection<? extends E> elements) {
         super.delete(elements);
         return this;
     }
-
 
     /**
      * 如果不存在元素e,则调用{@link Set#add(Object)}方法

@@ -1,8 +1,11 @@
 package com.nianien.core.collection.map;
 
-import com.nianien.core.function.Function;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 
-import java.util.*;
+import com.nianien.core.function.Function;
 
 /**
  * {@link Map}接口的包装类,包装Map实例以支持链式语法<br/>
@@ -57,6 +60,7 @@ public class MapWrapper<K, V> implements Map<K, V> {
      *
      * @param key
      * @param value
+     *
      * @return 返回当前对象
      */
     public MapWrapper<K, V> append(K key, V value) {
@@ -68,6 +72,7 @@ public class MapWrapper<K, V> implements Map<K, V> {
      * 调用{@link Map#putAll(java.util.Map)}方法
      *
      * @param map
+     *
      * @return 返回当前对象
      */
     public MapWrapper<K, V> append(Map<? extends K, ? extends V> map) {
@@ -78,33 +83,8 @@ public class MapWrapper<K, V> implements Map<K, V> {
     /**
      * 调用{@link Map#remove(Object)}}方法
      *
-     * @param key
-     * @return 返回当前对象
-     */
-
-    public MapWrapper<K, V> delete(Object key) {
-        this.remove(key);
-        return this;
-    }
-
-    /**
-     * 调用{@link Map#remove(Object)}}方法
-     *
      * @param keys
-     * @return 返回当前对象
-     */
-
-    public MapWrapper<K, V> delete(Object... keys) {
-        for (Object key : keys) {
-            this.remove(key);
-        }
-        return this;
-    }
-
-    /**
-     * 调用{@link Map#remove(Object)}}方法
      *
-     * @param keys
      * @return 返回当前对象
      */
 
@@ -120,9 +100,10 @@ public class MapWrapper<K, V> implements Map<K, V> {
      *
      * @param key
      * @param function
+     *
      * @return 返回当前对象
      */
-    public MapWrapper<K, V> putIfAbsent(K key, Function<K, V> function) {
+    public MapWrapper<K, V> appendIfAbsent(K key, Function<K, V> function) {
         if (!containsKey(key)) {
             this.put(key, function.apply(key));
         }
@@ -134,9 +115,10 @@ public class MapWrapper<K, V> implements Map<K, V> {
      *
      * @param key
      * @param value
+     *
      * @return 返回当前对象
      */
-    public MapWrapper<K, V> putIfAbsent(K key, V value) {
+    public MapWrapper<K, V> appendIfAbsent(K key, V value) {
         if (!containsKey(key)) {
             this.put(key, value);
         }
@@ -148,15 +130,43 @@ public class MapWrapper<K, V> implements Map<K, V> {
      *
      * @param key
      * @param value
+     *
      * @return 返回当前对象
      */
-    public MapWrapper<K, V> putIf(boolean expression, K key, V value) {
+    public MapWrapper<K, V> appendIf(boolean expression, K key, V value) {
         if (expression) {
             this.put(key, value);
         }
         return this;
     }
 
+    /**
+     * 调用{@link Map#remove(Object)}}方法
+     *
+     * @param key
+     *
+     * @return 返回当前对象
+     */
+
+    public MapWrapper<K, V> delete(Object key) {
+        this.remove(key);
+        return this;
+    }
+
+    /**
+     * 调用{@link Map#remove(Object)}}方法
+     *
+     * @param keys
+     *
+     * @return 返回当前对象
+     */
+
+    public MapWrapper<K, V> delete(Object... keys) {
+        for (Object key : keys) {
+            this.remove(key);
+        }
+        return this;
+    }
 
     @Override
     public int size() {
@@ -225,12 +235,18 @@ public class MapWrapper<K, V> implements Map<K, V> {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof MapWrapper)) return false;
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof MapWrapper)) {
+            return false;
+        }
 
         MapWrapper that = (MapWrapper) o;
 
-        if (!map.equals(that.map)) return false;
+        if (!map.equals(that.map)) {
+            return false;
+        }
 
         return true;
     }

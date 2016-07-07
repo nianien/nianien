@@ -3,6 +3,7 @@ package com.nianien.idea.database;
 import java.sql.*;
 import java.util.Map;
 import java.util.Properties;
+import java.util.concurrent.Executor;
 
 /**
  * {@link Connection}对象的包装类
@@ -262,6 +263,31 @@ public class ConnectionWrapper implements Connection, Wrapper {
     @Override
     public Struct createStruct(String typeName, Object[] attributes) throws SQLException {
         return connection.createStruct(typeName, attributes);
+    }
+
+    @Override
+    public void setSchema(String schema) throws SQLException {
+        connection.setSchema(schema);
+    }
+
+    @Override
+    public String getSchema() throws SQLException {
+        return connection.getSchema();
+    }
+
+    @Override
+    public void abort(Executor executor) throws SQLException {
+            connection.abort(executor);
+    }
+
+    @Override
+    public void setNetworkTimeout(Executor executor, int milliseconds) throws SQLException {
+            connection.setNetworkTimeout(executor,milliseconds);
+    }
+
+    @Override
+    public int getNetworkTimeout() throws SQLException {
+        return connection.getNetworkTimeout();
     }
 
     @Override
