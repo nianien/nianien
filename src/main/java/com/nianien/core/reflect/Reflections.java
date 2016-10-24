@@ -822,7 +822,7 @@ public class Reflections {
    * @param clazz
    * @return
    */
-  public Class getGenericType(Class<?> clazz) {
+  public static Class getGenericType(Class<?> clazz) {
     Type type = clazz.getGenericSuperclass();
     if (type instanceof ParameterizedType) {
       ParameterizedType pType = (ParameterizedType) type;
