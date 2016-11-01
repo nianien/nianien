@@ -114,13 +114,16 @@ public class CollectionUtils {
     if (iterable instanceof List) {
       return (List<T>) iterable;
     }
-    List<T> list = (iterable instanceof Collection) ?
-            new ArrayList<T>(((Collection) iterable).size()) : new ArrayList<T>();
+    if (iterable instanceof Collection) {
+      return new ArrayList<>((Collection) iterable);
+    }
+    List<T> list = new ArrayList<T>();
     for (T t : iterable) {
       list.add(t);
     }
     return list;
   }
+
 
   /**
    * 取元素的某个属性形成新的链表
@@ -132,8 +135,13 @@ public class CollectionUtils {
    * @return 属性列表
    */
   public static <T> List<T> list(Iterable iterable, String propertyName, Class<T> propertyType) {
-    List<T> list = (iterable instanceof Collection) ?
-            new ArrayList<T>(((Collection) iterable).size()) : new ArrayList<T>();
+
+    List<T> list;
+    if (iterable instanceof Collection) {
+      list = new ArrayList<>(((Collection) iterable).size());
+    } else {
+      list = new ArrayList<>();
+    }
     for (Object o : iterable) {
       list.add((T) getProperty(o, propertyName));
     }
@@ -350,8 +358,13 @@ public class CollectionUtils {
    * @return
    */
   public static <K, V> Map<K, V> map(Iterable iterable, String keyProperty, String valueProperty, Class<K> keyType, Class<V> valueType) {
-    Map<K, V> map = (iterable instanceof Collection) ?
-            new HashMap<K, V>(((Collection) iterable).size()) : new HashMap<K, V>();
+
+    Map<K, V> map;
+    if (iterable instanceof Collection) {
+      map = new HashMap<>(((Collection) iterable).size());
+    } else {
+      map = new HashMap<>();
+    }
     for (Object obj : iterable) {
       Object keyObj = getProperty(obj, keyProperty);
       Object valueObj = getProperty(obj, valueProperty);
@@ -371,8 +384,12 @@ public class CollectionUtils {
    * @return
    */
   public static <K, V> Map<K, V> map(Iterable<V> iterable, String keyProperty, Class<K> keyType) {
-    Map<K, V> map = (iterable instanceof Collection) ?
-            new HashMap<K, V>(((Collection) iterable).size()) : new HashMap<K, V>();
+    Map<K, V> map;
+    if (iterable instanceof Collection) {
+      map = new HashMap<>(((Collection) iterable).size());
+    } else {
+      map = new HashMap<>();
+    }
     for (V obj : iterable) {
       Object keyObj = getProperty(obj, keyProperty);
       map.put((K) keyObj, obj);
@@ -391,8 +408,12 @@ public class CollectionUtils {
    * @return
    */
   public static <K, V> Map<K, List<V>> groupBy(Iterable<V> iterable, String keyProperty, Class<K> keyType) {
-    Map<K, List<V>> map = (iterable instanceof Collection) ?
-            new HashMap<K, List<V>>(((Collection) iterable).size()) : new HashMap<K, List<V>>();
+    Map<K, List<V>> map;
+    if (iterable instanceof Collection) {
+      map = new HashMap<>(((Collection) iterable).size());
+    } else {
+      map = new HashMap<>();
+    }
     for (V obj : iterable) {
       K keyObj = (K) getProperty(obj, keyProperty);
       List<V> values = map.get(keyObj);
