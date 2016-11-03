@@ -35,7 +35,6 @@ public class CollectionUtils {
    * @author skyfalling
    */
   public interface ListHandler<E> extends CollectionHandler<E, List<E>> {
-    void handle(List<E> list);
   }
 
   /**
