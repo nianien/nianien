@@ -30,13 +30,22 @@ public class CollectionUtils {
 
 
   /**
+   * List批处理接口定义
+   *
+   * @author skyfalling
+   */
+  public interface ListHandler<E> extends CollectionHandler<E, List<E>> {
+    void handle(List<E> list);
+  }
+
+  /**
    * 分批处理集合元素
    *
    * @param collection 集合
    * @param limit      每次处理元素的最大限制
    * @param handler    集合处理类
    */
-  public static <E> void batchHandle(Collection<E> collection, int limit, CollectionHandler<E, List<E>> handler) {
+  public static <E> void batchHandle(Collection<E> collection, int limit, ListHandler<E> handler) {
     List<E> subList = new ArrayList<>(limit);
     for (E it : collection) {
       subList.add(it);
