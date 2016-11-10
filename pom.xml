@@ -6,7 +6,7 @@
 
     <groupId>com.nianien</groupId>
     <artifactId>nianien</artifactId>
-    <version>3.0.01</version>
+    <version>3.0.2</version>
 
     <!-- 设置编码 -->
     <properties>
@@ -92,30 +92,14 @@
         </plugins>
     </build>
 
-    <repositories>
+    <distributionManagement>
         <repository>
-            <id>maven-cn</id>
-            <name>Maven China Mirror</name>
-            <url>http://search.maven.org/</url>
-            <releases>
-                <enabled>true</enabled>
-            </releases>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
+            <id>shenma-nexus-releases</id>
+            <url>http://10.101.171.43:8081/nexus/content/repositories/releases</url>
         </repository>
-    </repositories>
-    <pluginRepositories>
-        <pluginRepository>
-            <id>maven-net</id>
-            <name>Maven China Mirror</name>
-            <url>http://search.maven.org/</url>
-            <releases>
-                <enabled>true</enabled>
-            </releases>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-        </pluginRepository>
-    </pluginRepositories>
+        <snapshotRepository>
+            <id>shenma-nexus-snapshots</id>
+            <url>http://10.101.171.43:8081/nexus/content/repositories/snapshots</url>
+        </snapshotRepository>
+    </distributionManagement>
 </project>
