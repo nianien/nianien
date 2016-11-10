@@ -11,8 +11,6 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -816,63 +814,15 @@ public class Reflections {
 
 
   /**
-   * 获取当前类绑定父类声明的泛型类型<br/>
+   * 查找类对象clazz绑定的genericClass声明的泛型参数
    *
-   * @param clazz            绑定泛型的子类
-   * @param genericTypeIndex 泛型索引位置
-   * @return 如果子类绑定泛型, 则返回泛型类型,否则返回null
+   * @param clazz        绑定泛型参数的类
+   * @param genericClass 声明泛型的类
+   * @param index        泛型在声明类中的索引位置
+   * @return 如果绑定了泛型参数, 则返回泛型类型, 否则返回null
    */
-  public static Class getGenericType(Class<?> clazz, int genericTypeIndex) {
-    Type type = clazz.getGenericSuperclass();
-    if (type instanceof ParameterizedType) {
-      ParameterizedType pType = (ParameterizedType) type;
-      if (pType.getActualTypeArguments().length > genericTypeIndex) {
-        Type gType = pType.getActualTypeArguments()[genericTypeIndex];
-        if (gType instanceof Class) {
-          return (Class) gType;
-        } else if (gType instanceof ParameterizedType) {
-          //这里是泛型的泛型
-          return (Class) ((ParameterizedType) gType).getRawType();
-        }
-      }
-    }
-    return null;
+  public static Class getGenericType(Class<?> clazz, Class genericClass, int index) {
+    return Generics.find(clazz, genericClass, index);
   }
-
-
-  /**
-   * 获取类绑定接口声明的泛型类型<br/>
-   *
-   * @param clazz            绑定泛型的子类
-   * @param interfaceClass   声明泛型的接口
-   * @param genericTypeIndex 泛型索引位置
-   * @return 如果子类绑定泛型, 则返回泛型类型,否则返回null
-   */
-  public static Class getGenericType(Class<?> clazz, Class interfaceClass, int genericTypeIndex) {
-    Type[] types = clazz.getGenericInterfaces();
-    for (Type type : types) {
-      //不是泛型类型
-      if (!(type instanceof ParameterizedType)) {
-        continue;
-      }
-      ParameterizedType pType = (ParameterizedType) type;
-      //不是指定接口
-      if (pType.getRawType() != interfaceClass) {
-        continue;
-      }
-      if (pType.getActualTypeArguments().length > genericTypeIndex) {
-        Type gType = pType.getActualTypeArguments()[genericTypeIndex];
-        if (gType instanceof Class) {
-          return (Class) gType;
-        } else if (gType instanceof ParameterizedType) {
-          //这里是泛型的泛型
-          return (Class) ((ParameterizedType) gType).getRawType();
-        }
-      }
-      return null;
-    }
-    return null;
-  }
-
 
 }
