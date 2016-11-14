@@ -4,19 +4,26 @@ import com.nianien.core.util.StringUtils;
 import com.nianien.idea.database.table.DataField;
 
 import java.lang.reflect.Array;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * 支持命名参数的SQL语句,参数形式为 :x,此外可以使用 :n(n=0,1,2...)表示位置参数<br/>
  * 当参数类型为数组和集合时,将根据元素数目扩展为: (?,?...) <br/>
  * 例如:
  * <pre>
- *     <code>SqlStatement sqlStatement1 = new SqlStatement("select * from users where (userName,password) in ?",
- *     Arrays.asList(new String[]{"userName1", "password1"}, new String[]{"userName2", "password2"}));
+ *     <code>SqlStatement sqlStatement1 = new SqlStatement("select * from users where
+ * (userName,password) in ?",
+ *     Arrays.asList(new String[]{"userName1", "password1"}, new String[]{"userName2",
+ * "password2"}));
  *
  *     the code above is equivalent to:
  *
- *     SqlStatement sqlStatement2 = new SqlStatement("select * from users where (userName,password) in ?",
+ *     SqlStatement sqlStatement2 = new SqlStatement("select * from users where (userName,password)
+ * in ?",
  *     new Object[][][]{{{"userName1", "password1"}, {"userName2", "password2"}}});
  *
  *     the result of expandSql() invocation:
@@ -88,12 +95,25 @@ public class SqlStatement {
     }
 
     /**
-     * 解析后的SQL参数列表,可用于{@link java.sql.PreparedStatement}
+     * 解析后的SQL参数列表,用于{@link java.sql.PreparedStatement}
      *
      * @return
      */
     public DataField[] preparedParameters() {
         return preparedParameters.toArray(new DataField[0]);
+    }
+
+    /**
+     * 解析后的SQL参数列表,用于{@link java.sql.PreparedStatement}
+     *
+     * @return
+     */
+    public Object[] preparedRawParameters() {
+        List parameters = new ArrayList(preparedParameters.size());
+        for (DataField dataField : preparedParameters) {
+            parameters.add(dataField.value);
+        }
+        return parameters.toArray();
     }
 
     /**
@@ -166,7 +186,6 @@ public class SqlStatement {
     /**
      * 如果expression为true,追加SQL
      *
-     *
      * @param sql
      * @param expression 布尔表达式
      * @param parameters sql参数值列表
@@ -181,7 +200,6 @@ public class SqlStatement {
 
     /**
      * 如果expression为true,追加SQL
-     *
      *
      * @param sql
      * @param expression 布尔表达式
