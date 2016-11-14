@@ -312,13 +312,13 @@ public class Reflections {
      * 根据方法名和参数调用指定方法<br/>
      * 如果方法名称以及参数长度匹配且唯一，此时若类型不匹配，则会尝试类型转换<br/>
      *
-     * @param bean
      * @param methodName 方法名称
+     * @param bean       方法关联的对象
      * @param parameters 实际参数值
      * @return
      * @throws Exception
      */
-    public static Object invoke(Object bean, String methodName, Object[] parameters) throws Exception {
+    public static Object invoke(String methodName, Object bean, Object[] parameters) throws Exception {
         Class beanClass = bean.getClass();
         try {
             Class<?>[] types = new Class<?>[parameters.length];
@@ -363,14 +363,14 @@ public class Reflections {
      * 根据方法名称和参数类型调用指定方法
      * 如果方法名称以及参数长度匹配且唯一，此时若类型不匹配，则会尝试类型转换<br/>
      *
-     * @param bean
      * @param methodName     方法名称
+     * @param bean           方法关联的对象
      * @param parameters     实际参数值
      * @param parameterTypes 方法参数类型
      * @return
      * @throws Exception
      */
-    public static Object invoke(Object bean, String methodName, Object[] parameters, Class[] parameterTypes) throws Exception {
+    public static Object invoke(String methodName, Object bean, Object[] parameters, Class[] parameterTypes) throws Exception {
         if (parameterTypes.length != parameters.length) {
             throw new IllegalArgumentException("parameters and parameterTypes must have same size!");
         }
