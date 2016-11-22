@@ -20,34 +20,56 @@ import java.util.Map;
  */
 public class CollectionUtils {
   /**
-   * 集合处理接口定义
+   * {@link Iterable}元素处理类
    *
    * @author skyfalling
    */
-  public interface CollectionHandler<E, C extends Collection<E>> {
-    void handle(C collection);
+  public interface IterableHandler<E, C extends Iterable<E>> {
+    void handle(C iterable);
   }
 
 
   /**
-   * List批处理接口定义
+   * {@link List}元素处理类
    *
    * @author skyfalling
    */
-  public interface ListHandler<E> extends CollectionHandler<E, List<E>> {
+  public interface ListHandler<E> extends IterableHandler<E, List<E>> {
   }
 
   /**
-   * 分批处理集合元素
+   * 分批处理{@link Iterable}元素
    *
-   * @param collection 集合
-   * @param limit      每次处理元素的最大限制
-   * @param handler    集合处理类
+   * @param iterable 可遍历集合
+   * @param limit    批量处理元素数量限制
+   * @param handler  元素处理对象
    */
-  public static <E> void batchHandle(Collection<E> collection, int limit, ListHandler<E> handler) {
+  public static <E> void batchHandle(Iterable<E> iterable, int limit, ListHandler<E> handler) {
     List<E> subList = new ArrayList<>(limit);
-    for (E it : collection) {
-      subList.add(it);
+    for (E e : iterable) {
+      subList.add(e);
+      if (subList.size() == limit) {
+        handler.handle(subList);
+        subList.clear();
+      }
+    }
+    if (subList.size() > 0) {
+      handler.handle(subList);
+    }
+  }
+
+  /**
+   * 分批处理{@link Iterator}元素
+   *
+   * @param iterator 迭代器
+   * @param limit    批量处理元素数量限制
+   * @param handler  元素处理对象
+   */
+  public static <E> void batchHandle(Iterator<E> iterator, int limit, ListHandler<E> handler) {
+    List<E> subList = new ArrayList<>(limit);
+    while (iterator.hasNext()) {
+      E e = iterator.next();
+      subList.add(e);
       if (subList.size() == limit) {
         handler.handle(subList);
         subList.clear();
