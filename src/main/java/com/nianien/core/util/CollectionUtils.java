@@ -44,7 +44,7 @@ public class CollectionUtils {
    * @param limit    批量处理元素数量限制
    * @param handler  元素处理对象
    */
-  public static <E> void batchHandle(Iterable<E> iterable, int limit, ListHandler<E> handler) {
+  public static <E> void doBatch(Iterable<E> iterable, int limit, ListHandler<E> handler) {
     List<E> subList = new ArrayList<>(limit);
     for (E e : iterable) {
       subList.add(e);
@@ -65,7 +65,7 @@ public class CollectionUtils {
    * @param limit    批量处理元素数量限制
    * @param handler  元素处理对象
    */
-  public static <E> void batchHandle(Iterator<E> iterator, int limit, ListHandler<E> handler) {
+  public static <E> void doBatch(Iterator<E> iterator, int limit, ListHandler<E> handler) {
     List<E> subList = new ArrayList<>(limit);
     while (iterator.hasNext()) {
       E e = iterator.next();
