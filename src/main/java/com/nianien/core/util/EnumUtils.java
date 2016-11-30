@@ -127,12 +127,12 @@ public class EnumUtils {
      * 取枚举对象除excludes之外的实例
      *
      * @param enumClass  枚举类
-     * @param excludes   排除的枚举实例
+     * @param excludes   需忽略的枚举实例
      * @param <T>
      * @return
      */
     public static <T extends Enum<T>> List<T> list(Class<T> enumClass, T... excludes) {
-        List<T> list = new ArrayList<T>(Arrays.asList(enumClass.getEnumConstants()));
+        List<T> list = new ArrayList<>(Arrays.asList(enumClass.getEnumConstants()));
         for (T exclude : excludes) {
             list.remove(exclude);
         }
@@ -149,13 +149,13 @@ public class EnumUtils {
      * </code>
      * </pre>
      *
-     * @param exclude
-     * @param others
+     * @param exclude  需忽略的枚举实例
+     * @param others   需忽略的其他枚举实例
      * @param <T>
      * @return
      */
     public static <T extends Enum<T>> List<T> except(T exclude, T... others) {
-        List<T> list = new ArrayList<T>(Arrays.asList(exclude.getDeclaringClass().getEnumConstants()));
+        List<T> list = new ArrayList<>(Arrays.asList(exclude.getDeclaringClass().getEnumConstants()));
         list.remove(exclude);
         for (T other : others) {
             list.remove(other);
