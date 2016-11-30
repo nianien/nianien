@@ -20,11 +20,15 @@ public class LevelImpl<T> implements ILevelSecond<Character, T, List<Boolean>> {
     System.out.println(Generics.find(LevelImpl.class, ILevel.class, 0));
     System.out.println(Generics.find(LevelImpl.class, ILevelFirst.class, 0));
     System.out.println(Generics.find(LevelImpl.class, ILevelFirst.class, 1));
+    System.out.println(Generics.find(LevelImpl3.class, LevelImpl.class, 0));
 
   }
 
 
   static class LevelImpl2 extends LevelImpl<String> {
+
+  }
+  static class LevelImpl3 extends LevelImpl2 {
 
   }
 

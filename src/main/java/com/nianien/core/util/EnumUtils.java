@@ -14,13 +14,48 @@ public class EnumUtils {
 
 
     /**
+     * 返回名称为name的枚举值<br/>
+     * 如果不存在则返回默认值defaultEnum
+     *
+     * @param enumClass  枚举类
+     * @param name       枚举名称
+     * @param defaultEnum  默认枚举类型
+     * @param <T>        枚举类型
+     * @return
+     */
+    public static <T extends Enum<T>> T nameOf(Class<T> enumClass, String name, T defaultEnum) {
+        T t = nameOf(enumClass, name);
+        return t != null ? t : defaultEnum;
+    }
+
+    /**
+     * 返回名称为name的枚举值<br/>
+     * 如果不存在则返回null
+     *
+     * @param enumClass  枚举类
+     * @param name       枚举名称
+     * @param <T>        枚举类型
+     * @return
+     */
+    public static <T extends Enum<T>> T nameOf(Class<T> enumClass, String name) {
+        T[] types = enumClass.getEnumConstants();
+        for (T type : types) {
+            if (type.name().equals(name)) {
+                return type;
+            }
+        }
+        return null;
+    }
+
+
+    /**
      * 返回"value"字段值为value的枚举值<br/>
      * 如果不存在则返回默认值defaultEnum
      *
-     * @param enumClass
-     * @param value
-     * @param defaultEnum
-     * @param <T>
+     * @param enumClass  枚举类
+     * @param value       枚举名称
+     * @param defaultEnum  默认枚举类型
+     * @param <T>        枚举类型
      * @return
      */
     public static <T extends Enum<T>> T valueOf(Class<T> enumClass, Object value, T defaultEnum) {
@@ -31,9 +66,9 @@ public class EnumUtils {
      * 返回"value"字段值为value的枚举值<br/>
      * 如果不存在则返回null
      *
-     * @param enumClass
-     * @param value
-     * @param <T>
+     * @param enumClass  枚举类
+     * @param value       枚举名称
+     * @param <T>        枚举类型
      * @return
      */
     public static <T extends Enum<T>> T valueOf(Class<T> enumClass, Object value) {
@@ -44,10 +79,10 @@ public class EnumUtils {
      * 根据字段值返回相应的枚举对象<br/>
      * 如果不存在则返回默认值defaultEnum
      *
-     * @param enumClass  枚举类型
+     * @param enumClass  枚举类
      * @param fieldName  字段名
      * @param fieldValue 字段值
-     * @param <T>
+     * @param <T>        枚举类型
      * @return
      */
     public static <T extends Enum<T>> T withField(Class<T> enumClass, String fieldName, Object fieldValue, T defaultEnum) {
@@ -59,10 +94,10 @@ public class EnumUtils {
      * 根据字段值返回相应的枚举对象<br/>
      * 如果没有对应的字段或字段值返回null
      *
-     * @param enumClass  枚举类型
+     * @param enumClass  枚举类
      * @param fieldName  字段名
      * @param fieldValue 字段值
-     * @param <T>
+     * @param <T>        枚举类型
      * @return
      */
     public static <T extends Enum<T>> T withField(Class<T> enumClass, String fieldName, Object fieldValue) {
@@ -91,8 +126,8 @@ public class EnumUtils {
     /**
      * 取枚举对象除excludes之外的实例
      *
-     * @param enumClass
-     * @param excludes
+     * @param enumClass  枚举类
+     * @param excludes   排除的枚举实例
      * @param <T>
      * @return
      */
