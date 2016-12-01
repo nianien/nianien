@@ -93,7 +93,7 @@ public class ByteUtils {
    */
   private static byte[] getBytes(long value, int size) {
     byte[] result = new byte[size];
-    for (int i = size; i >= 0; i--) {
+    for (int i = size-1; i >= 0; i--) {
       result[i] = (byte) (value & 0xffL);
       value >>= 8;
     }
