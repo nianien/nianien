@@ -1,5 +1,6 @@
 package com.nianien.core.util;
 
+import com.nianien.core.exception.ExceptionHandler;
 import com.nianien.core.text.RegexUtils;
 import com.nianien.core.text.TextAnalyzer;
 
@@ -379,7 +380,7 @@ public class StringUtils {
      * @param source
      * @param array
      * @return array中元素首次出现的索引位置<br>
-     *         如果array元素为空,返回-1
+     * 如果array元素为空,返回-1
      */
     public static int indexOfAny(String source, char[] array) {
         if (array.length == 0) {
@@ -401,7 +402,7 @@ public class StringUtils {
      * @param source
      * @param parameters
      * @return parameters中参数值首次出现的索引位置<br>
-     *         如果未指定parameters,则返回-1
+     * 如果未指定parameters,则返回-1
      */
     public static int indexOfAny(String source, String... parameters) {
         if (parameters.length == 0)
@@ -424,7 +425,7 @@ public class StringUtils {
      * @param pattern
      * @param count
      * @return 第count次匹配pattern的子串索引位置<br>
-     *         如果source包含pattern的个数小于count,返回-1<br>
+     * 如果source包含pattern的个数小于count,返回-1<br>
      */
     public static int indexOfTimes(String source, String pattern, int count) {
         if (count <= 0)
@@ -527,7 +528,7 @@ public class StringUtils {
      * @param source
      * @param array
      * @return array中元素的最后一次出现的索引位置<br>
-     *         如果array元素为空,返回-1
+     * 如果array元素为空,返回-1
      */
     public static int lastIndexOfAny(String source, char[] array) {
         if (array.length == 0) {
@@ -547,7 +548,7 @@ public class StringUtils {
      * @param source
      * @param parameters
      * @return 返回parameters中参数值的最后一次出现的索引位置<br>
-     *         如果未指定parameters参数,返回-1;
+     * 如果未指定parameters参数,返回-1;
      */
     public static int lastIndexOfAny(String source, String... parameters) {
         if (parameters.length == 0)
@@ -571,8 +572,8 @@ public class StringUtils {
      * @param target
      * @param count
      * @return 倒数第count次匹配pattern的子串索引位置<br>
-     *         如果source包含pattern的个数小于count,返回-1<br>
-     *         如果pattern为空,返回-1<br>
+     * 如果source包含pattern的个数小于count,返回-1<br>
+     * 如果pattern为空,返回-1<br>
      */
     public static int lastIndexOfTimes(String source, String target, int count) {
         if (count <= 0) {
@@ -678,7 +679,7 @@ public class StringUtils {
      * @param target
      * @param replacement
      * @return 处理后的字符串<br>
-     *         如果source为空,则返回源字符串<br>
+     * 如果source为空,则返回源字符串<br>
      */
     public static String replace(String source, char target, String replacement) {
         if (isEmpty(source))
@@ -696,21 +697,20 @@ public class StringUtils {
      * 将字符数组targets在字符串source中出现的元素替换成replacement数组对应位置的元素<br>
      *
      * @param source
-     * @param targets     待替换的字符集合
-     * @param replacement 用来替换的字符串集合
-     * @return 替换后的字符串<br>
-     *         如果source为空,则返回源字符串<br>
+     * @param targets      待替换的字符集合
+     * @param replacements 用来替换的字符串集合
+     * @return 替换后的字符串. 如果source为空, 则返回源字符串<br>
      */
     public static String replace(String source, char[] targets,
-                                 String[] replacement) {
-        if (targets.length != replacement.length)
-            throw new IllegalArgumentException("替换字符数目不匹配!");
+                                 String[] replacements) {
+        if (targets.length != replacements.length)
+            throw new IllegalArgumentException("targets and replacements lengths don't match: " + targets.length + " and " + replacements.length + "!");
         String targetStr = new String(targets);
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < source.length(); i++) {
             char ch = source.charAt(i);
             int index = targetStr.indexOf(ch);
-            sb.append(ArrayUtils.contains(targets, ch) ? replacement[index]
+            sb.append(ArrayUtils.contains(targets, ch) ? replacements[index]
                     : ch);
         }
         return sb.toString();
@@ -819,8 +819,8 @@ public class StringUtils {
     public static String transCode(String source, String encode) {
         try {
             return new String(source.getBytes(), encode);
-        } catch (Exception ex) {
-            return source;
+        } catch (Exception e) {
+            throw ExceptionHandler.throwException(e);
         }
     }
 
@@ -834,13 +834,10 @@ public class StringUtils {
      */
     public static String transCode(String source, String decode, String encode) {
         try {
-            if (notEmpty(decode)) {
-                return new String(source.getBytes(decode), encode);
-            }
+            return new String(source.getBytes(decode), encode);
         } catch (Exception e) {
-            e.printStackTrace();
+            throw ExceptionHandler.throwException(e);
         }
-        return transCode(source, encode);
     }
 
     /**
@@ -849,7 +846,7 @@ public class StringUtils {
      * @param source
      * @param array
      * @return 处理后的字符串<br>
-     *         如果array元素为空,则返回源字符串
+     * 如果array元素为空,则返回源字符串
      */
     public static String trim(String source, char[] array) {
         return trimRight(trimLeft(source, array), array);
@@ -861,7 +858,7 @@ public class StringUtils {
      * @param source
      * @param target
      * @return 处理后的字符串<br>
-     *         如果target为空,则返回源字符串
+     * 如果target为空,则返回源字符串
      */
     public static String trim(String source, String target) {
         String pattern = Pattern.quote(target);
@@ -876,7 +873,7 @@ public class StringUtils {
      * @param source
      * @param array
      * @return 处理后的字符串<br>
-     *         如果array元素为空,返回源字符串
+     * 如果array元素为空,返回源字符串
      */
     public static String trimLeft(String source, char[] array) {
         if (isEmpty(source) || array.length == 0)
@@ -898,7 +895,7 @@ public class StringUtils {
      * @param source
      * @param target
      * @return 处理后的字符串<br>
-     *         如果target为空,则返回源字符串
+     * 如果target为空,则返回源字符串
      */
     public static String trimLeft(String source, String target) {
         String pattern = "^(" + Pattern.quote(target) + ")+";
@@ -911,7 +908,7 @@ public class StringUtils {
      * @param source
      * @param array
      * @return 处理后的字符串<br>
-     *         如果array元素为空,返回源字符串
+     * 如果array元素为空,返回源字符串
      */
     public static String trimRight(String source, char[] array) {
         if (isEmpty(source) || array.length == 0)
@@ -933,7 +930,7 @@ public class StringUtils {
      * @param source
      * @param target
      * @return 处理后的字符串<br>
-     *         如果source或target为空,则返回源字符串.
+     * 如果source或target为空,则返回源字符串.
      */
     public static String trimRight(String source, String target) {
         String pattern = "(" + Pattern.quote(target) + ")+$";
