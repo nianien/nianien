@@ -31,7 +31,7 @@ class DataTableImpl<T> implements DataTable<T> {
     /**
      * 字段属性列表
      */
-    private CaseInsensitiveMap<String, FiledProperty> fieldProperties = new CaseInsensitiveMap<String, FiledProperty>();
+    private CaseInsensitiveMap<String, FieldProperty> fieldProperties = new CaseInsensitiveMap<String, FieldProperty>();
 
     /**
      * 键值字段
@@ -82,7 +82,7 @@ class DataTableImpl<T> implements DataTable<T> {
     @Override
     public List<DataField> getFields(T entity) {
         List<DataField> fields = new ArrayList<DataField>();
-        for (FiledProperty property : this.fieldProperties.values()) {
+        for (FieldProperty property : this.fieldProperties.values()) {
             fields.add(property.getField(entity));
         }
         return fields;
@@ -137,10 +137,10 @@ class DataTableImpl<T> implements DataTable<T> {
      * @param fieldName
      * @return
      */
-    private FiledProperty fieldProperty(String fieldName) {
-        FiledProperty filedProperty = fieldProperties.get(fieldName);
-        ExceptionHandler.throwIfNull(filedProperty, new NoSuchFieldException("no such field declared in table[" + type + "]:" + fieldName));
-        return filedProperty;
+    private FieldProperty fieldProperty(String fieldName) {
+        FieldProperty fieldProperty = fieldProperties.get(fieldName);
+        ExceptionHandler.throwIfNull(fieldProperty, new NoSuchFieldException("no such field declared in table[" + type + "]:" + fieldName));
+        return fieldProperty;
     }
 
     /**
@@ -155,7 +155,7 @@ class DataTableImpl<T> implements DataTable<T> {
         String setterName = "set" + getterName.substring(getterName.startsWith("is") ? 2 : 3);
         //获取getter对应的setter方法
         Method setter = Reflections.getMethod(type, setterName, getter.getReturnType());
-        fieldProperties.put(columnName, new FiledProperty(columnName, getter.isAnnotationPresent(Column.class) ? getter.getAnnotation(Column.class).sqlType() : DataField.GenericType, getter, setter));
+        fieldProperties.put(columnName, new FieldProperty(columnName, getter.isAnnotationPresent(Column.class) ? getter.getAnnotation(Column.class).sqlType() : DataField.GenericType, getter, setter));
         if (getter.isAnnotationPresent(Id.class)) {
             ExceptionHandler.throwIf(idField != null, "duplicate id field declared in table[" + type + "]: " + columnName + "," + idField);
             this.idField = columnName;
@@ -167,13 +167,13 @@ class DataTableImpl<T> implements DataTable<T> {
      * 字段相关属性信息,包括名称,sqlType类型,getter和setter方法<br/>
      * 字段的getter和setter方法名必须保持一致,且getter方法的返回类型为setter的参数类型
      */
-    public static class FiledProperty {
+    public static class FieldProperty {
         final Method getter;
         final Method setter;
         final String name;
         final int type;
 
-        FiledProperty(String name, int type, Method getter, Method setter) {
+        FieldProperty(String name, int type, Method getter, Method setter) {
             this.name = name;
             this.type = type;
             this.getter = getter;
