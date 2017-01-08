@@ -24,7 +24,7 @@ public class TableHelper {
     public static String getTableName(Class<?> clazz) {
         Table table = clazz.getAnnotation(Table.class);
         String name = table != null ? table.value() : null;
-        return StringUtils.notEmpty(name) ? name : clazz.getSimpleName();
+        return StringUtils.isNotEmpty(name) ? name : clazz.getSimpleName();
     }
 
     /**
@@ -37,6 +37,6 @@ public class TableHelper {
     public static String getColumnName(Method method) {
         Column column = method.getAnnotation(Column.class);
         String name = column != null ? column.value() : null;
-        return StringUtils.notEmpty(name) ? name : Reflections.propertyName(method);
+        return StringUtils.isNotEmpty(name) ? name : Reflections.propertyName(method);
     }
 }

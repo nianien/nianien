@@ -96,7 +96,7 @@ public class HttpClient {
 			conn.setRequestMethod(requestMethod);
 			conn.setDoOutput(true);
 			// 写入http请求消息体
-			if (StringUtils.notEmpty(requestBody)) {
+			if (StringUtils.isNotEmpty(requestBody)) {
 				out = conn.getOutputStream();
 				out.write(requestBody.getBytes());
 				out.flush();

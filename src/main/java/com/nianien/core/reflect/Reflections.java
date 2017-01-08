@@ -21,7 +21,7 @@ import java.util.Map;
 import static com.nianien.core.exception.ExceptionHandler.throwException;
 import static com.nianien.core.exception.ExceptionHandler.throwIfNull;
 import static com.nianien.core.util.StringUtils.headLower;
-import static com.nianien.core.util.StringUtils.notEmpty;
+import static com.nianien.core.util.StringUtils.isNotEmpty;
 
 /**
  * 反射工具类
@@ -284,7 +284,7 @@ public class Reflections {
     public static String propertyName(Method method) {
         Property property = method.getAnnotation(Property.class);
         String name = property != null ? property.value() : null;
-        if (notEmpty(name)) {
+        if (isNotEmpty(name)) {
             return name;
         }
         name = method.getName();

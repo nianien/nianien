@@ -9,11 +9,15 @@ import com.fasterxml.jackson.databind.type.ArrayType;
 import com.fasterxml.jackson.databind.type.CollectionType;
 import com.fasterxml.jackson.databind.type.MapType;
 import com.fasterxml.jackson.databind.type.SimpleType;
+import com.nianien.core.date.DateFormatter;
 import com.nianien.core.exception.ExceptionHandler;
-import org.apache.commons.lang3.time.DateUtils;
 
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 /**
  * JSON与Java对象相互转换的工具类
@@ -80,7 +84,7 @@ public class JsonParser {
             @Override
             public Date parse(String source) {
                 try {
-                    return DateUtils.parseDate(source, datePatterns);
+                    return DateFormatter.parseDate(source, datePatterns);
                 } catch (Exception e) {
                     throw new IllegalArgumentException("date [" + source + "] should comply with one the formats:" + Arrays.toString(datePatterns), e);
                 }

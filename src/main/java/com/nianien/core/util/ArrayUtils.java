@@ -10,6 +10,81 @@ import java.util.List;
  * @author skyfalling
  */
 public class ArrayUtils {
+
+    public static boolean isEmpty(boolean[] array) {
+        return array == null || array.length == 0;
+    }
+
+    public static boolean isEmpty(byte[] array) {
+        return array == null || array.length == 0;
+    }
+
+    public static boolean isEmpty(char[] array) {
+        return array == null || array.length == 0;
+    }
+
+    public static boolean isEmpty(short[] array) {
+        return array == null || array.length == 0;
+    }
+
+    public static boolean isEmpty(int[] array) {
+        return array == null || array.length == 0;
+    }
+
+    public static boolean isEmpty(long[] array) {
+        return array == null || array.length == 0;
+    }
+
+    public static boolean isEmpty(float[] array) {
+        return array == null || array.length == 0;
+    }
+
+    public static boolean isEmpty(double[] array) {
+        return array == null || array.length == 0;
+    }
+
+    public static <T> boolean isEmpty(T[] array) {
+        return array == null || array.length == 0;
+    }
+
+
+    public static boolean isNotEmpty(final boolean[] array) {
+        return (array != null && array.length != 0);
+    }
+
+    public static boolean isNotEmpty(final byte[] array) {
+        return (array != null && array.length != 0);
+    }
+
+    public static boolean isNotEmpty(final char[] array) {
+        return (array != null && array.length != 0);
+    }
+
+    public static boolean isNotEmpty(final short[] array) {
+        return (array != null && array.length != 0);
+    }
+
+    public static boolean isNotEmpty(final int[] array) {
+        return (array != null && array.length != 0);
+    }
+
+    public static boolean isNotEmpty(final long[] array) {
+        return (array != null && array.length != 0);
+    }
+
+    public static boolean isNotEmpty(final float[] array) {
+        return (array != null && array.length != 0);
+    }
+
+    public static boolean isNotEmpty(final double[] array) {
+        return (array != null && array.length != 0);
+    }
+
+    public static <T> boolean isNotEmpty(final T[] array) {
+        return (array != null && array.length != 0);
+    }
+
+
     /**
      * 判断数组array是否包含target元素
      *
@@ -877,8 +952,8 @@ public class ArrayUtils {
      * @param right
      * @return 转换后的字符串<br>
      */
-    public static   String toString(float[] array, String splitter,
-                                      String left, String right) {
+    public static String toString(float[] array, String splitter,
+                                  String left, String right) {
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < array.length; i++) {
             sb.append(left).append(array[i]).append(right)
@@ -895,7 +970,7 @@ public class ArrayUtils {
      * @param splitter
      * @return 转换后的字符串<br>
      */
-    public static   String toString(double[] array, String splitter) {
+    public static String toString(double[] array, String splitter) {
         return toString(array, splitter, "", "");
     }
 
@@ -908,8 +983,8 @@ public class ArrayUtils {
      * @param surround
      * @return 转换后的字符串<br>
      */
-    public static   String toString(double[] array, String splitter,
-                                      String surround) {
+    public static String toString(double[] array, String splitter,
+                                  String surround) {
         return toString(array, splitter, surround, surround);
     }
 
@@ -923,8 +998,8 @@ public class ArrayUtils {
      * @param right
      * @return 转换后的字符串<br>
      */
-    public static   String toString(double[] array, String splitter,
-                                      String left, String right) {
+    public static String toString(double[] array, String splitter,
+                                  String left, String right) {
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < array.length; i++) {
             sb.append(left).append(array[i]).append(right)
@@ -1175,4 +1250,6 @@ public class ArrayUtils {
         }
         return array;
     }
+
+
 }

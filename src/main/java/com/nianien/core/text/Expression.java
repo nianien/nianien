@@ -114,7 +114,7 @@ public class Expression {
      * @param keepUnknownVariable 是否保留未知变量,如果为false,则未知变量被置为null
      */
     public Expression(String left, String right, boolean keepUnknownVariable) {
-        ExceptionHandler.throwIf(StringUtils.anyEmpty(left, right), "the left and right borders cannot be empty!");
+        ExceptionHandler.throwIf(StringUtils.isAnyEmpty(left, right), "the left and right borders cannot be empty!");
         this.left = left;
         this.right = right;
         this.keepUnknownVariable = keepUnknownVariable;

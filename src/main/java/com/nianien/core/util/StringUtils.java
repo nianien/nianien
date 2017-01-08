@@ -23,10 +23,11 @@ public class StringUtils {
      * @param parameters
      * @return 如果参数parameters全部为空返回true, 否则返回false
      */
-    public static boolean allEmpty(String... parameters) {
+    public static boolean isAllEmpty(String... parameters) {
         for (String s : parameters) {
-            if (notEmpty(s))
+            if (isNotEmpty(s)) {
                 return false;
+            }
         }
         return true;
     }
@@ -37,10 +38,11 @@ public class StringUtils {
      * @param parameters
      * @return 如果参数parameters至少有一个为空, 返回true, 否则返回false
      */
-    public static boolean anyEmpty(String... parameters) {
+    public static boolean isAnyEmpty(String... parameters) {
         for (String s : parameters) {
-            if (isEmpty(s))
+            if (isEmpty(s)) {
                 return true;
+            }
         }
         return false;
     }
@@ -226,7 +228,7 @@ public class StringUtils {
      * @return 处理后的字符串
      */
     public static String eliminate(String source, String target) {
-        if (anyEmpty(source, target))
+        if (isAnyEmpty(source, target))
             return source;
         StringBuilder sb = new StringBuilder();
         while (true) {
@@ -599,8 +601,8 @@ public class StringUtils {
      * @param parameters
      * @return 如果参数parameters的值全部不为空, 返回true, 否则返回false
      */
-    public static boolean noneEmpty(String... parameters) {
-        return !anyEmpty(parameters);
+    public static boolean isNoneEmpty(String... parameters) {
+        return !isAnyEmpty(parameters);
     }
 
     /**
@@ -609,7 +611,7 @@ public class StringUtils {
      * @param source
      * @return 如果字符串不为null和"",返回true,否则返回false.
      */
-    public static boolean notEmpty(String source) {
+    public static boolean isNotEmpty(String source) {
         return !isEmpty(source);
     }
 
@@ -619,7 +621,7 @@ public class StringUtils {
      * @param source
      * @return 如果字符串不为空白字符, 返回true, 否则返回false.
      */
-    public static boolean notBlank(String source) {
+    public static boolean isNotBlank(String source) {
         return !isBlank(source);
     }
 
@@ -841,6 +843,16 @@ public class StringUtils {
     }
 
     /**
+     * 清除字符串source两边的空白字符
+     *
+     * @param source
+     * @return 处理后的字符串<br>
+     */
+    public static String trim(String source) {
+        return source == null ? null : source.trim();
+    }
+
+    /**
      * 清除字符串string两边出现的字符数组array中的元素
      *
      * @param source
@@ -937,4 +949,171 @@ public class StringUtils {
         return source.replaceAll(pattern, "");
     }
 
+
+
+    // SubStringAfter/SubStringBefore
+    //-----------------------------------------------------------------------
+    /**
+     * <p>Gets the substring before the first occurrence of a separator.
+     * The separator is not returned.</p>
+     *
+     * <p>A {@code null} string input will return {@code null}.
+     * An empty ("") string input will return the empty string.
+     * A {@code null} separator will return the input string.</p>
+     *
+     * <p>If nothing is found, the string input is returned.</p>
+     *
+     * <pre>
+     * StringUtils.substringBefore(null, *)      = null
+     * StringUtils.substringBefore("", *)        = ""
+     * StringUtils.substringBefore("abc", "a")   = ""
+     * StringUtils.substringBefore("abcba", "b") = "a"
+     * StringUtils.substringBefore("abc", "c")   = "ab"
+     * StringUtils.substringBefore("abc", "d")   = "abc"
+     * StringUtils.substringBefore("abc", "")    = ""
+     * StringUtils.substringBefore("abc", null)  = "abc"
+     * </pre>
+     *
+     * @param str  the String to get a substring from, may be null
+     * @param separator  the String to search for, may be null
+     * @return the substring before the first occurrence of the separator,
+     *  {@code null} if null String input
+     * @since 2.0
+     */
+    public static String substringBefore(final String str, final String separator) {
+        if (isEmpty(str) || separator == null) {
+            return str;
+        }
+        if (separator.isEmpty()) {
+            return "";
+        }
+        final int pos = str.indexOf(separator);
+        if (pos == -1) {
+            return str;
+        }
+        return str.substring(0, pos);
+    }
+
+    /**
+     * <p>Gets the substring after the first occurrence of a separator.
+     * The separator is not returned.</p>
+     *
+     * <p>A {@code null} string input will return {@code null}.
+     * An empty ("") string input will return the empty string.
+     * A {@code null} separator will return the empty string if the
+     * input string is not {@code null}.</p>
+     *
+     * <p>If nothing is found, the empty string is returned.</p>
+     *
+     * <pre>
+     * StringUtils.substringAfter(null, *)      = null
+     * StringUtils.substringAfter("", *)        = ""
+     * StringUtils.substringAfter(*, null)      = ""
+     * StringUtils.substringAfter("abc", "a")   = "bc"
+     * StringUtils.substringAfter("abcba", "b") = "cba"
+     * StringUtils.substringAfter("abc", "c")   = ""
+     * StringUtils.substringAfter("abc", "d")   = ""
+     * StringUtils.substringAfter("abc", "")    = "abc"
+     * </pre>
+     *
+     * @param str  the String to get a substring from, may be null
+     * @param separator  the String to search for, may be null
+     * @return the substring after the first occurrence of the separator,
+     *  {@code null} if null String input
+     * @since 2.0
+     */
+    public static String substringAfter(final String str, final String separator) {
+        if (isEmpty(str)) {
+            return str;
+        }
+        if (separator == null) {
+            return "";
+        }
+        final int pos = str.indexOf(separator);
+        if (pos == -1) {
+            return "";
+        }
+        return str.substring(pos + separator.length());
+    }
+
+    /**
+     * <p>Gets the substring before the last occurrence of a separator.
+     * The separator is not returned.</p>
+     *
+     * <p>A {@code null} string input will return {@code null}.
+     * An empty ("") string input will return the empty string.
+     * An empty or {@code null} separator will return the input string.</p>
+     *
+     * <p>If nothing is found, the string input is returned.</p>
+     *
+     * <pre>
+     * StringUtils.substringBeforeLast(null, *)      = null
+     * StringUtils.substringBeforeLast("", *)        = ""
+     * StringUtils.substringBeforeLast("abcba", "b") = "abc"
+     * StringUtils.substringBeforeLast("abc", "c")   = "ab"
+     * StringUtils.substringBeforeLast("a", "a")     = ""
+     * StringUtils.substringBeforeLast("a", "z")     = "a"
+     * StringUtils.substringBeforeLast("a", null)    = "a"
+     * StringUtils.substringBeforeLast("a", "")      = "a"
+     * </pre>
+     *
+     * @param str  the String to get a substring from, may be null
+     * @param separator  the String to search for, may be null
+     * @return the substring before the last occurrence of the separator,
+     *  {@code null} if null String input
+     * @since 2.0
+     */
+    public static String substringBeforeLast(final String str, final String separator) {
+        if (isEmpty(str) || isEmpty(separator)) {
+            return str;
+        }
+        final int pos = str.lastIndexOf(separator);
+        if (pos == -1) {
+            return str;
+        }
+        return str.substring(0, pos);
+    }
+
+    /**
+     * <p>Gets the substring after the last occurrence of a separator.
+     * The separator is not returned.</p>
+     *
+     * <p>A {@code null} string input will return {@code null}.
+     * An empty ("") string input will return the empty string.
+     * An empty or {@code null} separator will return the empty string if
+     * the input string is not {@code null}.</p>
+     *
+     * <p>If nothing is found, the empty string is returned.</p>
+     *
+     * <pre>
+     * StringUtils.substringAfterLast(null, *)      = null
+     * StringUtils.substringAfterLast("", *)        = ""
+     * StringUtils.substringAfterLast(*, "")        = ""
+     * StringUtils.substringAfterLast(*, null)      = ""
+     * StringUtils.substringAfterLast("abc", "a")   = "bc"
+     * StringUtils.substringAfterLast("abcba", "b") = "a"
+     * StringUtils.substringAfterLast("abc", "c")   = ""
+     * StringUtils.substringAfterLast("a", "a")     = ""
+     * StringUtils.substringAfterLast("a", "z")     = ""
+     * </pre>
+     *
+     * @param str  the String to get a substring from, may be null
+     * @param separator  the String to search for, may be null
+     * @return the substring after the last occurrence of the separator,
+     *  {@code null} if null String input
+     * @since 2.0
+     */
+    public static String substringAfterLast(final String str, final String separator) {
+        if (isEmpty(str)) {
+            return str;
+        }
+        if (isEmpty(separator)) {
+            return "";
+        }
+        final int pos = str.lastIndexOf(separator);
+        if (pos == -1 || pos == str.length() - separator.length()) {
+            return "";
+        }
+        return str.substring(pos + separator.length());
+    }
 }

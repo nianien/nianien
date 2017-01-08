@@ -1,7 +1,7 @@
 package com.nianien.idea.database.sql;
 
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang3.StringUtils;
+import com.nianien.core.util.CollectionUtils;
+import com.nianien.core.util.StringUtils;
 
 import java.util.ArrayList;
 import java.util.Collection;

@@ -19,6 +19,7 @@ import java.util.Map;
  * @author skyfalling
  */
 public class CollectionUtils {
+
   /**
    * {@link Iterable}元素处理类
    *
@@ -36,6 +37,30 @@ public class CollectionUtils {
    */
   public interface ListHandler<E> extends IterableHandler<E, List<E>> {
     void handle(List<E> list);
+  }
+
+
+  /**
+   * 判断集合是否为空
+   *
+   * @param collection
+   * @param <T>
+   * @return
+   */
+  public static <T> boolean isEmpty(Collection<T> collection) {
+    return collection == null || collection.isEmpty();
+  }
+
+
+  /**
+   * 判断集合是否不为空
+   *
+   * @param collection
+   * @param <T>
+   * @return
+   */
+  public static <T> boolean isNotEmpty(Collection<T> collection) {
+    return !isEmpty(collection);
   }
 
   /**

@@ -301,7 +301,7 @@ public class ServletUtils {
         String[] values = request.getParameterValues(paraName);
         if (!encoding.equals(encode) && values != null) {
             for (int i = 0; i < values.length; i++) {
-                if (StringUtils.notEmpty(values[i])) {
+                if (StringUtils.isNotEmpty(values[i])) {
                     values[i] = StringUtils.transCode(values[i], encoding,
                             encode);
                 }
