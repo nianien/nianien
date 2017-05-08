@@ -529,6 +529,33 @@ public class Files {
 
 
     /**
+     * 向文件对象写入指定内容
+     *
+     * @param file     目标文件
+     * @param lines  待写入文本
+     * @param isAppend 是否追加
+     */
+    public static void writeLines(File file, List<String> lines, boolean isAppend) {
+        try {
+            writeLines(new FileWriter(file, isAppend),lines);
+        } catch (Exception e) {
+            ExceptionHandler.throwException(e);
+        }
+    }
+
+  /**
+   * 向文件对象写入指定内容
+   *
+   * @param writer     目标文件
+   * @param lines  待写入文本
+   */
+  public static void writeLines(Writer writer, List<String> lines) {
+        for (String line : lines) {
+            write(writer, line+newLine);
+        }
+  }
+
+    /**
      * 获取URL对象对应的系统路径,如果是压缩包,则获取压缩包所在路径
      *
      * @param url
