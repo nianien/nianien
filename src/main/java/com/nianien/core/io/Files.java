@@ -10,6 +10,7 @@ import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -143,14 +144,16 @@ public class Files {
      */
     public static byte[] getBytes(InputStream inputStream) {
         try {
-           /* ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+           /*
+            lack of performance:
+            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
             int read;
             byte[] buffer = new byte[bufferSize];
             while ((read = inputStream.read(buffer)) != -1) {
                 byteArrayOutputStream.write(buffer, 0, read);
             }
             return byteArrayOutputStream.toByteArray();*/
-            List<byte[]> buffers = new ArrayList<byte[]>();
+            List<byte[]> buffers = new LinkedList<>();
             int size = 0;
             int read;
             byte[] buffer = new byte[bufferSize];
@@ -368,7 +371,7 @@ public class Files {
      * @return 按行返回文本内容列表
      */
     public static List<String> readLines(Reader reader) {
-        final List<String> lines = new ArrayList<String>();
+        final List<String> lines = new ArrayList<>();
         readLines(reader, new Consumer<String>() {
             @Override
             public void apply(String s) {
