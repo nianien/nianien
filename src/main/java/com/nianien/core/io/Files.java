@@ -1,7 +1,7 @@
 package com.nianien.core.io;
 
 import com.nianien.core.exception.ExceptionHandler;
-import com.nianien.core.function.Function;
+import com.nianien.core.function.Consumer;
 import com.nianien.core.util.StringUtils;
 
 import java.io.*;
@@ -21,7 +21,7 @@ public class Files {
 
 
     /**
-     * 换行符, windows:"\r\n", linux: "\n"
+     * 换行符, windows:"\r\n", unix*: "\n"
      */
     public final static String newLine = System.getProperty("line.separator");
     /**
@@ -236,11 +236,10 @@ public class Files {
      */
     public static String read(Reader reader) {
         final StringBuilder sb = new StringBuilder();
-        readLines(reader, new Function<String, String>() {
+        readLines(reader, new Consumer<String>() {
             @Override
-            public String apply(String s) {
+            public void apply(String s) {
                 sb.append(s).append(newLine);
-                return null;
             }
         });
         return sb.toString();
@@ -280,11 +279,11 @@ public class Files {
      * 读取文件对象,处理每行的文本内容
      *
      * @param file
-     * @param function
+     * @param Consumer
      */
-    public static void readLines(File file, Function<String, String> function) {
+    public static void readLines(File file, Consumer<String> Consumer) {
         try {
-            readLines(new FileReader(file), function);
+            readLines(new FileReader(file), Consumer);
         } catch (Exception e) {
             throw ExceptionHandler.throwException(e);
         }
@@ -294,15 +293,15 @@ public class Files {
      * 以指定字符编码格式读取文件对象,处理每行的文本内容
      *
      * @param file
-     * @param function
+     * @param Consumer
      * @param charset
      */
-    public static void readLines(File file, Function<String, String> function,
+    public static void readLines(File file, Consumer<String> Consumer,
                                  String charset) {
         try {
             readLines(
                     new InputStreamReader(new FileInputStream(file), charset),
-                    function);
+                    Consumer);
         } catch (Exception e) {
             throw ExceptionHandler.throwException(e);
         }
@@ -322,10 +321,10 @@ public class Files {
      * 读取InputStream对象内容的每行内容, 然后关闭InputStream对象
      *
      * @param inputStream
-     * @param function
+     * @param Consumer
      */
-    public static void readLines(InputStream inputStream, Function<String, String> function) {
-        readLines(new InputStreamReader(inputStream), function);
+    public static void readLines(InputStream inputStream, Consumer<String> Consumer) {
+        readLines(new InputStreamReader(inputStream), Consumer);
     }
 
 
@@ -349,13 +348,13 @@ public class Files {
      * 以指定编码格式读取InputStream对象,按行处理文本内容 然后关闭InputStream对象
      *
      * @param inputStream
-     * @param function
+     * @param Consumer
      * @param charset
      */
-    public static void readLines(InputStream inputStream, Function<String, String> function,
+    public static void readLines(InputStream inputStream, Consumer<String> Consumer,
                                  String charset) {
         try {
-            readLines(new InputStreamReader(inputStream, charset), function);
+            readLines(new InputStreamReader(inputStream, charset), Consumer);
         } catch (Exception e) {
             throw ExceptionHandler.throwException(e);
         }
@@ -370,11 +369,10 @@ public class Files {
      */
     public static List<String> readLines(Reader reader) {
         final List<String> lines = new ArrayList<String>();
-        readLines(reader, new Function<String, String>() {
+        readLines(reader, new Consumer<String>() {
             @Override
-            public String apply(String s) {
+            public void apply(String s) {
                 lines.add(s);
-                return null;
             }
         });
         return lines;
@@ -384,14 +382,14 @@ public class Files {
      * 读取Reader对象,按行处理文本内容, 然关闭reader对象
      *
      * @param reader
-     * @param function
+     * @param Consumer
      */
-    public static void readLines(Reader reader, Function<String, String> function) {
+    public static void readLines(Reader reader, Consumer<String> Consumer) {
         try {
             BufferedReader buffer = new BufferedReader(reader);
             String line;
             while ((line = buffer.readLine()) != null) {
-                function.apply(line);
+                Consumer.apply(line);
             }
         } catch (Exception e) {
             ExceptionHandler.throwException(e);
