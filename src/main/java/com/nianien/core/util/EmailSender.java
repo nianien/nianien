@@ -2,26 +2,16 @@ package com.nianien.core.util;
 
 import com.nianien.core.exception.ExceptionHandler;
 
+import javax.activation.DataHandler;
+import javax.activation.FileDataSource;
+import javax.mail.*;
+import javax.mail.Message.RecipientType;
+import javax.mail.internet.*;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Properties;
-
-import javax.activation.DataHandler;
-import javax.activation.FileDataSource;
-import javax.mail.Authenticator;
-import javax.mail.Message;
-import javax.mail.Message.RecipientType;
-import javax.mail.Multipart;
-import javax.mail.PasswordAuthentication;
-import javax.mail.Session;
-import javax.mail.Transport;
-import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeBodyPart;
-import javax.mail.internet.MimeMessage;
-import javax.mail.internet.MimeMultipart;
-import javax.mail.internet.MimeUtility;
 
 /**
  * 发送邮件的工具类
@@ -256,7 +246,8 @@ public class EmailSender {
                 MimeBodyPart attachmentPart = new MimeBodyPart();
                 FileDataSource source = new FileDataSource(attachment);
                 attachmentPart.setDataHandler(new DataHandler(source));
-                attachmentPart.setFileName(MimeUtility.encodeWord(attachment.getName(), "GBK", null));
+                attachmentPart.setFileName(MimeUtility.encodeWord(attachment.getName()));
+//                attachmentPart.setFileName(MimeUtility.encodeWord(attachment.getName(), "GBK", null));
                 multipart.addBodyPart(attachmentPart);
             }
             message.setContent(multipart);
