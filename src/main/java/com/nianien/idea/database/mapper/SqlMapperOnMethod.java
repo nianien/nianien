@@ -13,9 +13,19 @@ import java.util.Properties;
  * sql.properties文件存在三种配置方式:<br/>
  * <ol>
  * <li>path=classpath:/，file=sql.properties，key=${class.fullName}.${method}</li>
- * <li>path=classpath:/${package}/，file=sql.properties，配置项为：key=${class.simpleName}.${method}</li>
+ * <li>path=classpath:/${package}/，file=sql.properties，key=${class.simpleName}.${method}</li>
  * <li>path=classpath:/${package}/，file=${class.simpleName}.sql.properties，key=${method}</li>
  * </ol>
+ * 使用方法:<br/>
+ * <pre>
+ * MyClass extends SqlMapperOnMethod{
+ *
+ *    public void doActionInDb(){
+ *      String sql=getSql();
+ *      //execute(sql);
+ *    }
+ * }
+ * </pre>
  *
  * @author skyfalling.
  */
