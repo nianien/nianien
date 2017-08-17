@@ -173,7 +173,7 @@ public class SqlBuilder {
      * @param fields    字段列表
      * @return
      */
-    public static SqlStatement insertSql(String tableName, List<DataField> fields) {
+    public static SqlStatement insertSql(String tableName, Collection<DataField> fields) {
         assert !fields.isEmpty() : "required at least one field to insert";
         SqlStatement sqlStatement = new SqlStatement("insert into").append(tableName);
         StringBuilder nameString = new StringBuilder("(");
@@ -294,7 +294,7 @@ public class SqlBuilder {
      * @param conditionFields 条件字段
      * @return
      */
-    public static SqlStatement updateSql(String tableName, List<DataField> updateFields, List<DataField> conditionFields) {
+    public static SqlStatement updateSql(String tableName, Collection<DataField> updateFields, Collection<DataField> conditionFields) {
         assert !updateFields.isEmpty() : "required at least one field to update";
         SqlStatement sqlStatement = new SqlStatement("update").append(tableName).append("set");
         Iterator<DataField> iterator = updateFields.iterator();
@@ -380,7 +380,7 @@ public class SqlBuilder {
      * @param conditions
      * @return
      */
-    public static SqlStatement deleteSql(String tableName, List<DataField> conditions) {
+    public static SqlStatement deleteSql(String tableName, Collection<DataField> conditions) {
         return whereSql(new SqlStatement("delete from").append(tableName), conditions);
     }
 
@@ -417,7 +417,7 @@ public class SqlBuilder {
      * @param conditions
      * @return
      */
-    private static SqlStatement whereSql(SqlStatement sqlStatement, List<DataField> conditions) {
+    private static SqlStatement whereSql(SqlStatement sqlStatement, Collection<DataField> conditions) {
         if (conditions.isEmpty())
             return sqlStatement;
         sqlStatement.append("where");
