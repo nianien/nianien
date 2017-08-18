@@ -58,7 +58,8 @@ class DataTableImpl<T> implements DataTable<T> {
         });
         if (idField == null && hasField("id")) {
             idField = fieldProperty("id").name;
-        } else {
+        }
+        if(idField==null){
             logger.warning("no id field defined in table[" + type + "]");
         }
     }
