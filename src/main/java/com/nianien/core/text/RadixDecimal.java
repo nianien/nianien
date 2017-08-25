@@ -7,7 +7,7 @@ import com.nianien.core.exception.ExceptionHandler;
  *
  * @author skyfalling
  */
-public class HexDecimal {
+public class RadixDecimal {
 
     /**
      * 默认字符集合[0-9A-Za-z]
@@ -15,21 +15,21 @@ public class HexDecimal {
     public final static char[] defaultCharset = Characters.NumberAndLetter;
 
     /**
-     * 将十进制的数字转换为base进制<br>
+     * 将十进制的数字转换为radix进制<br>
      * 这里采用[0-9A-Za-z]字符集合,最大表示可表示62进制
      *
      * @param num  十进制数
-     * @param base 进制基数
+     * @param radix 进制基数
      * @return N进制数字字符串
      */
-    public static String decToHex(long num, int base) {
-        ExceptionHandler.throwIf(base > 62, "the base of hex must be no more than 62.");
+    public static String radix(long num, int radix) {
+        ExceptionHandler.throwIf(radix > 62, "the radix of hex must be no more than 62.");
         if (num == 0)
             return "0";
         StringBuilder sb = new StringBuilder();
         while (num != 0) {
-            sb.insert(0, defaultCharset[(int) (num % base)]);
-            num /= base;
+            sb.insert(0, defaultCharset[(int) (num % radix)]);
+            num /= radix;
         }
         return sb.toString();
     }
@@ -41,7 +41,7 @@ public class HexDecimal {
      * @param charset N进制对应的字符集
      * @return N进制数字字符串
      */
-    public static String decToHex(long num, char[] charset) {
+    public static String radix(long num, char[] charset) {
         ExceptionHandler.throwIf(charset.length < 2, "the number of different characters must be more than 2.");
         if (num == 0)
             return "0";
@@ -59,18 +59,18 @@ public class HexDecimal {
      * 这里采用[0-9A-Za-z]字符集合,最大表示可表示62进制
      *
      * @param source N进制字符串
-     * @param base   进制基数
+     * @param radix   进制基数
      * @return 转换后的十进制数
      */
-    public static long hexToDec(String source, int base) {
-        ExceptionHandler.throwIf(base > 62, "the base of hex must be no more than 62.");
+    public static long decimal(String source, int radix) {
+        ExceptionHandler.throwIf(radix > 62, "the radix of hex must be no more than 62.");
         if (source == "0")
             return 0;
         int len = source.length();
         long sum = 0;
         for (int i = 0; i < len; i++) {
-            sum = sum * base;
-            int n = getHexValue(source.charAt(i), base);
+            sum = sum * radix;
+            int n = decimal(source.charAt(i), radix);
             if (n != 0) {
                 sum += n;
             }
@@ -86,7 +86,7 @@ public class HexDecimal {
      * @param charset
      * @return 转换后的十进制数
      */
-    public static long hexToDec(String source, char[] charset) {
+    public static long decimal(String source, char[] charset) {
         ExceptionHandler.throwIf(charset.length < 2, "the number of different characters must be more than 2.");
         if (source == "0")
             return 0;
@@ -95,7 +95,7 @@ public class HexDecimal {
         long sum = 0;
         for (int i = 0; i < len; i++) {
             sum = sum * N;
-            int n = getHexValue(source.charAt(i), charset);
+            int n = decimal(source.charAt(i), charset);
             if (n != 0) {
                 sum += n;
             }
@@ -108,13 +108,13 @@ public class HexDecimal {
      * 获取base进制字符ch在默认字符集[0-9A-Za-z]中对应的十进制数
      *
      * @param ch   字符集中的字符
-     * @param base 进制基数
+     * @param radix 进制基数
      * @return
      */
-    private static int getHexValue(char ch, int base) {
+    private static int decimal(char ch, int radix) {
         char[] charset = defaultCharset;
         int n = -1;
-        int len = charset.length < base ? charset.length : base;
+        int len = charset.length < radix ? charset.length : radix;
         for (int i = 0; i < len; i++) {
             if (ch == charset[i]) {
                 n = i;
@@ -132,7 +132,7 @@ public class HexDecimal {
      * @param charset
      * @return
      */
-    private static int getHexValue(char ch, char[] charset) {
+    private static int decimal(char ch, char[] charset) {
         int n = -1;
         int len = charset.length;
         for (int i = 0; i < len; i++) {

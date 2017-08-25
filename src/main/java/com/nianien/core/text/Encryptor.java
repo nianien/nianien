@@ -35,7 +35,7 @@ public class Encryptor {
     public static String encrypt(String source, char[] charset) {
         StringBuilder sb = new StringBuilder();
         for (char c : source.toCharArray()) {
-            String str = HexDecimal.decToHex(c, charset);
+            String str = RadixDecimal.radix(c, charset);
             sb.append(StringUtils.lefPad(str, getDigit(charset.length),
                     charset[0]));
         }
@@ -54,7 +54,7 @@ public class Encryptor {
         String[] arr = groupByLength(source, 3);
         StringBuilder sb = new StringBuilder();
         for (String s : arr) {
-            sb.append((char) HexDecimal.hexToDec(s, 62));
+            sb.append((char) RadixDecimal.hexToDec(s, 62));
         }
         return sb.toString();
     }
@@ -70,7 +70,7 @@ public class Encryptor {
         String[] arr = groupByLength(source, getDigit(charset.length));
         StringBuilder sb = new StringBuilder();
         for (String s : arr) {
-            sb.append((char) HexDecimal.hexToDec(s, charset));
+            sb.append((char) RadixDecimal.hexToDec(s, charset));
         }
         return sb.toString();
     }
