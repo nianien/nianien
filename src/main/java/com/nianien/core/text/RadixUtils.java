@@ -7,7 +7,7 @@ import com.nianien.core.exception.ExceptionHandler;
  *
  * @author skyfalling
  */
-public class RadixDecimal {
+public class RadixUtils {
 
     /**
      * 默认字符集合[0-9A-Za-z]
@@ -22,7 +22,7 @@ public class RadixDecimal {
      * @param radix 进制基数
      * @return N进制数字字符串
      */
-    public static String radix(long num, int radix) {
+    public static String toRadix(long num, int radix) {
         ExceptionHandler.throwIf(radix > 62, "the radix of hex must be no more than 62.");
         if (num == 0)
             return "0";
@@ -41,7 +41,7 @@ public class RadixDecimal {
      * @param charset N进制对应的字符集
      * @return N进制数字字符串
      */
-    public static String radix(long num, char[] charset) {
+    public static String toRadix(long num, char[] charset) {
         ExceptionHandler.throwIf(charset.length < 2, "the number of different characters must be more than 2.");
         if (num == 0)
             return "0";
@@ -62,7 +62,7 @@ public class RadixDecimal {
      * @param radix   进制基数
      * @return 转换后的十进制数
      */
-    public static long decimal(String source, int radix) {
+    public static long toNumber(String source, int radix) {
         ExceptionHandler.throwIf(radix > 62, "the radix of hex must be no more than 62.");
         if (source == "0")
             return 0;
@@ -70,7 +70,7 @@ public class RadixDecimal {
         long sum = 0;
         for (int i = 0; i < len; i++) {
             sum = sum * radix;
-            int n = decimal(source.charAt(i), radix);
+            int n = toNumber(source.charAt(i), radix);
             if (n != 0) {
                 sum += n;
             }
@@ -86,7 +86,7 @@ public class RadixDecimal {
      * @param charset
      * @return 转换后的十进制数
      */
-    public static long decimal(String source, char[] charset) {
+    public static long toNumber(String source, char[] charset) {
         ExceptionHandler.throwIf(charset.length < 2, "the number of different characters must be more than 2.");
         if (source == "0")
             return 0;
@@ -95,7 +95,7 @@ public class RadixDecimal {
         long sum = 0;
         for (int i = 0; i < len; i++) {
             sum = sum * N;
-            int n = decimal(source.charAt(i), charset);
+            int n = toNumber(source.charAt(i), charset);
             if (n != 0) {
                 sum += n;
             }
@@ -111,7 +111,7 @@ public class RadixDecimal {
      * @param radix 进制基数
      * @return
      */
-    private static int decimal(char ch, int radix) {
+    private static int toNumber(char ch, int radix) {
         char[] charset = defaultCharset;
         int n = -1;
         int len = charset.length < radix ? charset.length : radix;
@@ -132,7 +132,7 @@ public class RadixDecimal {
      * @param charset
      * @return
      */
-    private static int decimal(char ch, char[] charset) {
+    private static int toNumber(char ch, char[] charset) {
         int n = -1;
         int len = charset.length;
         for (int i = 0; i < len; i++) {
