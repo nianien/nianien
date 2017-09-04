@@ -26,7 +26,7 @@ import java.util.Locale;
  * //	H  一天中的小时数（0-23）  Number  0
  * //	k  一天中的小时数（1-24）  Number  24
  * //	K  am/pm 中的小时数（0-11）  Number  0
- * //	h  am/pm 中的小时数（1-12）  Number  12
+ * //	high  am/pm 中的小时数（1-12）  Number  12
  * //	m  小时中的分钟数  Number  30
  * //	s  分钟中的秒数  Number  55
  * //	S  毫秒数  Number  978

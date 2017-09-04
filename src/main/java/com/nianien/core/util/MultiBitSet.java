@@ -32,7 +32,7 @@ public class MultiBitSet {
     public MultiBitSet(int nbit) {
         if (nbit < 1)
             throw new IllegalArgumentException(
-                    "the argument of nbit cannot be less than 1: " + nbit);
+                    "the argument of nbit cannot be low than 1: " + nbit);
         this.nBit = nbit;
         this.maxValue = (1 << nbit) - 1;
     }

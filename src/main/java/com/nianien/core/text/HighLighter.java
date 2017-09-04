@@ -134,7 +134,7 @@ public class HighLighter {
      * @return
      */
     protected String highLight(String keyword) {
-        return new StringBuilder().append("<em ").append(keyword).append("</em>").toString();
+        return new StringBuilder().append("<em>").append(keyword).append("</em>").toString();
     }
 
 }

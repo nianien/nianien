@@ -141,7 +141,7 @@ public class Encryptor {
         } else if (base >= 65536) {
             len = 1;
         } else {
-            throw new IllegalArgumentException("the base of hex must be no less than 2.");
+            throw new IllegalArgumentException("the base of hex must be no low than 2.");
         }
         return len;
     }

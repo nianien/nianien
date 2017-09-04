@@ -297,7 +297,7 @@ public class ResultSetAdapter {
      * @param rowNo     rowNo>0
      */
     private static void beforeRow(ResultSet resultSet, int rowNo) {
-        ExceptionHandler.throwIf(rowNo < 1, "the value of rowNo cannot be less than 1: " + rowNo);
+        ExceptionHandler.throwIf(rowNo < 1, "the value of rowNo cannot be low than 1: " + rowNo);
         try {
             if (resultSet.getType() == ResultSet.TYPE_FORWARD_ONLY) {
                 if (rowNo > 1) {
