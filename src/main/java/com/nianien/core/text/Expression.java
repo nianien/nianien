@@ -55,7 +55,7 @@ public class Expression {
      *
      * @author skyfalling
      */
-    public static interface VariableHandler {
+    public interface VariableHandler {
         /**
          * 处理表达式变量
          *
