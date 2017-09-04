@@ -28,9 +28,8 @@ public class TestRegexUtils {
         System.out.println("${a}".replaceAll("\\$\\{.*}", "a"));
         Map map = new HashMap();
         map.put("${a}", "b");
-        System.out.println(RegexUtils.replace("${a}", "\\$\\{.*}", map));
+        map.put("${a1}", "b");
+        System.out.println(RegexUtils.replace("${a}${a1}", "\\$\\{.*?}", map));
 
-        String pattern="URL,AUTO";
-        System.out.println(RegexUtils.matchWildcard("*URL",pattern));
     }
 }

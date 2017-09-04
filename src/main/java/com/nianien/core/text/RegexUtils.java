@@ -2,8 +2,10 @@ package com.nianien.core.text;
 
 import com.nianien.core.function.Function;
 import com.nianien.core.util.ArrayUtils;
+import com.nianien.core.util.StringUtils;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -185,48 +187,22 @@ public class RegexUtils {
     }
 
     /**
-     * 将在source字符串中匹配正则式regex的部分用map对应key的value值替换<br>
+     * 将在source字符串中正则式regex匹配部分作为key查询map中的value进行替换<br>
      * 如果map中不存在对应的key,则不进行替换<br>
      *
      * @param source
      * @param regex
-     * @param map
+     * @param replacement
      * @return 替换后的字符串
      */
     public static String replace(String source, String regex,
-                                 final Map<String, String> map) {
-        return replace(source, regex, new Function<String, String>() {
-
-            @Override
-            public String apply(String matched) {
-                return map.containsKey(matched) ? map.get(matched) : matched;
-            }
-        });
+                                 final Map<String, String> replacement) {
+        return replace(source, regex,replacement,null);
     }
 
-    /**
-     * 将在source字符串中匹配正则式regex的部分用map对应key的value值替换<br>
-     * 如果map中不存在对应的key,则用字符串instead替换匹配成功的字符串<br>
-     *
-     * @param source
-     * @param regex
-     * @param map
-     * @param instead
-     * @return 替换后的字符串
-     */
-    public static String replace(String source, String regex,
-                                 final Map<String, String> map, final String instead) {
-        return replace(source, regex, new Function<String, String>() {
-
-            @Override
-            public String apply(String matched) {
-                return map.containsKey(matched) ? map.get(matched) : instead;
-            }
-        });
-    }
 
     /**
-     * 将字符串source中成功匹配正则式regex的部分用replacement替换<br>
+     * 将在source字符串中正则式regex匹配部分用replacement替换<br>
      *
      * @param source
      * @param regex
@@ -235,17 +211,34 @@ public class RegexUtils {
      */
     public static String replace(String source, String regex,
                                  final String replacement) {
-        return replace(source, regex, new Function<String, String>() {
-
-            @Override
-            public String apply(String matched) {
-                return replacement;
-            }
-        });
+        return replace(source, regex, Collections.<String, String>emptyMap(), StringUtils.defaultIfNull(replacement,""));
     }
 
     /**
-     * 将字符串source中成功匹配正则式regex的部分作为方法{@link StringHandler#handle(String)}的参数,用执行结果进行替换<br>
+     * 将在source字符串中正则式regex匹配部分作为key查询map中的value进行替换<br>
+     * 如果map中不存在对应的key,则用字符串instead替换,instead为null则不替换<br>
+     *
+     * @param source
+     * @param regex
+     * @param replacement  字符替换映射表,不可为null
+     * @param instead  替换字符串,如果为null表示使用原
+     * @return 替换后的字符串
+     */
+    public static String replace(String source, String regex,
+                                 final Map<String, String> replacement, final String instead) {
+      return replace(source, regex, new Function<String, String>() {
+
+        @Override
+        public String apply(String matched) {
+          return replacement.containsKey(matched) ? replacement.get(matched) : instead;
+        }
+      });
+    }
+
+
+
+  /**
+     * 调用{@link Function}&lt;{@link String},{@link String}>处理字符串source成功匹配正则式regex的部分, 将使用返回结果进行替换<br>
      *
      * @param source
      * @param regex

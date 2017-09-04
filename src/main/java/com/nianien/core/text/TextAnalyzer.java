@@ -91,7 +91,7 @@ public class TextAnalyzer {
      *
      * @author skyfalling
      */
-    public static interface FragmentHandler {
+    public interface FragmentHandler {
 
         /**
          * 根据切分片断并参照原文本对切分片断进行处理
