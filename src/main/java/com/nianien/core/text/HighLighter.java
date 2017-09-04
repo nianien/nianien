@@ -3,7 +3,6 @@ package com.nianien.core.text;
 import com.nianien.core.comparator.StringComparator;
 import com.nianien.core.text.TextAnalyzer.Fragment;
 import com.nianien.core.text.TextAnalyzer.FragmentHandler;
-import com.nianien.core.util.StringUtils;
 
 import java.util.Arrays;
 
@@ -15,10 +14,6 @@ import java.util.Arrays;
 public class HighLighter {
 
     /**
-     * 高亮显示样式
-     */
-    private String cssStyle;
-    /**
      * 高亮显示的关键字列表
      */
     private String[] keywords;
@@ -27,24 +22,6 @@ public class HighLighter {
      */
     private boolean ignoreCase;
 
-    /**
-     * 高亮显示样式
-     *
-     * @return
-     */
-    public String getCssStyle() {
-        return cssStyle;
-    }
-
-    /**
-     * 设置高亮显示样式<br> 形如:
-     * style="color:#FF0000;font-weight:bold;"或class="keywords"
-     *
-     * @param cssStyle
-     */
-    public void setCssStyle(String cssStyle) {
-        this.cssStyle = cssStyle;
-    }
 
     /**
      * 高亮显示时是否忽略大小写
@@ -87,33 +64,22 @@ public class HighLighter {
     /**
      * 构造函数
      *
-     * @param keywords 高亮显示的关键字列表
+     * @param keywords 需要高亮显示的关键字列表
      */
     public HighLighter(String[] keywords) {
         this(keywords, false);
     }
 
-    /**
-     * 构造函数
-     *
-     * @param keywords   高亮显示的关键字列表
-     * @param ignoreCase 是否忽略大小写
-     */
-    public HighLighter(String[] keywords, boolean ignoreCase) {
-        this(keywords, ignoreCase, "style=\"color:#FF0000;font-weight:bold;\"");
-    }
 
     /**
      * 构造函数
      *
-     * @param keywords   高亮显示的关键字列表
+     * @param keywords   需要高亮显示的关键字列表
      * @param ignoreCase 是否忽略大小写
-     * @param cssStyle   高亮显示样式
      */
-    public HighLighter(String[] keywords, boolean ignoreCase, String cssStyle) {
+    public HighLighter(String[] keywords, boolean ignoreCase) {
         this.setKeywords(keywords);
         this.setIgnoreCase(ignoreCase);
-        this.setCssStyle(cssStyle);
     }
 
     /**
@@ -159,6 +125,8 @@ public class HighLighter {
                 });
     }
 
+
+
     /**
      * 高亮显示关键字,重写该方法以实现不同的高亮模式
      *
@@ -166,9 +134,7 @@ public class HighLighter {
      * @return
      */
     protected String highLight(String keyword) {
-        StringBuilder sb = new StringBuilder();
-        sb.append("<span ").append(StringUtils.defaultIfEmpty(cssStyle, "")).append(" >").append(keyword).append("</span>");
-        return sb.toString();
+        return new StringBuilder().append("<em ").append(keyword).append("</em>").toString();
     }
 
 }
