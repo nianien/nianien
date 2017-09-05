@@ -1,8 +1,8 @@
 package com.nianien.test.text;
 
 import com.nianien.core.collection.map.MapWrapper;
+import com.nianien.core.function.Function;
 import com.nianien.core.text.Expression;
-import com.nianien.core.text.Expression.VariableHandler;
 import org.junit.Test;
 
 import java.util.*;
@@ -14,7 +14,7 @@ import java.util.*;
 public class TestExpression {
 
 
-    static class SqlVariableHandler implements VariableHandler {
+    static class SqlVariableHandler implements Function<String,Object> {
 
         private final List parameters = new ArrayList();
         private final Map<String, Object> map = new HashMap<String, Object>();
@@ -32,7 +32,7 @@ public class TestExpression {
         }
 
         @Override
-        public Object handle(String variable) {
+        public Object apply(String variable) {
             parameters.add(map.get(variable));
             return "?";
         }
@@ -88,8 +88,8 @@ public class TestExpression {
         map.put("a", "[${b}]-[${c}]");
         map.put("b", "${d}+${c}");
         map.put("c", "${d}-${equal}");
-        map.put("d", "date");
-        map.put("e", "test");
+        map.put("d", "${a}");
+        map.put("e", "${a}");
         Map testMap = new HashMap();
         for (String key : map.keySet()) {
             String value = map.get(key);

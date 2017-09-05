@@ -1,9 +1,12 @@
 package com.nianien.core.text;
 
 import com.nianien.core.exception.ExceptionHandler;
+import com.nianien.core.function.Function;
 import com.nianien.core.util.StringUtils;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Stack;
 
 /**
  * 变量表达式解析类,变量表达式是指由左右边界符和变量名组成的字符串<br/>
@@ -13,7 +16,7 @@ import java.util.*;
  * <ol>
  * <li>
  * <pre>
- * new Expression("${","}").eval("${0}年${1}月${2}日",2012,12,21);//2012年12月21日
+ * new Expression("${","}").resolve("${0}年${1}月${2}日",2012,12,21);//2012年12月21日
  * </pre>
  * </li>
  * <li>
@@ -22,7 +25,7 @@ import java.util.*;
  * map.put("year",2012);
  * map.put("month",12);
  * map.put("day",21);
- * new Expression("${","}").eval("${year}年${month}月${day}日",map);//2012年12月21日
+ * new Expression("${","}").resolve("${year}年${month}月${day}日",map);//2012年12月21日
  * </pre>
  * </li>
  * <li>
@@ -31,7 +34,7 @@ import java.util.*;
  * map.put("0",2012);
  * map.put("1",12);
  * map.put("2",21);
- * new Expression("${","}").eval("${0}年${1}月${2}日",map,2013);//2013年12月21日
+ * new Expression("${","}").resolve("${0}年${1}月${2}日",map,2013);//2013年12月21日
  * </pre>
  * </li>
  * <li>
@@ -40,7 +43,7 @@ import java.util.*;
  * handler.handle("year"); // 2013
  * handler.handle("month"); // 12
  * handler.handle("day"); // 21
- * new Expression("${","}").eval("${year}年${month}月${day}日",handler);//2013年12月21日
+ * new Expression("${","}").resolve("${year}年${month}月${day}日",handler);//2013年12月21日
  * </pre>
  * </li>
  * </ol>
@@ -50,20 +53,6 @@ import java.util.*;
  */
 public class Expression {
 
-    /**
-     * 表达式变量处理的接口声明
-     *
-     * @author skyfalling
-     */
-    public interface VariableHandler {
-        /**
-         * 处理表达式变量
-         *
-         * @param variable 表达式变量
-         * @return 变量处理结果
-         */
-        Object handle(String variable);
-    }
 
     /**
      * 表达式的左边界
@@ -161,7 +150,7 @@ public class Expression {
      * 代入位置变量计算表达式<br/>
      * <code>
      * <pre>
-     * new Expression("${","}").eval("${0}年${1}月${2}日",2012,12,21);//2012年12月21日
+     * new Expression("${","}").resolve("${0}年${1}月${2}日",2012,12,21);//2012年12月21日
      * </pre>
      * </code>
      *
@@ -181,7 +170,7 @@ public class Expression {
      * map.put("year",2012);
      * map.put("month",12);
      * map.put("day",21);
-     * new Expression("${","}").eval("${year}年${month}月${day}日",map);//2012年12月21日
+     * new Expression("${","}").resolve("${year}年${month}月${day}日",map);//2012年12月21日
      * </pre>
      * </code>
      *
@@ -202,7 +191,7 @@ public class Expression {
      * map.put("0",2012);
      * map.put("1",12);
      * map.put("2",21);
-     * new Expression("${","}").eval("${0}年${1}月${2}日",map,2013);//2013年12月21日
+     * new Expression("${","}").resolve("${0}年${1}月${2}日",map,2013);//2013年12月21日
      * </pre>
      * </code>
      *
@@ -226,22 +215,56 @@ public class Expression {
     }
 
     /**
+     * 递归代入map包含的变量表达式
+     *
+     * @param expression    当前表达式
+     * @param variableStack 已代入变量列表
+     * @param map           变量声明
+     * @return
+     */
+    private String resolve(String expression, final Stack<String> variableStack, final Map<String, ?> map) {
+        if (StringUtils.isEmpty(expression))
+            return expression;
+        for (String resolved = ""; !resolved.equals(expression); expression = resolved) {
+            resolved = this.resolve(expression, new Function<String, Object>() {
+                @Override
+                public Object apply(String variable) {
+                    if (variableStack.contains(variable))
+                        throw new IllegalArgumentException("circular variable expression: " +
+                                buildExpression(variable));
+                    Object value = map.get(variable);
+                    if (value instanceof String) {
+                        variableStack.add(variable);
+                        return resolve(value.toString(), variableStack, map);
+                    }
+                    return value;
+                }
+            });
+        }
+        if (!variableStack.isEmpty()) {
+            variableStack.pop();
+        }
+        return expression;
+    }
+
+
+    /**
      * 利用表达式变量处理对象解析表达式中包含的变量,将形如"${n}"和"{variable}"的表达式代入VariableHandler对象的处理结果<br/>
      * <code>
      * <pre>
-     * VariableHandler handler;
-     * handler.handle("year"); // 2013
-     * handler.handle("month"); // 12
-     * handler.handle("day"); // 21
-     * new Expression("${","}").eval("${year}年${month}月${day}日",handler);//2013年12月21日
+     * Function<String,Object> function;
+     * function.apply("year"); // return 2013
+     * function.apply("month"); // return 12
+     * function.apply("day"); // return 21
+     * new Expression("${","}").resolve("${year}年${month}月${day}日",function);//2013年12月21日
      * </pre>
      * </code>
      *
      * @param expression 变量表达式
-     * @param handler    变量处理对象
+     * @param function   变量处理对象
      * @return 代入后的表达式
      */
-    public String eval(String expression, VariableHandler handler) {
+    private String resolve(String expression, Function<String, Object> function) {
         // 左右边界符的宽度
         int nL = left.length(), nR = right.length();
         // 存储解析后的表达式子串的栈
@@ -265,7 +288,7 @@ public class Expression {
                     // 解析表达式变量
                     String variable = variableBuilder.toString();
                     variableBuilder.setLength(0);
-                    Object value = handler.handle(variable);
+                    Object value = function.apply(variable);
                     variableBuilder.append(value != null ? value.toString() : keepUnknownVariable ? buildExpression(variable) : null);
                     // 如果栈顶不是左边界, 则将代入后的结果与栈顶元素内容合并
                     if (!stack.isEmpty() && !stack.peek().equals(left)) {
@@ -284,39 +307,6 @@ public class Expression {
             variableBuilder.insert(0, stack.pop());
         }
         return variableBuilder.toString();
-    }
-
-
-    /**
-     * 递归代入map包含的变量表达式
-     *
-     * @param expression    当前表达式
-     * @param variableStack 已代入变量列表
-     * @param map           变量声明
-     * @return
-     */
-    private String resolve(String expression, final Stack<String> variableStack, final Map<String, ?> map) {
-        if (StringUtils.isEmpty(expression))
-            return expression;
-        for (String resolved = ""; !resolved.equals(expression); expression = resolved) {
-            resolved = this.eval(expression, new VariableHandler() {
-                @Override
-                public Object handle(String variable) {
-                    if (variableStack.contains(variable))
-                        throw new IllegalArgumentException("circular variable expression: " + buildExpression(variable));
-                    Object value = map.get(variable);
-                    if (value instanceof String) {
-                        variableStack.add(variable);
-                        return resolve(value.toString(), variableStack, map);
-                    }
-                    return value;
-                }
-            });
-        }
-        if (!variableStack.isEmpty()) {
-            variableStack.pop();
-        }
-        return expression;
     }
 
 }
