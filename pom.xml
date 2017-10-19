@@ -6,7 +6,7 @@
 
     <groupId>com.nianien</groupId>
     <artifactId>nianien</artifactId>
-    <version>3.1.1</version>
+    <version>3.1.2</version>
 
     <!-- 设置编码 -->
     <properties>
@@ -14,7 +14,7 @@
         <java.version>1.7</java.version>
 
         <c3p0.version>0.9.5.2</c3p0.version>
-        <jackson.version>2.5.3</jackson.version>
+        <jackson.version>2.9.0</jackson.version>
         <javassist.version>3.18.1-GA</javassist.version>
         <dom4j.version>1.6.1</dom4j.version>
         <ant.version>1.9.3</ant.version>

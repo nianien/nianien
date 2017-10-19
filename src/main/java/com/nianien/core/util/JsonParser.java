@@ -135,7 +135,7 @@ public class JsonParser {
     public <T> T[] toArray(String json, Class<T> elementType) {
         try {
             JavaType eType = toJavaType(elementType);
-            return objectMapper.readValue(json, ArrayType.construct(eType, null, null));
+            return objectMapper.readValue(json, ArrayType.construct(eType, null));
         } catch (Exception e) {
             throw ExceptionHandler.throwException(e);
         }
@@ -199,13 +199,13 @@ public class JsonParser {
      */
     private JavaType toJavaType(Class<?> clazz) {
         if (clazz.isArray()) {
-            return ArrayType.construct(SimpleType.construct(clazz.getComponentType()), null, null);
+            return ArrayType.construct(SimpleType.constructUnsafe(clazz.getComponentType()),null);
         } else if (Collection.class.isAssignableFrom(clazz)) {
-            return CollectionType.construct(clazz, SimpleType.construct(Object.class));
+            return CollectionType.construct(clazz,null,null,null, SimpleType.constructUnsafe(Object.class));
         } else if (Map.class.isAssignableFrom(clazz)) {
-            return MapType.construct(clazz, SimpleType.construct(Object.class), SimpleType.construct(Object.class));
+            return MapType.construct(clazz,null,null,null, SimpleType.constructUnsafe(Object.class), SimpleType.constructUnsafe(Object.class));
         } else {
-            return SimpleType.construct(clazz);
+            return SimpleType.constructUnsafe(clazz);
         }
     }
 
