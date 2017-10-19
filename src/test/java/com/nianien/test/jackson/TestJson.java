@@ -91,6 +91,19 @@ public class TestJson {
     }
 
     @Test
+    public void testArray() {
+        JsonParser jp = new JsonParser();
+        String[][] arr = new String[2][];
+        arr[0] = new String[]{"zg", "\"中国"};
+        arr[1] = new String[]{"mg", "美国"};
+        System.out.println(jp.toJson(arr));
+        String json = jp.toJson(arr);
+        arr = jp.toArray(json, String[].class);
+        for (String[] s : arr) {
+            System.out.println(Arrays.toString(s));
+        }
+    }
+    @Test
     public void testOther() {
         JsonParser jp = new JsonParser();
         String[][] arr = new String[2][];

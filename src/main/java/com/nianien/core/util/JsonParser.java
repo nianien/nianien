@@ -9,6 +9,7 @@ import com.fasterxml.jackson.databind.type.ArrayType;
 import com.fasterxml.jackson.databind.type.CollectionType;
 import com.fasterxml.jackson.databind.type.MapType;
 import com.fasterxml.jackson.databind.type.SimpleType;
+import com.fasterxml.jackson.databind.type.TypeBindings;
 import com.nianien.core.date.DateFormatter;
 import com.nianien.core.exception.ExceptionHandler;
 
@@ -135,7 +136,7 @@ public class JsonParser {
     public <T> T[] toArray(String json, Class<T> elementType) {
         try {
             JavaType eType = toJavaType(elementType);
-            return objectMapper.readValue(json, ArrayType.construct(eType, null));
+            return objectMapper.readValue(json, ArrayType.construct(eType, (TypeBindings)null));
         } catch (Exception e) {
             throw ExceptionHandler.throwException(e);
         }
@@ -153,7 +154,13 @@ public class JsonParser {
     public <T> List<T> toList(String json, Class<T> elementType) {
         try {
             JavaType eType = toJavaType(elementType);
-            return objectMapper.readValue(json, CollectionType.construct(List.class, eType));
+            return objectMapper.readValue(json,
+                    CollectionType.construct(
+                            List.class,
+                            TypeBindings.create(elementType, eType),
+                            (JavaType)null,
+                            (JavaType[])null,
+                            eType));
         } catch (Exception e) {
             throw ExceptionHandler.throwException(e);
         }
@@ -171,7 +178,14 @@ public class JsonParser {
         try {
             JavaType kType = toJavaType(keyType);
             JavaType vType = toJavaType(valueType);
-            return objectMapper.readValue(json, MapType.construct(Map.class, kType, vType));
+            return objectMapper.readValue(json,
+                    MapType.construct(
+                            Map.class,
+                            TypeBindings.create(Map.class, kType, vType),
+                            (JavaType)null,
+                            (JavaType[])null,
+                            kType,
+                            vType));
         } catch (Exception e) {
             throw ExceptionHandler.throwException(e);
         }
@@ -199,11 +213,24 @@ public class JsonParser {
      */
     private JavaType toJavaType(Class<?> clazz) {
         if (clazz.isArray()) {
-            return ArrayType.construct(SimpleType.constructUnsafe(clazz.getComponentType()),null);
+            return ArrayType.construct(
+                    SimpleType.constructUnsafe(clazz.getComponentType()),
+                    (TypeBindings)null);
         } else if (Collection.class.isAssignableFrom(clazz)) {
-            return CollectionType.construct(clazz,null,null,null, SimpleType.constructUnsafe(Object.class));
+            return CollectionType.construct(
+                    clazz,
+                    (TypeBindings)null,
+                    (JavaType)null,
+                    (JavaType[])null,
+                    SimpleType.constructUnsafe(Object.class));
         } else if (Map.class.isAssignableFrom(clazz)) {
-            return MapType.construct(clazz,null,null,null, SimpleType.constructUnsafe(Object.class), SimpleType.constructUnsafe(Object.class));
+            return MapType.construct(
+                    clazz,
+                    (TypeBindings)null,
+                    (JavaType)null,
+                    (JavaType[])null,
+                    SimpleType.constructUnsafe(Object.class),
+                    SimpleType.constructUnsafe(Object.class));
         } else {
             return SimpleType.constructUnsafe(clazz);
         }
