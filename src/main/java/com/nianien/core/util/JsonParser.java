@@ -157,7 +157,7 @@ public class JsonParser {
             return objectMapper.readValue(json,
                     CollectionType.construct(
                             List.class,
-                            TypeBindings.create(elementType, eType),
+                            TypeBindings.create(List.class,eType),
                             (JavaType)null,
                             (JavaType[])null,
                             eType));

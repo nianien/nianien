@@ -3,8 +3,11 @@ package com.nianien.test.jackson;
 
 import com.nianien.core.util.JsonParser;
 import com.nianien.test.bean.Color;
+import com.nianien.test.bean.User;
+
 import org.junit.Test;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -91,6 +94,27 @@ public class TestJson {
     }
 
     @Test
+    public void testList() {
+      JsonParser jp = new JsonParser();
+      List<User> users=new ArrayList<>();
+      for (int i = 0; i < 3; i++) {
+        User user=new User();
+        user.setId(i);
+        user.setUserName("user"+i);
+        users.add(user);
+      }
+      String json = jp.toJson(users);
+      users = jp.toList(json, User.class);
+      for (User user : users) {
+        System.out.println(user);
+      }
+      User[] users1 = jp.toArray(json, User.class);
+        for (User user : users1) {
+            System.out.println(user);
+        }
+    }
+
+    @Test
     public void testArray() {
         JsonParser jp = new JsonParser();
         String[][] arr = new String[2][];
@@ -103,6 +127,7 @@ public class TestJson {
             System.out.println(Arrays.toString(s));
         }
     }
+
     @Test
     public void testOther() {
         JsonParser jp = new JsonParser();
