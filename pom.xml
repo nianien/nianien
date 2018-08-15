@@ -6,7 +6,7 @@
 
     <groupId>com.nianien</groupId>
     <artifactId>nianien</artifactId>
-    <version>3.1.2.1</version>
+    <version>3.3</version>
 
     <!-- 设置编码 -->
     <properties>
