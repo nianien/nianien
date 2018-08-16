@@ -165,7 +165,7 @@ public class RegexUtils {
 
     /**
      * 获取通配符表达式对应的正则表达式<br>
-     * "*" 表示多个字符,"?"表示单个字符
+     * "*" 表示零个或多个字符,"?"表示零个或1个字符
      *
      * @param wildcard 通配符表达式
      * @return 通配符表达式对应的正则表达式
@@ -173,8 +173,9 @@ public class RegexUtils {
     public static String regexForWildcard(String wildcard) {
         // 取消除通配符?,*之外的所有转义字符后再对?,*进行转义
         return escapeExcept(wildcard, new char[]{'?', '*'}).replaceAll(
-                "\\?", "").replaceAll("\\*", ".*");
+                "\\?", ".?").replaceAll("\\*", ".*");
     }
+
 
     /**
      * 将指定的正则表达式嵌入(?i)标志,使其忽略大小写
@@ -197,7 +198,7 @@ public class RegexUtils {
      */
     public static String replace(String source, String regex,
                                  final Map<String, String> replacement) {
-        return replace(source, regex,replacement,null);
+        return replace(source, regex, replacement, null);
     }
 
 
@@ -211,7 +212,7 @@ public class RegexUtils {
      */
     public static String replace(String source, String regex,
                                  final String replacement) {
-        return replace(source, regex, Collections.<String, String>emptyMap(), StringUtils.defaultIfNull(replacement,""));
+        return replace(source, regex, Collections.<String, String>emptyMap(), StringUtils.defaultIfNull(replacement, ""));
     }
 
     /**
@@ -220,24 +221,23 @@ public class RegexUtils {
      *
      * @param source
      * @param regex
-     * @param replacement  字符替换映射表,不可为null
-     * @param instead  替换字符串,如果为null表示使用原
+     * @param replacement 字符替换映射表,不可为null
+     * @param instead     替换字符串,如果为null表示使用原
      * @return 替换后的字符串
      */
     public static String replace(String source, String regex,
                                  final Map<String, String> replacement, final String instead) {
-      return replace(source, regex, new Function<String, String>() {
+        return replace(source, regex, new Function<String, String>() {
 
-        @Override
-        public String apply(String matched) {
-          return replacement.containsKey(matched) ? replacement.get(matched) : instead;
-        }
-      });
+            @Override
+            public String apply(String matched) {
+                return replacement.containsKey(matched) ? replacement.get(matched) : instead;
+            }
+        });
     }
 
 
-
-  /**
+    /**
      * 调用{@link Function}&lt;{@link String},{@link String}>处理字符串source成功匹配正则式regex的部分, 将使用返回结果进行替换<br>
      *
      * @param source
@@ -246,7 +246,7 @@ public class RegexUtils {
      * @return 替换后的字符串
      */
     public static String replace(String source, String regex,
-                                 Function<String,String> function) {
+                                 Function<String, String> function) {
         StringBuilder sb = new StringBuilder();
         Pattern pattern = Pattern.compile(regex);
         Matcher matcher = pattern.matcher(source);
