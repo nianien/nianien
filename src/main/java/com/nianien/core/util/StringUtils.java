@@ -297,6 +297,17 @@ public class StringUtils {
     }
 
     /**
+     * 当字符串长度小于指定宽度时,在前面使用空格补齐宽度
+     *
+     * @param source
+     * @param width
+     * @return 补齐后的字符串
+     */
+    public static String lefPad(String source, int width) {
+        return lefPad(source, width, ' ');
+    }
+
+    /**
      * 当字符串长度小于指定宽度时,在前面使用指定字符补齐宽度
      *
      * @param source
@@ -308,13 +319,9 @@ public class StringUtils {
         int n = width - source.length();
         if (n <= 0)
             return source;
-        StringBuilder sb = new StringBuilder();
-        while (n > 0) {
-            sb.append(ch);
-            n--;
-        }
-        return sb.append(source).toString();
+        return repeat(new StringBuilder(), ch, n).append(source).toString();
     }
+
 
     /**
      * 当字符串长度小于指定宽度时,在前面使用指定字符补齐宽度<br/>
@@ -334,18 +341,96 @@ public class StringUtils {
         int n = width - source.length();
         if (n <= 0)
             return source;
-        StringBuilder sb = new StringBuilder();
-        int len = str.length();
+
+        return repeat(new StringBuilder(), str, n).append(source).toString();
+    }
+
+
+    /**
+     * 当字符串长度小于指定宽度时,在后面使用空格补齐宽度
+     *
+     * @param source
+     * @param width
+     * @return 补齐后的字符串
+     */
+    public static String rightPad(String source, int width) {
+        return rightPad(source, width, ' ');
+    }
+
+    /**
+     * 当字符串长度小于指定宽度时,在后面使用指定字符补齐宽度
+     *
+     * @param source
+     * @param width
+     * @param ch
+     * @return 补齐后的字符串
+     */
+    public static String rightPad(String source, int width, char ch) {
+        int n = width - source.length();
+        if (n <= 0)
+            return source;
+        return repeat(new StringBuilder(source), ch, n).toString();
+    }
+
+    /**
+     * 当字符串长度小于指定宽度时,在后面使用指定字符补齐宽度<br/>
+     * 如果补齐字符串超过指定长度时,则对补齐字符串进行截断<br/>
+     * <code>
+     * <pre>
+     * StringUtils.lefPad("!",6,"abc");// !abcab
+     * </pre>
+     * </code>
+     *
+     * @param source
+     * @param width
+     * @param str
+     * @return 补齐后的字符串
+     */
+    public static String rightPad(String source, int width, String str) {
+        int n = width - source.length();
+        if (n <= 0)
+            return source;
+        return repeat(new StringBuilder(source), str, n).toString();
+    }
+
+    /**
+     * 重复字符串,不超过length长度
+     *
+     * @param sb
+     * @param repeat
+     * @param length
+     * @return
+     */
+    private static StringBuilder repeat(StringBuilder sb, char repeat, int length) {
+        int n = length;
+        while (n > 0) {
+            sb.append(repeat);
+            n--;
+        }
+        return sb;
+    }
+
+    /**
+     * 重复字符串,不超过length长度,超过进行截断
+     *
+     * @param sb
+     * @param repeat
+     * @param length
+     * @return
+     */
+    private static StringBuilder repeat(StringBuilder sb, String repeat, int length) {
+        int len = repeat.length();
+        int n = length;
         while (n > 0) {
             if (n > len) {
-                sb.append(str);
+                sb.append(repeat);
                 n -= len;
             } else {
-                sb.append(str.substring(0, n));
+                sb.append(repeat, 0, n);
                 n = 0;
             }
         }
-        return sb.append(source).toString();
+        return sb;
     }
 
     /**
@@ -950,9 +1035,9 @@ public class StringUtils {
     }
 
 
-
     // SubStringAfter/SubStringBefore
     //-----------------------------------------------------------------------
+
     /**
      * <p>Gets the substring before the first occurrence of a separator.
      * The separator is not returned.</p>
@@ -974,10 +1059,10 @@ public class StringUtils {
      * StringUtils.substringBefore("abc", null)  = "abc"
      * </pre>
      *
-     * @param str  the String to get a substring from, may be null
-     * @param separator  the String to search for, may be null
+     * @param str       the String to get a substring from, may be null
+     * @param separator the String to search for, may be null
      * @return the substring before the first occurrence of the separator,
-     *  {@code null} if null String input
+     * {@code null} if null String input
      * @since 2.0
      */
     public static String substringBefore(final String str, final String separator) {
@@ -1016,10 +1101,10 @@ public class StringUtils {
      * StringUtils.substringAfter("abc", "")    = "abc"
      * </pre>
      *
-     * @param str  the String to get a substring from, may be null
-     * @param separator  the String to search for, may be null
+     * @param str       the String to get a substring from, may be null
+     * @param separator the String to search for, may be null
      * @return the substring after the first occurrence of the separator,
-     *  {@code null} if null String input
+     * {@code null} if null String input
      * @since 2.0
      */
     public static String substringAfter(final String str, final String separator) {
@@ -1057,10 +1142,10 @@ public class StringUtils {
      * StringUtils.substringBeforeLast("a", "")      = "a"
      * </pre>
      *
-     * @param str  the String to get a substring from, may be null
-     * @param separator  the String to search for, may be null
+     * @param str       the String to get a substring from, may be null
+     * @param separator the String to search for, may be null
      * @return the substring before the last occurrence of the separator,
-     *  {@code null} if null String input
+     * {@code null} if null String input
      * @since 2.0
      */
     public static String substringBeforeLast(final String str, final String separator) {
@@ -1097,10 +1182,10 @@ public class StringUtils {
      * StringUtils.substringAfterLast("a", "z")     = ""
      * </pre>
      *
-     * @param str  the String to get a substring from, may be null
-     * @param separator  the String to search for, may be null
+     * @param str       the String to get a substring from, may be null
+     * @param separator the String to search for, may be null
      * @return the substring after the last occurrence of the separator,
-     *  {@code null} if null String input
+     * {@code null} if null String input
      * @since 2.0
      */
     public static String substringAfterLast(final String str, final String separator) {

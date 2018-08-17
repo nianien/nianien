@@ -3,9 +3,13 @@ package com.nianien.test.text;
 import com.nianien.core.collection.map.MapWrapper;
 import com.nianien.core.function.Function;
 import com.nianien.core.text.Expression;
+
 import org.junit.Test;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -14,7 +18,7 @@ import java.util.*;
 public class TestExpression {
 
 
-    static class SqlVariableHandler implements Function<String,Object> {
+    static class SqlVariableHandler implements Function<String, Object> {
 
         private final List parameters = new ArrayList();
         private final Map<String, Object> map = new HashMap<String, Object>();
@@ -52,7 +56,8 @@ public class TestExpression {
         System.out.println(sql.parameters);
     }
 
-    public static void main(String[] args) {
+    @Test
+    public void testSql() {
         TestExpression tx = new TestExpression();
         tx.ff("select * from user where user={0} and age={1}", "lining", 19);
         tx.ff("select * from user where user={user} and age={age}", new MapWrapper("user", "lining"));
