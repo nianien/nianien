@@ -8,8 +8,7 @@ import java.util.Collection;
 import java.util.List;
 
 /**
- * 快速构建SQL的工具类<br/>如果构造方法{@link #SqlAppender(String, boolean)}指定了缓存SQL参数的话,可以通过{@link #getParameters()}获取已缓存的SQL参数<br/>
- * 通常来讲,缓存SQL参数对于SQL语句使用JDBC占位符"?"时很有帮助<br/>
+ * 快速构建SQL的工具类<br/>可以通过{@link #getParameters()}获取已缓存的SQL参数,对于SQL语句使用JDBC占位符"?"时很有帮助<br/>
  *
  * @author skyfalling
  */
@@ -24,36 +23,18 @@ public class SqlAppender {
      */
     private List<Object> parameters = new ArrayList<Object>();
 
-    /**
-     * 是否缓存SQL参数
-     */
-    private boolean cacheParameter;
 
-    /**
-     * 默认不缓存SQL参数
-     */
     public SqlAppender() {
     }
 
     /**
-     * 构造方法,默认不缓存SQL参数
-     *
-     * @param sql 初始SQL
+     * @param sql    初始SQL
+     * @param params SQL参数
      */
-    public SqlAppender(String sql) {
-        this(sql, true);
+    public SqlAppender(String sql, Object... params) {
+        this.append(sql, params);
     }
 
-    /**
-     * 构造方法,指定是否缓存SQL参数
-     *
-     * @param sql            初始SQL
-     * @param cacheParameter 指定是否缓存SQL参数
-     */
-    public SqlAppender(String sql, boolean cacheParameter) {
-        this.sqlBuffer.append(sql);
-        this.cacheParameter = cacheParameter;
-    }
 
     /**
      * 追加sql
@@ -178,10 +159,8 @@ public class SqlAppender {
     public SqlAppender appendIfTrue(String sql, boolean expression, Object... sqlParams) {
         if (expression) {
             sqlBuffer.append(sql);
-            if (cacheParameter) {
-                for (Object sqlParam : sqlParams) {
-                    this.parameters.add(sqlParam);
-                }
+            for (Object sqlParam : sqlParams) {
+                this.parameters.add(sqlParam);
             }
         }
         return this;
