@@ -41,7 +41,7 @@ public class SqlAppender {
      * @param sql 初始SQL
      */
     public SqlAppender(String sql) {
-        this(sql, false);
+        this(sql, true);
     }
 
     /**
@@ -61,9 +61,8 @@ public class SqlAppender {
      * @param sql
      * @return
      */
-    public SqlAppender append(String sql) {
-        sqlBuffer.append(sql);
-        return this;
+    public SqlAppender append(String sql, Object... params) {
+        return appendIfTrue(sql, true, params);
     }
 
     /**
@@ -89,7 +88,7 @@ public class SqlAppender {
     }
 
     /**
-     * 如果target对象不为空,则追加sql
+     * 如果target对象不为空,则追加SQL
      *
      * @param sql
      * @param target
@@ -199,23 +198,13 @@ public class SqlAppender {
 
     /**
      * 获取SQL参数
-     * 注:该方法在{@link #cacheParameter()}为true的时候有效
      *
      * @return
-     * @see #cacheParameter()
      */
-    public List<Object> getParameters() {
-        return parameters;
+    public Object[] getParameters() {
+        return parameters.toArray(new Object[0]);
     }
 
-    /**
-     * 是否缓存SQL参数
-     *
-     * @return
-     */
-    public boolean cacheParameter() {
-        return cacheParameter;
-    }
 
     @Override
     public String toString() {
