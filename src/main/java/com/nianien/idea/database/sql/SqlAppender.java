@@ -37,6 +37,16 @@ public class SqlAppender {
 
 
     /**
+     * 追加sql和参数
+     *
+     * @param appender
+     * @return
+     */
+    public SqlAppender append(SqlAppender appender) {
+        return append(appender.toSql(), appender.getParameters());
+    }
+
+    /**
      * 追加sql
      *
      * @param sql
