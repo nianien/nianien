@@ -26,8 +26,8 @@ import java.util.Map;
  * in ?",
  *     new Object[][][]{{{"userName1", "password1"}, {"userName2", "password2"}}});
  *
- *     the result of expandSql() invocation:
- *     select * from users where (userName,password) in (('userName1','password1'),('userName2','password2'))
+ *     the result of preparedSql():
+ *     select * from users where (userName,password) in ((?,?),(?,?))
  *     </code>
  * </pre>
  */
