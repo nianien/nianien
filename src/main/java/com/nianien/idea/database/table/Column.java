@@ -1,6 +1,12 @@
 package com.nianien.idea.database.table;
 
-import java.lang.annotation.*;
+import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Inherited;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+import java.sql.JDBCType;
 
 /**
  * 标记数据库字段名称的注解
@@ -17,7 +23,7 @@ public @interface Column {
      *
      * @return 表名称
      */
-    public String value();
+    String value();
 
     /**
      * JDBC数据类型
@@ -25,5 +31,5 @@ public @interface Column {
      * @return
      * @see java.sql.Types
      */
-    public int sqlType() default DataField.GenericType;
+    JDBCType sqlType() default JDBCType.OTHER;
 }

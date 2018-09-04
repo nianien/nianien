@@ -1,5 +1,8 @@
 package com.nianien.idea.database.table;
 
+import java.sql.JDBCType;
+import java.sql.SQLType;
+
 /**
  * 字段类型
  *
@@ -7,7 +10,7 @@ package com.nianien.idea.database.table;
  */
 public class DataField {
 
-    public static final int GenericType = Integer.MAX_VALUE;
+    public static final SQLType GenericType = JDBCType.JAVA_OBJECT;
     /**
      * 字段名
      */
@@ -19,14 +22,14 @@ public class DataField {
     /**
      * 字段类型
      */
-    public final int type;
+    public final SQLType type;
 
     /**
      * @param name
      * @param value
      * @param sqlType
      */
-    public DataField(String name, Object value, int sqlType) {
+    public DataField(String name, Object value, SQLType sqlType) {
         this.name = name;
         this.value = value;
         this.type = sqlType;

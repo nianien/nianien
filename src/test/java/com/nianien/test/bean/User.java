@@ -6,7 +6,7 @@ import com.nianien.idea.database.table.Column;
 import com.nianien.idea.database.table.Id;
 import com.nianien.idea.database.table.Table;
 
-import java.sql.Types;
+import java.sql.JDBCType;
 
 /**
  * @author skyfalling
@@ -59,7 +59,7 @@ public class User {
     }
 
     @Ignore
-    @Column(value = "desc", sqlType = Types.VARCHAR)
+    @Column(value = "desc", sqlType = JDBCType.VARCHAR)
     public String[] getUserDesc() {
         return userDesc;
     }

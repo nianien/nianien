@@ -7,10 +7,15 @@ import com.nianien.idea.database.sql.SqlBuilder;
 import com.nianien.idea.database.sql.SqlStatement;
 import com.nianien.idea.database.table.DataField;
 
-import javax.sql.DataSource;
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.List;
 import java.util.Map;
+
+import javax.sql.DataSource;
 
 /**
  * 数据库访问接口实现,该类是线程安全的
@@ -319,10 +324,10 @@ public class SqlQuery implements Query {
         PreparedStatement stmt = connection.prepareStatement(sqlStatement.preparedSql());
         int i = 1;
         for (DataField field : sqlStatement.preparedParameters()) {
-            if (field.type == DataField.GenericType) {
+            if (field.type == null || field.type == DataField.GenericType) {
                 stmt.setObject(i++, field.value);
             } else {
-                stmt.setObject(i++, field.value, field.type);
+                stmt.setObject(i++, field.value, field.type.getVendorTypeNumber());
             }
         }
         return stmt;

@@ -8,6 +8,7 @@ import com.nianien.core.log.LoggerFactory;
 import com.nianien.core.reflect.Reflections;
 
 import java.lang.reflect.Method;
+import java.sql.SQLType;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -172,9 +173,9 @@ class DataTableImpl<T> implements DataTable<T> {
         final Method getter;
         final Method setter;
         final String name;
-        final int type;
+        final SQLType type;
 
-        FieldProperty(String name, int type, Method getter, Method setter) {
+        FieldProperty(String name, SQLType type, Method getter, Method setter) {
             this.name = name;
             this.type = type;
             this.getter = getter;

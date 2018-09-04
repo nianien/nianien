@@ -11,7 +11,7 @@
     <!-- 设置编码 -->
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <java.version>1.7</java.version>
+        <java.version>1.8</java.version>
 
         <c3p0.version>0.9.5.2</c3p0.version>
         <jackson.version>2.9.0</jackson.version>

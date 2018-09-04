@@ -1,6 +1,9 @@
 package com.nianien.core.annotation;
 
-import java.lang.annotation.*;
+import java.lang.annotation.Documented;
+import java.lang.annotation.Inherited;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 
 /**
  * 用示是否忽略
@@ -16,5 +19,5 @@ public @interface Ignore {
      *
      * @return
      */
-    public boolean value() default true;
+    boolean value() default true;
 }

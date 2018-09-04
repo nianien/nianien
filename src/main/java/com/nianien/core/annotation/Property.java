@@ -23,5 +23,5 @@ public @interface Property {
      *
      * @return
      */
-    public String value();
+    String value();
 }
