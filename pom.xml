@@ -6,15 +6,14 @@
 
     <groupId>com.nianien</groupId>
     <artifactId>nianien</artifactId>
-    <version>3.5-SNAPSHOT</version>
+    <version>3.6-SNAPSHOT</version>
 
     <!-- 设置编码 -->
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <java.version>1.8</java.version>
-
         <c3p0.version>0.9.5.2</c3p0.version>
-        <jackson.version>2.9.0</jackson.version>
+        <jackson.version>2.9.7</jackson.version>
         <javassist.version>3.18.1-GA</javassist.version>
         <dom4j.version>1.6.1</dom4j.version>
         <ant.version>1.9.3</ant.version>
