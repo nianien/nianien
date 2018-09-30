@@ -169,7 +169,7 @@ public class SqlStatement {
      * @return
      * @see #append(String, Object...)
      */
-    public SqlStatement appendPositive(String sql, Number parameter) {
+    public SqlStatement appendIfPositive(String sql, Number parameter) {
         return appendIf(sql, parameter.intValue() > 0, parameter);
     }
 
@@ -182,7 +182,7 @@ public class SqlStatement {
      * @return
      * @see #append(String, Object...)
      */
-    public SqlStatement appendNegative(String sql, Number parameter) {
+    public SqlStatement appendIfNegative(String sql, Number parameter) {
         return appendIf(sql, parameter.intValue() < 0, parameter);
     }
 
@@ -199,6 +199,7 @@ public class SqlStatement {
         return appendIf(sql, predicate.test(parameter), function.apply(parameter));
     }
 
+
     /**
      * 如果parameter不为null,则追加SQL
      *
@@ -207,9 +208,10 @@ public class SqlStatement {
      * @return
      * @see #append(String, Object...)
      */
-    public SqlStatement appendNotNull(String sql, Object parameter) {
+    public SqlStatement appendIfNotNull(String sql, Object parameter) {
         return appendIf(sql, parameter != null, parameter);
     }
+
 
     /**
      * 如果parameter不为空,则追加SQL
@@ -219,8 +221,21 @@ public class SqlStatement {
      * @return
      * @see #append(String, Object...)
      */
-    public SqlStatement appendNotEmpty(String sql, String parameter) {
+    public SqlStatement appendIfNotEmpty(String sql, String parameter) {
         return appendIf(sql, parameter != null && !parameter.isEmpty(), parameter);
+    }
+
+
+    /**
+     * 如果parameter不为空,则追加SQL
+     *
+     * @param sql
+     * @param parameter sql参数值
+     * @return
+     * @see #append(String, Object...)
+     */
+    public SqlStatement appendLikeIfNotEmpty(String sql, String parameter) {
+        return appendLikeIf(sql, StringUtils.isNotEmpty(parameter), parameter);
     }
 
     /**
@@ -234,7 +249,7 @@ public class SqlStatement {
      */
     public SqlStatement appendLikeIf(String sql, boolean expression, String parameters) {
         if (expression)
-            append(sql, "%" + parameters + "%");
+            appendLike(sql, parameters);
         return this;
     }
 
@@ -267,6 +282,17 @@ public class SqlStatement {
         return this;
     }
 
+    /**
+     * 追加SQL like参数
+     *
+     * @param sql
+     * @param parameter sql参数值
+     * @return
+     * @see #append(String, Object...)
+     */
+    public SqlStatement appendLike(String sql, String parameter) {
+        return append(sql, "%" + parameter + "%");
+    }
 
     /**
      * 追加SQL,并进行参数赋值<br/>
