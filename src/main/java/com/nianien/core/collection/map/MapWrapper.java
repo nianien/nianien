@@ -4,8 +4,10 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.BiConsumer;
+import java.util.function.BiFunction;
+import java.util.function.Function;
 
-import com.nianien.core.function.Function;
 
 /**
  * {@link Map}接口的包装类,包装Map实例以支持链式语法<br/>
@@ -40,7 +42,7 @@ public class MapWrapper<K, V> implements Map<K, V> {
      * @param v
      */
     public MapWrapper(K k, V v) {
-        this(new HashMap<K, V>(), k, v);
+        this(new HashMap<>(), k, v);
     }
 
     /**
@@ -60,11 +62,10 @@ public class MapWrapper<K, V> implements Map<K, V> {
      *
      * @param key
      * @param value
-     *
      * @return 返回当前对象
      */
     public MapWrapper<K, V> append(K key, V value) {
-        this.put(key, value);
+        map.put(key, value);
         return this;
     }
 
@@ -72,7 +73,6 @@ public class MapWrapper<K, V> implements Map<K, V> {
      * 调用{@link Map#putAll(java.util.Map)}方法
      *
      * @param map
-     *
      * @return 返回当前对象
      */
     public MapWrapper<K, V> append(Map<? extends K, ? extends V> map) {
@@ -84,7 +84,6 @@ public class MapWrapper<K, V> implements Map<K, V> {
      * 调用{@link Map#remove(Object)}}方法
      *
      * @param keys
-     *
      * @return 返回当前对象
      */
 
@@ -96,68 +95,9 @@ public class MapWrapper<K, V> implements Map<K, V> {
     }
 
     /**
-     * 如果key值不存在,则调用{@link Map#put(K, V)}方法,value为function的调用结果
-     *
-     * @param key
-     * @param function
-     *
-     * @return 返回当前对象
-     */
-    public MapWrapper<K, V> appendIfAbsent(K key, Function<K, V> function) {
-        if (!containsKey(key)) {
-            this.put(key, function.apply(key));
-        }
-        return this;
-    }
-
-    /**
-     * 如果不存在key值,则调用{@link Map#put(K, V)}方法
-     *
-     * @param key
-     * @param value
-     *
-     * @return 返回当前对象
-     */
-    public MapWrapper<K, V> appendIfAbsent(K key, V value) {
-        if (!containsKey(key)) {
-            this.put(key, value);
-        }
-        return this;
-    }
-
-    /**
-     * 如果表达式expression为true,,则调用{@link Map#put(K, V)}方法
-     *
-     * @param key
-     * @param value
-     *
-     * @return 返回当前对象
-     */
-    public MapWrapper<K, V> appendIf(boolean expression, K key, V value) {
-        if (expression) {
-            this.put(key, value);
-        }
-        return this;
-    }
-
-    /**
-     * 调用{@link Map#remove(Object)}}方法
-     *
-     * @param key
-     *
-     * @return 返回当前对象
-     */
-
-    public MapWrapper<K, V> delete(Object key) {
-        this.remove(key);
-        return this;
-    }
-
-    /**
      * 调用{@link Map#remove(Object)}}方法
      *
      * @param keys
-     *
      * @return 返回当前对象
      */
 
@@ -167,6 +107,22 @@ public class MapWrapper<K, V> implements Map<K, V> {
         }
         return this;
     }
+
+
+    /**
+     * 如果表达式expression为true,,则调用{@link Map#put(K, V)}方法
+     *
+     * @param key
+     * @param value
+     * @return 返回当前对象
+     */
+    public MapWrapper<K, V> appendIf(boolean expression, K key, V value) {
+        if (expression) {
+            this.put(key, value);
+        }
+        return this;
+    }
+
 
     @Override
     public int size() {
@@ -204,8 +160,8 @@ public class MapWrapper<K, V> implements Map<K, V> {
     }
 
     @Override
-    public void putAll(Map<? extends K, ? extends V> t) {
-        map.putAll(t);
+    public void putAll(Map<? extends K, ? extends V> m) {
+        map.putAll(m);
     }
 
     @Override
@@ -233,26 +189,61 @@ public class MapWrapper<K, V> implements Map<K, V> {
         return map.toString();
     }
 
+
     @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (!(o instanceof MapWrapper)) {
-            return false;
-        }
-
-        MapWrapper that = (MapWrapper) o;
-
-        if (!map.equals(that.map)) {
-            return false;
-        }
-
-        return true;
+    public V getOrDefault(Object key, V defaultValue) {
+        return map.getOrDefault(key, defaultValue);
     }
 
     @Override
-    public int hashCode() {
-        return map.hashCode();
+    public void forEach(BiConsumer<? super K, ? super V> action) {
+        map.forEach(action);
     }
+
+    @Override
+    public void replaceAll(BiFunction<? super K, ? super V, ? extends V> function) {
+        map.replaceAll(function);
+    }
+
+    @Override
+    public V putIfAbsent(K key, V value) {
+        return map.putIfAbsent(key, value);
+    }
+
+    @Override
+    public boolean remove(Object key, Object value) {
+        return map.remove(key, value);
+    }
+
+    @Override
+    public boolean replace(K key, V oldValue, V newValue) {
+        return map.replace(key, oldValue, newValue);
+    }
+
+    @Override
+    public V replace(K key, V value) {
+        return map.replace(key, value);
+    }
+
+    @Override
+    public V computeIfAbsent(K key, Function<? super K, ? extends V> mappingFunction) {
+        return map.computeIfAbsent(key, mappingFunction);
+    }
+
+    @Override
+    public V computeIfPresent(K key, BiFunction<? super K, ? super V, ? extends V> remappingFunction) {
+        return map.computeIfPresent(key, remappingFunction);
+    }
+
+    @Override
+    public V compute(K key, BiFunction<? super K, ? super V, ? extends V> remappingFunction) {
+        return map.compute(key, remappingFunction);
+    }
+
+    @Override
+    public V merge(K key, V value, BiFunction<? super V, ? super V, ? extends V> remappingFunction) {
+        return map.merge(key, value, remappingFunction);
+    }
+
+
 }

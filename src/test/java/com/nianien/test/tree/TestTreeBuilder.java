@@ -1,16 +1,17 @@
 package com.nianien.test.tree;
 
 import com.nianien.core.collection.map.KeyValue;
-import com.nianien.core.function.Predicate;
 import com.nianien.core.tree.TreeBuilder;
 import com.nianien.core.tree.TreeNode;
 import com.nianien.core.tree.TreeNodeHandler;
+
 import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Predicate;
 
 import static org.junit.Assert.assertTrue;
 
@@ -48,22 +49,14 @@ public class TestTreeBuilder {
             }
 
         }*/);
-        TreeBuilder.traversal(tree, new TreeNodeHandler() {
-            @Override
-            public void handle(TreeNode node) {
-                System.out.println(node);
+        TreeBuilder.traversal(tree, node -> System.out.println(node));
+        TreeBuilder.minimize(tree, (Predicate<TreeNode<KeyValue>>) node -> {
+            if (node.value() != null) {
+                KeyValue keyValue = node.value();
+                Object key = keyValue.getKey();
+                return key.equals(20415) || key.equals(105);
             }
-        });
-        TreeBuilder.minimize(tree, new Predicate<TreeNode<KeyValue>>() {
-            @Override
-            public boolean apply(TreeNode<KeyValue> node) {
-                if (node.value() != null) {
-                    KeyValue keyValue = node.value();
-                    Object key = keyValue.getKey();
-                    return key.equals(20415) || key.equals(105);
-                }
-                return false;
-            }
+            return false;
         });
        final List<TreeNode> treeNodes=new ArrayList<TreeNode>();
         TreeBuilder.traversal(tree, new TreeNodeHandler() {

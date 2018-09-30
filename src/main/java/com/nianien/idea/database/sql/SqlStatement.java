@@ -9,6 +9,8 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
+import java.util.function.Predicate;
 
 /**
  * 支持命名参数的SQL语句,参数形式为 :x,此外可以使用 :n(n=0,1,2...)表示位置参数<br/>
@@ -160,6 +162,44 @@ public class SqlStatement {
     }
 
     /**
+     * 如果parameter大于零,则追加SQL
+     *
+     * @param sql
+     * @param parameter sql参数值
+     * @return
+     * @see #append(String, Object...)
+     */
+    public SqlStatement appendPositive(String sql, Number parameter) {
+        return appendIf(sql, parameter.intValue() > 0, parameter);
+    }
+
+
+    /**
+     * 如果parameter小于零,则追加SQL
+     *
+     * @param sql
+     * @param parameter sql参数值
+     * @return
+     * @see #append(String, Object...)
+     */
+    public SqlStatement appendNegative(String sql, Number parameter) {
+        return appendIf(sql, parameter.intValue() < 0, parameter);
+    }
+
+
+    /**
+     * 如果参数满足predicate,则追加function返回值
+     *
+     * @param sql
+     * @param parameter sql参数值
+     * @return
+     * @see #append(String, Object...)
+     */
+    public <T> SqlStatement appendIf(String sql, T parameter, Predicate<T> predicate, Function<T, String> function) {
+        return appendIf(sql, predicate.test(parameter), function.apply(parameter));
+    }
+
+    /**
      * 如果parameter不为null,则追加SQL
      *
      * @param sql
@@ -181,6 +221,21 @@ public class SqlStatement {
      */
     public SqlStatement appendNotEmpty(String sql, String parameter) {
         return appendIf(sql, parameter != null && !parameter.isEmpty(), parameter);
+    }
+
+    /**
+     * 如果expression为true,追加SQL, 参数前后添加"%%"
+     *
+     * @param sql
+     * @param expression 布尔表达式
+     * @param parameters sql参数值列表
+     * @return
+     * @see #append(String, Object...)
+     */
+    public SqlStatement appendLikeIf(String sql, boolean expression, String parameters) {
+        if (expression)
+            append(sql, "%" + parameters + "%");
+        return this;
     }
 
     /**

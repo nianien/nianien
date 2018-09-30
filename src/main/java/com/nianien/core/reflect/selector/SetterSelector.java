@@ -1,9 +1,9 @@
 package com.nianien.core.reflect.selector;
 
-import com.nianien.core.function.Predicate;
 import com.nianien.core.reflect.Reflections;
 
 import java.lang.reflect.Method;
+import java.util.function.Predicate;
 
 /**
  * Setter方法选择器
@@ -27,7 +27,7 @@ public  class SetterSelector implements Predicate<Method> {
     }
 
     @Override
-    public boolean apply(Method method) {
+    public boolean test(Method method) {
         String methodName = method.getName();
         boolean isSetter = method.getReturnType() == Void.TYPE && method.getParameterTypes().length == 1 && methodName.startsWith("set") && methodName.length() > 3;
         return isSetter &&

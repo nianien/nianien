@@ -3,7 +3,6 @@ package com.nianien.idea.database.table;
 import com.nianien.core.annotation.Ignore;
 import com.nianien.core.collection.map.CaseInsensitiveMap;
 import com.nianien.core.exception.ExceptionHandler;
-import com.nianien.core.function.Predicate;
 import com.nianien.core.log.LoggerFactory;
 import com.nianien.core.reflect.Reflections;
 
@@ -48,19 +47,16 @@ class DataTableImpl<T> implements DataTable<T> {
     public DataTableImpl(Class<T> entityClass) {
         this.type = entityClass;
         this.name = TableHelper.getTableName(entityClass);
-        Reflections.getters(entityClass, new Predicate<Method>() {
-
-            public boolean apply(Method method) {
-                if (!method.isAnnotationPresent(Ignore.class)) {
-                    addFieldProperty(method);
-                }
-                return false;
+        Reflections.getters(entityClass, (method) -> {
+            if (!method.isAnnotationPresent(Ignore.class)) {
+                addFieldProperty(method);
             }
+            return false;
         });
         if (idField == null && hasField("id")) {
             idField = fieldProperty("id").name;
         }
-        if(idField==null){
+        if (idField == null) {
             logger.warning("no id field defined in table[" + type + "]");
         }
     }

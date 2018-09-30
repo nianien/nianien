@@ -1,9 +1,9 @@
 package com.nianien.core.reflect.selector;
 
-import com.nianien.core.function.Predicate;
 import com.nianien.core.reflect.Reflections;
 
 import java.lang.reflect.Method;
+import java.util.function.Predicate;
 
 /**
  * Getter方法选择器
@@ -25,7 +25,7 @@ public class GetterSelector implements Predicate<Method> {
     }
 
     @Override
-    public boolean apply(Method method) {
+    public boolean test(Method method) {
         String methodName = method.getName();
         boolean isGetter = method.getReturnType() != Void.TYPE && method.getParameterTypes().length == 0 &&
                 (methodName.startsWith("get") && methodName.length() > 3 ||

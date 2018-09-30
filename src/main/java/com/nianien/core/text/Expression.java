@@ -1,12 +1,12 @@
 package com.nianien.core.text;
 
 import com.nianien.core.exception.ExceptionHandler;
-import com.nianien.core.function.Function;
 import com.nianien.core.util.StringUtils;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Stack;
+import java.util.function.Function;
 
 /**
  * 变量表达式解析类,变量表达式是指由左右边界符和变量名组成的字符串<br/>

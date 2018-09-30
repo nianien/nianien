@@ -1,12 +1,12 @@
 package com.nianien.core.tree;
 
-import com.nianien.core.function.Predicate;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.function.Predicate;
 
 /**
  * 构造树的工具类
@@ -88,7 +88,7 @@ public class TreeBuilder {
         }
 
         //判断当前节点是否保留
-        flag |= selector.apply(tree);
+        flag |= selector.test(tree);
         if (!flag && tree.parent() != null) {
             //当前节点需要被裁剪
             TreeNode parent = tree.parent();

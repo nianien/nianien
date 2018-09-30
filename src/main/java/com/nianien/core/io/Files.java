@@ -1,10 +1,22 @@
 package com.nianien.core.io;
 
 import com.nianien.core.exception.ExceptionHandler;
-import com.nianien.core.function.Consumer;
 import com.nianien.core.util.StringUtils;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.Reader;
+import java.io.UnsupportedEncodingException;
+import java.io.Writer;
 import java.net.URL;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
@@ -12,6 +24,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.function.Consumer;
 
 /**
  * 处理文件操作的工具类
@@ -239,12 +252,7 @@ public class Files {
      */
     public static String read(Reader reader) {
         final StringBuilder sb = new StringBuilder();
-        readLines(reader, new Consumer<String>() {
-            @Override
-            public void apply(String s) {
-                sb.append(s).append(newLine);
-            }
-        });
+        readLines(reader, s -> sb.append(s).append(newLine));
         return sb.toString();
     }
 
@@ -372,12 +380,7 @@ public class Files {
      */
     public static List<String> readLines(Reader reader) {
         final List<String> lines = new ArrayList<>();
-        readLines(reader, new Consumer<String>() {
-            @Override
-            public void apply(String s) {
-                lines.add(s);
-            }
-        });
+        readLines(reader, s -> lines.add(s));
         return lines;
     }
 
@@ -392,7 +395,7 @@ public class Files {
             BufferedReader buffer = new BufferedReader(reader);
             String line;
             while ((line = buffer.readLine()) != null) {
-                Consumer.apply(line);
+                Consumer.accept(line);
             }
         } catch (Exception e) {
             ExceptionHandler.throwException(e);

@@ -1,8 +1,6 @@
 package com.nianien.core.reflect;
 
 import com.nianien.core.annotation.Property;
-import com.nianien.core.function.BooleanPredicate;
-import com.nianien.core.function.Predicate;
 import com.nianien.core.reflect.selector.GetterSelector;
 import com.nianien.core.reflect.selector.SetterSelector;
 import com.nianien.core.util.EnumUtils;
@@ -17,6 +15,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Predicate;
 
 import static com.nianien.core.exception.ExceptionHandler.throwException;
 import static com.nianien.core.exception.ExceptionHandler.throwIfNull;
@@ -70,12 +69,7 @@ public class Reflections {
     /**
      * 选择非Object定义的方法
      */
-    public static final Predicate<Method> notObjectSelector = new Predicate<Method>() {
-        @Override
-        public boolean apply(Method method) {
-            return method.getDeclaringClass() != Object.class;
-        }
-    };
+    public static final Predicate<Method> notObjectSelector = method -> method.getDeclaringClass() != Object.class;
     /**
      * 选择getter方法
      */
@@ -157,7 +151,7 @@ public class Reflections {
     public static List<Method> getMethods(Class<?> clazz, Predicate<Method> selector) {
         List<Method> list = new ArrayList<Method>();
         for (Method method : clazz.getMethods()) {
-            if (selector.apply(method))
+            if (selector.test(method))
                 list.add(method);
         }
         return list;
@@ -182,7 +176,8 @@ public class Reflections {
      * @return
      */
     public static List<Method> getDefinedMethods(Class<?> clazz, Predicate<Method> selector) {
-        return getMethods(clazz, new BooleanPredicate<Method>(notObjectSelector).and(selector));
+        return
+                getMethods(clazz, notObjectSelector.and(selector));
     }
 
 
@@ -208,7 +203,7 @@ public class Reflections {
         List<Method> list = new ArrayList<Method>();
         for (; clazz != null; clazz = clazz.getSuperclass()) {
             for (Method method : clazz.getDeclaredMethods()) {
-                if (selector == null || selector.apply(method)) {
+                if (selector == null || selector.test(method)) {
                     list.add(method);
                 }
             }
@@ -237,7 +232,7 @@ public class Reflections {
     public static List<Field> getFields(Class<?> clazz, Predicate<Field> selector) {
         List<Field> list = new ArrayList<Field>();
         for (Field field : clazz.getFields()) {
-            if (selector == null || selector.apply(field))
+            if (selector == null || selector.test(field))
                 list.add(field);
         }
         return list;
@@ -265,7 +260,7 @@ public class Reflections {
         List<Field> list = new ArrayList<Field>();
         for (; clazz != null; clazz = clazz.getSuperclass()) {
             for (Field field : clazz.getDeclaredFields()) {
-                if (selector == null || selector.apply(field)) {
+                if (selector == null || selector.test(field)) {
                     list.add(field);
                 }
             }
@@ -278,7 +273,7 @@ public class Reflections {
      * 如果方法声明了{@link com.nianien.core.annotation.Property}注解,则以注解为准; 否则按照getter和setter规则取其属性
      *
      * @param method
-     * @return getter或setter方法对应的属性名<br/>
+     * @return getter或setter方法对应的属性名<br />
      * 注意:这里只对形如getXxx()或isXxx()或SetXxx()的方法有效,对应属性名为xxx<br/>
      */
     public static String propertyName(Method method) {
@@ -297,7 +292,7 @@ public class Reflections {
      * @param method
      * @param obj    声明该方法的实例对象
      * @param args   方法的参数
-     * @return 方法的执行结果<br/>
+     * @return 方法的执行结果<br />
      */
     public static Object invoke(Method method, Object obj, Object... args) {
         try {
@@ -396,7 +391,7 @@ public class Reflections {
      * @return
      */
     public static boolean isGetter(Method method) {
-        return getterSelector.apply(method);
+        return getterSelector.test(method);
     }
 
 
@@ -407,7 +402,7 @@ public class Reflections {
      * @return
      */
     public static boolean isSetter(Method method) {
-        return setterSelector.apply(method);
+        return setterSelector.test(method);
     }
 
 
@@ -477,7 +472,7 @@ public class Reflections {
      */
     public static Method method(Class<?> clazz, Predicate<Method> selector) {
         for (Method method : clazz.getMethods()) {
-            if (selector.apply(method))
+            if (selector.test(method))
                 return method;
         }
         return null;
@@ -500,7 +495,7 @@ public class Reflections {
      * @return getter方法列表
      */
     public static List<Method> getters(Class<?> clazz, Predicate<Method> selector) {
-        return getDefinedMethods(clazz, new BooleanPredicate<Method>(getterSelector).and(selector));
+        return getDefinedMethods(clazz, getterSelector.and(selector));
     }
 
     /**
@@ -520,7 +515,7 @@ public class Reflections {
      * @return getter方法列表
      */
     public static List<Method> setters(Class<?> clazz, Predicate<Method> selector) {
-        return getDefinedMethods(clazz, new BooleanPredicate<Method>(setterSelector).and(selector));
+        return getDefinedMethods(clazz, setterSelector.and(selector));
     }
 
     /**

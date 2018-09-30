@@ -1,7 +1,6 @@
 package com.nianien.test.text;
 
 import com.nianien.core.collection.map.MapWrapper;
-import com.nianien.core.function.Function;
 import com.nianien.core.text.Expression;
 
 import org.junit.Test;
@@ -10,6 +9,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 
 
 /**

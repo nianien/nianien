@@ -1,6 +1,5 @@
 package com.nianien.core.text;
 
-import com.nianien.core.function.Function;
 import com.nianien.core.util.ArrayUtils;
 import com.nianien.core.util.StringUtils;
 
@@ -8,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
