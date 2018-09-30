@@ -169,10 +169,21 @@ public class SqlStatement {
      * @return
      * @see #append(String, Object...)
      */
-    public SqlStatement appendIfPositive(String sql, Number parameter) {
-        return appendIf(sql, parameter.intValue() > 0, parameter);
+    public SqlStatement appendPositive(String sql, Number parameter) {
+        return appendIf(sql, parameter, POSITIVE);
     }
 
+    /**
+     * 如果parameter大于零,则追加SQL
+     *
+     * @param sql
+     * @param parameter sql参数值
+     * @return
+     * @see #append(String, Object...)
+     */
+    public SqlStatement appendNonPositive(String sql, Number parameter) {
+        return appendIf(sql, parameter, POSITIVE.negate());
+    }
 
     /**
      * 如果parameter小于零,则追加SQL
@@ -182,10 +193,59 @@ public class SqlStatement {
      * @return
      * @see #append(String, Object...)
      */
-    public SqlStatement appendIfNegative(String sql, Number parameter) {
-        return appendIf(sql, parameter.intValue() < 0, parameter);
+    public SqlStatement appendNegative(String sql, Number parameter) {
+        return appendIf(sql, parameter, NEGATIVE);
     }
 
+    /**
+     * 如果parameter小于零,则追加SQL
+     *
+     * @param sql
+     * @param parameter sql参数值
+     * @return
+     * @see #append(String, Object...)
+     */
+    public SqlStatement appendNonNegative(String sql, Number parameter) {
+        return appendIf(sql, parameter, NEGATIVE.negate());
+    }
+
+    /**
+     * 如果parameter不为null,则追加SQL
+     *
+     * @param sql
+     * @param parameter sql参数值
+     * @return
+     * @see #append(String, Object...)
+     */
+    public SqlStatement appendNotNull(String sql, Object parameter) {
+        return appendIf(sql, parameter, NOT_NULL);
+    }
+
+
+    /**
+     * 如果parameter不为空,则追加SQL
+     *
+     * @param sql
+     * @param parameter sql参数值
+     * @return
+     * @see #append(String, Object...)
+     */
+    public SqlStatement appendNotEmpty(String sql, String parameter) {
+        return appendIf(sql, parameter, NOT_EMPTY);
+    }
+
+
+    /**
+     * 如果参数满足predicate,则追加SQL
+     *
+     * @param sql
+     * @param parameter sql参数值
+     * @return
+     * @see #append(String, Object...)
+     */
+    public <T> SqlStatement appendIf(String sql, T parameter, Predicate<T> predicate) {
+        return appendIf(sql, predicate.test(parameter), parameter);
+    }
 
     /**
      * 如果参数满足predicate,则追加function返回值
@@ -199,59 +259,6 @@ public class SqlStatement {
         return appendIf(sql, predicate.test(parameter), function.apply(parameter));
     }
 
-
-    /**
-     * 如果parameter不为null,则追加SQL
-     *
-     * @param sql
-     * @param parameter sql参数值
-     * @return
-     * @see #append(String, Object...)
-     */
-    public SqlStatement appendIfNotNull(String sql, Object parameter) {
-        return appendIf(sql, parameter != null, parameter);
-    }
-
-
-    /**
-     * 如果parameter不为空,则追加SQL
-     *
-     * @param sql
-     * @param parameter sql参数值
-     * @return
-     * @see #append(String, Object...)
-     */
-    public SqlStatement appendIfNotEmpty(String sql, String parameter) {
-        return appendIf(sql, parameter != null && !parameter.isEmpty(), parameter);
-    }
-
-
-    /**
-     * 如果parameter不为空,则追加SQL
-     *
-     * @param sql
-     * @param parameter sql参数值
-     * @return
-     * @see #append(String, Object...)
-     */
-    public SqlStatement appendLikeIfNotEmpty(String sql, String parameter) {
-        return appendLikeIf(sql, StringUtils.isNotEmpty(parameter), parameter);
-    }
-
-    /**
-     * 如果expression为true,追加SQL, 参数前后添加"%%"
-     *
-     * @param sql
-     * @param expression 布尔表达式
-     * @param parameters sql参数值列表
-     * @return
-     * @see #append(String, Object...)
-     */
-    public SqlStatement appendLikeIf(String sql, boolean expression, String parameters) {
-        if (expression)
-            appendLike(sql, parameters);
-        return this;
-    }
 
     /**
      * 如果expression为true,追加SQL
@@ -282,17 +289,6 @@ public class SqlStatement {
         return this;
     }
 
-    /**
-     * 追加SQL like参数
-     *
-     * @param sql
-     * @param parameter sql参数值
-     * @return
-     * @see #append(String, Object...)
-     */
-    public SqlStatement appendLike(String sql, String parameter) {
-        return append(sql, "%" + parameter + "%");
-    }
 
     /**
      * 追加SQL,并进行参数赋值<br/>
@@ -325,6 +321,18 @@ public class SqlStatement {
         this.parseSql(sql, parameters, originalSql, preparedSql, preparedParameters);
         this.append("");
         return this;
+    }
+
+    /**
+     * 追加function返回值
+     *
+     * @param sql
+     * @param parameter sql参数值
+     * @return
+     * @see #append(String, Object...)
+     */
+    public <T> SqlStatement append(String sql, T parameter, Function<T, String> function) {
+        return append(sql, function.apply(parameter));
     }
 
     /**
@@ -514,4 +522,10 @@ public class SqlStatement {
         return false;
     }
 
+
+    public static Predicate<Object> NOT_NULL = e -> e != null;
+    public static Predicate<Number> POSITIVE = e -> e != null && e.intValue() > 0;
+    public static Predicate<Number> NEGATIVE = e -> e != null && e.intValue() < 0;
+    public static Predicate<String> NOT_EMPTY = e -> e != null && !e.isEmpty();
+    public static Function<String, String> LIKE = e -> "%" + e == null ? "" : e + "%";
 }
