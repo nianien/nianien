@@ -1,6 +1,6 @@
 package com.nianien.test.database;
 
-import com.nianien.core.collection.map.MapWrapper;
+import com.nianien.core.collection.wrapper.MapWrapper;
 import com.nianien.core.loader.ResourceLoader;
 import com.nianien.idea.database.DataSourceManager;
 import com.nianien.idea.database.query.Query;

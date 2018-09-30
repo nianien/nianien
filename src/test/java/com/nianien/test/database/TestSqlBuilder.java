@@ -1,6 +1,6 @@
 package com.nianien.test.database;
 
-import com.nianien.core.collection.map.MapWrapper;
+import com.nianien.core.collection.wrapper.MapWrapper;
 import com.nianien.core.date.DateFormatter;
 import com.nianien.core.util.StringUtils;
 import com.nianien.idea.database.sql.SqlBuilder;

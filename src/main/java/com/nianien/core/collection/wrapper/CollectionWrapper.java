@@ -1,18 +1,20 @@
-package com.nianien.core.collection;
-
-import com.nianien.core.collection.map.MapWrapper;
+package com.nianien.core.collection.wrapper;
 
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Spliterator;
+import java.util.function.Consumer;
+import java.util.function.Predicate;
+import java.util.stream.Stream;
 
 /**
  * {@link Collection}接口的包装类,包装Collection实例以支持链式语法<br/>
  *
  * @author skyfalling
  */
-public class CollectionWrapper<E> implements Collection<E> {
+public class CollectionWrapper<E> implements Collection<E>, Wrapper<Collection<E>> {
 
     protected Collection<E> collection;
 
@@ -34,7 +36,8 @@ public class CollectionWrapper<E> implements Collection<E> {
      * @return
      */
     public CollectionWrapper<E> append(E... elements) {
-        return append(Arrays.asList(elements));
+        collection.addAll(Arrays.asList(elements));
+        return this;
     }
 
     /**
@@ -44,7 +47,7 @@ public class CollectionWrapper<E> implements Collection<E> {
      * @return 返回当前对象
      */
     public CollectionWrapper<E> append(Collection<? extends E> elements) {
-        this.addAll(elements);
+        collection.addAll(elements);
         return this;
     }
 
@@ -55,8 +58,9 @@ public class CollectionWrapper<E> implements Collection<E> {
      * @param elements
      * @return 返回当前对象
      */
-    public CollectionWrapper<E> keep(E... elements) {
-        return keep(Arrays.asList(elements));
+    public CollectionWrapper<E> remain(E... elements) {
+        collection.retainAll(Arrays.asList(elements));
+        return this;
     }
 
     /**
@@ -65,8 +69,8 @@ public class CollectionWrapper<E> implements Collection<E> {
      * @param elements
      * @return 返回当前对象
      */
-    public CollectionWrapper<E> keep(Collection<? extends E> elements) {
-        this.retainAll(elements);
+    public CollectionWrapper<E> remain(Collection<? extends E> elements) {
+        collection.retainAll(elements);
         return this;
     }
 
@@ -78,7 +82,8 @@ public class CollectionWrapper<E> implements Collection<E> {
      * @return 返回当前对象
      */
     public CollectionWrapper<E> delete(E... elements) {
-        return delete(Arrays.asList(elements));
+        collection.removeAll(Arrays.asList(elements));
+        return this;
     }
 
     /**
@@ -88,10 +93,9 @@ public class CollectionWrapper<E> implements Collection<E> {
      * @return 返回当前对象
      */
     public CollectionWrapper<E> delete(Collection<? extends E> elements) {
-        this.removeAll(elements);
+        collection.removeAll(elements);
         return this;
     }
-
 
     @Override
     public int size() {
@@ -149,6 +153,11 @@ public class CollectionWrapper<E> implements Collection<E> {
     }
 
     @Override
+    public boolean removeIf(Predicate<? super E> filter) {
+        return collection.removeIf(filter);
+    }
+
+    @Override
     public boolean retainAll(Collection<?> c) {
         return collection.retainAll(c);
     }
@@ -159,24 +168,37 @@ public class CollectionWrapper<E> implements Collection<E> {
     }
 
     @Override
-    public String toString() {
-        return collection.toString();
-    }
-
-    @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof MapWrapper)) return false;
-
-        CollectionWrapper that = (CollectionWrapper) o;
-
-        if (!collection.equals(that.collection)) return false;
-
-        return true;
+        return collection.equals(o);
     }
 
     @Override
     public int hashCode() {
         return collection.hashCode();
+    }
+
+    @Override
+    public Spliterator<E> spliterator() {
+        return collection.spliterator();
+    }
+
+    @Override
+    public Stream<E> stream() {
+        return collection.stream();
+    }
+
+    @Override
+    public Stream<E> parallelStream() {
+        return collection.parallelStream();
+    }
+
+    @Override
+    public void forEach(Consumer<? super E> action) {
+        collection.forEach(action);
+    }
+
+    @Override
+    public Collection<E> unwrap() {
+        return collection;
     }
 }

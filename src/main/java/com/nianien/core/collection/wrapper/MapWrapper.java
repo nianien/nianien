@@ -1,4 +1,4 @@
-package com.nianien.core.collection.map;
+package com.nianien.core.collection.wrapper;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -15,7 +15,7 @@ import java.util.function.Function;
  *
  * @author skyfalling
  */
-public class MapWrapper<K, V> implements Map<K, V> {
+public class MapWrapper<K, V> implements Map<K, V>, Wrapper<Map<K, V>> {
 
     private Map<K, V> map;
 
@@ -23,7 +23,7 @@ public class MapWrapper<K, V> implements Map<K, V> {
      * 构造方法,默认Map实例
      */
     public MapWrapper() {
-        this(new HashMap<K, V>());
+        this(new HashMap<>());
     }
 
     /**
@@ -185,10 +185,14 @@ public class MapWrapper<K, V> implements Map<K, V> {
     }
 
     @Override
-    public String toString() {
-        return map.toString();
+    public boolean equals(Object o) {
+        return map.equals(o);
     }
 
+    @Override
+    public int hashCode() {
+        return map.hashCode();
+    }
 
     @Override
     public V getOrDefault(Object key, V defaultValue) {
@@ -245,5 +249,8 @@ public class MapWrapper<K, V> implements Map<K, V> {
         return map.merge(key, value, remappingFunction);
     }
 
-
+    @Override
+    public Map<K, V> unwrap() {
+        return map;
+    }
 }

@@ -1,6 +1,6 @@
 package com.nianien.test.text;
 
-import com.nianien.core.collection.map.MapWrapper;
+import com.nianien.core.collection.wrapper.MapWrapper;
 import com.nianien.core.text.Expression;
 
 import org.junit.Test;
