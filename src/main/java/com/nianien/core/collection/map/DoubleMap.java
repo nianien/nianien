@@ -48,35 +48,7 @@ public class DoubleMap<K, V1, V2> extends HashMap<K, DoubleValue<V1, V2>> {
      * @return
      */
     public DoubleValue<V1, V2> put(K key, V1 value1, V2 value2) {
-        DoubleValue<V1, V2> dv = new DoubleValue<V1, V2>() {
-            private V1 value1;
-            private V2 value2;
-
-            @Override
-            public V1 getValue1() {
-                return value1;
-            }
-
-            @Override
-            public V2 getValue2() {
-                return value2;
-            }
-
-            @Override
-            public void setValue1(V1 value1) {
-                this.value1 = value1;
-
-            }
-
-            @Override
-            public void setValue2(V2 value2) {
-                this.value2 = value2;
-            }
-
-        };
-        dv.setValue1(value1);
-        dv.setValue2(value2);
-        return this.put(key, dv);
+        return this.put(key, new DoubleValue<>(value1, value2));
     }
 
     /**
@@ -87,8 +59,12 @@ public class DoubleMap<K, V1, V2> extends HashMap<K, DoubleValue<V1, V2>> {
      * @return
      */
     public V1 updateValue1(K key, V1 value1) {
-        V1 old = this.get(key).getValue1();
-        this.get(key).setValue1(value1);
+        DoubleValue<V1, V2> doubleValue = this.putIfAbsent(key, new DoubleValue<>(value1, null));
+        if (doubleValue == null) {
+            return null;
+        }
+        V1 old = doubleValue.getValue1();
+        doubleValue.setValue1(value1);
         return old;
     }
 
@@ -101,8 +77,12 @@ public class DoubleMap<K, V1, V2> extends HashMap<K, DoubleValue<V1, V2>> {
      * @return
      */
     public V2 updateValue2(K key, V2 value2) {
-        V2 old = this.get(key).getValue2();
-        this.get(key).setValue2(value2);
+        DoubleValue<V1, V2> doubleValue = this.putIfAbsent(key, new DoubleValue<>(null, value2));
+        if (doubleValue == null) {
+            return null;
+        }
+        V2 old = doubleValue.getValue2();
+        doubleValue.setValue2(value2);
         return old;
     }
 }

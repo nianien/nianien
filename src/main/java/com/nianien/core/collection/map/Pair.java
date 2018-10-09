@@ -9,7 +9,7 @@ import java.util.Map.Entry;
  * @param <V>
  * @author skyfalling
  */
-public class KeyValue<K, V> implements Entry<K, V> {
+public class Pair<K, V> implements Entry<K, V> {
 
     private K key;
     private V value;
@@ -46,7 +46,7 @@ public class KeyValue<K, V> implements Entry<K, V> {
      * @param key
      * @param value
      */
-    public KeyValue(K key, V value) {
+    public Pair(K key, V value) {
         this.key = key;
         this.value = value;
     }
@@ -60,10 +60,10 @@ public class KeyValue<K, V> implements Entry<K, V> {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        KeyValue keyValue = (KeyValue) o;
+        Pair pair = (Pair) o;
 
-        if (!key.equals(keyValue.key)) return false;
-        if (!value.equals(keyValue.value)) return false;
+        if (!key.equals(pair.key)) return false;
+        if (!value.equals(pair.value)) return false;
 
         return true;
     }

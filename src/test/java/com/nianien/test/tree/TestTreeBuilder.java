@@ -1,6 +1,6 @@
 package com.nianien.test.tree;
 
-import com.nianien.core.collection.map.KeyValue;
+import com.nianien.core.collection.map.Pair;
 import com.nianien.core.tree.TreeBuilder;
 import com.nianien.core.tree.TreeNode;
 import com.nianien.core.tree.TreeNodeHandler;
@@ -25,35 +25,35 @@ public class TestTreeBuilder {
 
 
         Map map = new HashMap();
-        map.put(new KeyValue(101, "娱乐综合"), new KeyValue(1, "音乐影视"));
-        map.put(new KeyValue(102, "在线音乐"), new KeyValue(1, "音乐影视"));
-        map.put(new KeyValue(103, "宽带电影"), new KeyValue(1, "音乐影视"));
-        map.put(new KeyValue(104, "视频短片"), new KeyValue(1, "音乐影视"));
-        map.put(new KeyValue(105, "网络电视"), new KeyValue(1, "音乐影视"));
+        map.put(new Pair(101, "娱乐综合"), new Pair(1, "音乐影视"));
+        map.put(new Pair(102, "在线音乐"), new Pair(1, "音乐影视"));
+        map.put(new Pair(103, "宽带电影"), new Pair(1, "音乐影视"));
+        map.put(new Pair(104, "视频短片"), new Pair(1, "音乐影视"));
+        map.put(new Pair(105, "网络电视"), new Pair(1, "音乐影视"));
 
 
-        map.put(new KeyValue(201, "笑话"), new KeyValue(2, "休闲娱乐"));
-        map.put(new KeyValue(202, "图片"), new KeyValue(2, "休闲娱乐"));
-        map.put(new KeyValue(203, "动漫"), new KeyValue(2, "休闲娱乐"));
-        map.put(new KeyValue(204, "flash"), new KeyValue(2, "休闲娱乐"));
+        map.put(new Pair(201, "笑话"), new Pair(2, "休闲娱乐"));
+        map.put(new Pair(202, "图片"), new Pair(2, "休闲娱乐"));
+        map.put(new Pair(203, "动漫"), new Pair(2, "休闲娱乐"));
+        map.put(new Pair(204, "flash"), new Pair(2, "休闲娱乐"));
 
-        map.put(new KeyValue(20211, "笑话"), new KeyValue(202, "休闲娱乐"));
-        map.put(new KeyValue(20301, "图片"), new KeyValue(203, "休闲娱乐"));
-        map.put(new KeyValue(20415, "动漫"), new KeyValue(204, "休闲娱乐"));
-        map.put(new KeyValue(206, "flash"), new KeyValue(2, "休闲娱乐"));
+        map.put(new Pair(20211, "笑话"), new Pair(202, "休闲娱乐"));
+        map.put(new Pair(20301, "图片"), new Pair(203, "休闲娱乐"));
+        map.put(new Pair(20415, "动漫"), new Pair(204, "休闲娱乐"));
+        map.put(new Pair(206, "flash"), new Pair(2, "休闲娱乐"));
 
-        TreeNode<KeyValue> tree = TreeBuilder.buildTree(map/*, new Identifier<Integer, KeyValue<Integer, String>>() {
+        TreeNode<Pair> tree = TreeBuilder.buildTree(map/*, new Identifier<Integer, Pair<Integer, String>>() {
             @Override
-            public Integer id(KeyValue<Integer, String> node) {
+            public Integer id(Pair<Integer, String> node) {
                 return node.getKey();
             }
 
         }*/);
         TreeBuilder.traversal(tree, node -> System.out.println(node));
-        TreeBuilder.minimize(tree, (Predicate<TreeNode<KeyValue>>) node -> {
+        TreeBuilder.minimize(tree, (Predicate<TreeNode<Pair>>) node -> {
             if (node.value() != null) {
-                KeyValue keyValue = node.value();
-                Object key = keyValue.getKey();
+                Pair pair = node.value();
+                Object key = pair.getKey();
                 return key.equals(20415) || key.equals(105);
             }
             return false;
