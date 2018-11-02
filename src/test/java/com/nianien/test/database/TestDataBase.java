@@ -1,18 +1,20 @@
 package com.nianien.test.database;
 
-import com.nianien.core.collection.map.MapWrapper;
+import com.nianien.core.collection.wrapper.MapWrapper;
 import com.nianien.core.loader.ResourceLoader;
-import com.nianien.idea.database.DataSourceManager;
+import com.nianien.idea.database.datasource.DataSourceManager;
 import com.nianien.idea.database.query.Query;
 import com.nianien.idea.database.query.SqlQuery;
 import com.nianien.idea.database.sql.SqlBuilder;
 import com.nianien.idea.database.sql.SqlStatement;
 import com.nianien.test.bean.User;
+
 import org.junit.Test;
 
-import javax.sql.DataSource;
 import java.util.List;
 import java.util.Map;
+
+import javax.sql.DataSource;
 
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertThat;

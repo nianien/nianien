@@ -34,24 +34,20 @@ public class FileSearcher {
      * @param filter
      * @return 匹配的文件
      */
-    public static File findOne(File path, final FileFilter filter) {
+    public static File findFirst(File path, final FileFilter filter) {
         ExceptionHandler.throwIf(!path.isDirectory(), "the path must be a directory:"
                 + path.getAbsolutePath());
         final File[] find = new File[1];
-        File[] files = path.listFiles(new FileFilter() {
-
-            @Override
-            public boolean accept(File file) {
-                if (find[0] == null && filter.accept(file)) {
-                    find[0] = file;
-                }
-                return find[0] == null && file.isDirectory();
+        File[] files = path.listFiles(file -> {
+            if (find[0] == null && filter.accept(file)) {
+                find[0] = file;
             }
+            return find[0] == null && file.isDirectory();
         });
         for (File file : files) {
             if (find[0] != null)
                 break;
-            find[0] = findOne(file, filter);
+            find[0] = findFirst(file, filter);
         }
         return find[0];
     }
@@ -63,12 +59,7 @@ public class FileSearcher {
      * @return 文件列表
      */
     public static List<File> listAllFiles(File path) {
-        return find(path, new FileFilter() {
-            @Override
-            public boolean accept(File file) {
-                return true;
-            }
-        });
+        return find(path, file -> true);
     }
 
     /**
@@ -79,12 +70,7 @@ public class FileSearcher {
      * @return 匹配的文件列表
      */
     public static List<File> findByName(File path, final String regex) {
-        return find(path, new FileFilter() {
-            @Override
-            public boolean accept(File file) {
-                return file.getName().matches(regex);
-            }
-        });
+        return find(path, file -> file.getName().matches(regex));
     }
 
     /**
@@ -97,15 +83,11 @@ public class FileSearcher {
     private static List<File> find(File path, final FileFilter filter,
                                    final List<File> list) {
         if (path.isDirectory()) {
-            path.listFiles(new FileFilter() {
-
-                @Override
-                public boolean accept(File file) {
-                    if (filter.accept(file))
-                        list.add(file);
-                    find(file, filter, list);
-                    return false;
-                }
+            path.listFiles(file -> {
+                if (filter.accept(file))
+                    list.add(file);
+                find(file, filter, list);
+                return false;
             });
         }
         return list;

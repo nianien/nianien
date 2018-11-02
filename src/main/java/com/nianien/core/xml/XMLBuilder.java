@@ -7,6 +7,7 @@ import com.nianien.core.util.StringUtils;
 
 import java.lang.reflect.Array;
 import java.lang.reflect.Method;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -21,11 +22,7 @@ public class XMLBuilder {
     /**
      * 日期格式
      */
-    private static ThreadLocal<String> datePattern = new ThreadLocal<String>() {
-        public String initialValue() {
-            return DatePattern.Default;
-        }
-    };
+    private static ThreadLocal<String> datePattern = ThreadLocal.withInitial(() -> DatePattern.Default);
 
     /**
      * 设置日期格式
@@ -104,13 +101,7 @@ public class XMLBuilder {
      */
     public static <T> String xml(String nodeName,
                                  String elementName, T[] array) {
-        StringBuilder sb = new StringBuilder();
-        sb.append("<").append(nodeName).append(">");
-        for (T t : array) {
-            buildNode(t, elementName, sb);
-        }
-        sb.append("</").append(nodeName).append(">");
-        return sb.toString();
+        return xml(nodeName, elementName, Arrays.asList(array));
     }
 
     /**
@@ -157,13 +148,7 @@ public class XMLBuilder {
      */
     public static <T> String xmlWithAttribute(String nodeName,
                                               String elementName, T[] array) {
-        StringBuilder sb = new StringBuilder();
-        sb.append("<").append(nodeName).append(">");
-        for (T t : array) {
-            buildNodeWithAttribute(t, elementName, sb);
-        }
-        sb.append("</").append(nodeName).append(">");
-        return sb.toString();
+        return xmlWithAttribute(nodeName, elementName, Arrays.asList(array));
     }
 
     /**
@@ -228,13 +213,16 @@ public class XMLBuilder {
             return;
         sb.append("<").append(nodeName).append(" ");
         StringBuilder sub = new StringBuilder();
-        if (bean instanceof Boolean || bean instanceof Byte
+        if (bean instanceof Boolean
+                || bean instanceof Byte
                 || bean instanceof Short
                 || bean instanceof Integer
-                || bean instanceof Long || bean instanceof Float
+                || bean instanceof Long
+                || bean instanceof Float
                 || bean instanceof Double
                 || bean instanceof Character
-                || bean instanceof String || bean instanceof Date) {
+                || bean instanceof String
+                || bean instanceof Date) {
             appendAttributes(bean.getClass().getSimpleName(), bean, sb, sub);
         } else if (bean instanceof Iterable<?>) {
             Iterable<?> iterable = (Iterable<?>) bean;

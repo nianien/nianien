@@ -1,4 +1,4 @@
-package com.nianien.idea.database;
+package com.nianien.idea.database.datasource;
 
 import java.sql.*;
 import java.util.Map;

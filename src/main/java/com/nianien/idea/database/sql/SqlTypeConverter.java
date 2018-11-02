@@ -23,7 +23,7 @@ public class SqlTypeConverter implements TypeConverter<Object, String> {
     /**
      * 已注册的转换器
      */
-    private Map<Class, TypeConverter<?, String>> converters = new HashMap<Class, TypeConverter<?, String>>();
+    private Map<Class, TypeConverter<?, String>> converters = new HashMap<>();
     private String datePattern = DatePattern.Default;
     private int scale;
 
@@ -31,28 +31,15 @@ public class SqlTypeConverter implements TypeConverter<Object, String> {
      *
      */
     public SqlTypeConverter() {
-        register(Date.class, new TypeConverter<Date, String>() {
-            @Override
-            public String convert(Date value) {
-                return DateFormatter.format(value, datePattern);
-            }
+        register(Date.class, value -> DateFormatter.format(value, datePattern));
+        register(Number.class, number -> {
+            if (scale > 0)
+                if (number instanceof Float || number instanceof Double) {
+                    return new BigDecimal(number.doubleValue()).setScale(scale, RoundingMode.HALF_UP).toString();
+                }
+            return number.toString();
         });
-        register(Number.class, new TypeConverter<Number, String>() {
-            @Override
-            public String convert(Number number) {
-                if (scale > 0)
-                    if (number instanceof Float || number instanceof Double) {
-                        return new BigDecimal(number.doubleValue()).setScale(scale, RoundingMode.HALF_UP).toString();
-                    }
-                return number.toString();
-            }
-        });
-        register(Boolean.class, new TypeConverter<Boolean, String>() {
-            @Override
-            public String convert(Boolean value) {
-                return value ? "1" : "0";
-            }
-        });
+        register(Boolean.class, value -> value ? "1" : "0");
     }
 
     @Override
