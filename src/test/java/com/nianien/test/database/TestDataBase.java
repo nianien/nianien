@@ -1,7 +1,8 @@
 package com.nianien.test.database;
 
+import com.mchange.v2.c3p0.ComboPooledDataSource;
 import com.nianien.core.collection.wrapper.MapWrapper;
-import com.nianien.core.loader.ResourceLoader;
+import com.nianien.idea.database.datasource.DataSourceBuilder;
 import com.nianien.idea.database.datasource.DataSourceManager;
 import com.nianien.idea.database.query.Query;
 import com.nianien.idea.database.query.SqlQuery;
@@ -11,6 +12,7 @@ import com.nianien.test.bean.User;
 
 import org.junit.Test;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -28,7 +30,7 @@ public class TestDataBase {
     public void testQuery() {
         User user = new User();
         user.setId(1);
-        List<User> list = getQuery().setSqlStatement(SqlBuilder.selectSql(user,(String[]) null)).getRows(User.class);
+        List<User> list = getQuery().setSqlStatement(SqlBuilder.selectSql(user, (String[]) null)).getRows(User.class);
         for (User user1 : list) {
             System.out.println(user1);
         }
@@ -73,10 +75,10 @@ public class TestDataBase {
     @Test
     public void testBase() {
         Query query = getQuery();
-        String sql = "select * from users where (userId,userName) in :p";
+        String sql = "select * from user where (user_id,user_name) in :p";
         SqlStatement sqlStatement = new SqlStatement(sql, new MapWrapper("p", new Object[]{new String[]{"nianien", "落地飞天"}, new String[]{"wuhao1", "wuhao1"}}));
         System.out.println(sqlStatement.preparedSql());
-        assertThat(sqlStatement.preparedSql(), equalTo("select * from users where (userId,userName) in ((?,?),(?,?))"));
+        assertThat(sqlStatement.preparedSql(), equalTo("select * from user where (user_id,user_name) in ((?,?),(?,?))"));
         List<Map<String, Object>> list = query.setSqlStatement(sqlStatement).getRows();
         for (Map<String, Object> map : list) {
             System.out.println(map);
@@ -84,7 +86,16 @@ public class TestDataBase {
     }
 
     public static Query getQuery() {
-        DataSourceManager manager = DataSourceManager.loadFile(ResourceLoader.getFile("datasource.xml"));
+        Map<String, Object> map = new MapWrapper<String, Object>()
+                .append("driverClass", "com.mysql.jdbc.Driver")
+                .append("type", ComboPooledDataSource.class)
+                .append("jdbcUrl", "jdbc:mysql://127.0.0.1:3306/test?autoReconnect=true&;useUnicode=true&;characterEncoding=utf8")
+                .append("user", "root")
+                .append("password", "root");
+        DataSourceBuilder builder = new DataSourceBuilder();
+        builder.addDefault(map);
+        builder.addNaming("default", new HashMap<>());
+        DataSourceManager manager = new DataSourceManager(builder);
         DataSource ds = manager.getDataSource();
         return new SqlQuery(ds);
     }
