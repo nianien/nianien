@@ -1,5 +1,6 @@
 package com.nianien.core.util;
 
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.core.JsonParser.Feature;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JavaType;
@@ -43,6 +44,8 @@ public class JsonParser {
      */
     public JsonParser() {
         this.objectMapper = new ObjectMapper()
+                //不序列化null值
+                .setSerializationInclusion(Include.NON_NULL)
                 // 允许字段名不用引号
                 .configure(Feature.ALLOW_UNQUOTED_FIELD_NAMES, true)
                         // 允许使用单引号
