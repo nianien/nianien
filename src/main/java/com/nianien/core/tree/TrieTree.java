@@ -2,6 +2,7 @@ package com.nianien.core.tree;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
 
 /**
  * 字典树,支持增删查找以及树结构的优化<br>
@@ -91,29 +92,13 @@ public class TrieTree {
     /**
      * 层次遍历访问节点
      *
-     * @param handler
+     * @param consumer
      */
-    public void visit(TreeNodeHandler handler) {
+    public void visit(Consumer<TreeNode<String>> consumer) {
         TreeNode child = root.firstChild();
         if (child == null)
             return;
-        List<TreeNode> list = new ArrayList<TreeNode>();
-        list.add(child);
-        while (!list.isEmpty()) {
-            TreeNode node = list.remove(0);
-            handler.handle(node);
-            if (node.firstChild() != null) {
-                list.add(node.firstChild());
-            }
-            TreeNode brother = node.nextBrother();
-            while (brother != null) {
-                handler.handle(brother);
-                if (brother.firstChild() != null) {
-                    list.add(brother.firstChild());
-                }
-                brother = brother.nextBrother();
-            }
-        }
+        TreeBuilder.traversal(child, consumer);
     }
 
     /**

@@ -1,7 +1,6 @@
 package com.nianien.test.tree;
 
 import com.nianien.core.io.Files;
-import com.nianien.core.tree.TreeNodeHandler;
 import com.nianien.core.tree.TrieTree;
 import com.nianien.core.util.TimeCounter;
 
@@ -11,6 +10,7 @@ import org.junit.Test;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
+import java.util.function.Consumer;
 
 public class TestTrieTree {
 
@@ -27,7 +27,7 @@ public class TestTrieTree {
 
     @Test
     public void testDisplay() {
-        TreeNodeHandler h = node -> System.out.println(node);
+        Consumer h = node -> System.out.println(node);
         TrieTree tree = new TrieTree();
         tree.insert("a");
         tree.insert("b");
