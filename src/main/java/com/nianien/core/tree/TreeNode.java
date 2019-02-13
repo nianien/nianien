@@ -19,7 +19,7 @@ public class TreeNode<T> {
     /**
      * 布尔值标记
      */
-    private boolean marked;
+    private boolean exist;
     /**
      * 下一个兄弟节点
      */
@@ -35,18 +35,18 @@ public class TreeNode<T> {
      * @param value
      */
     public TreeNode(T value) {
-        this(value, false);
+        this(value, true);
     }
 
     /**
      * 构造方法
      *
-     * @param value  节点数据
-     * @param marked 是否标记节点数据
+     * @param value 节点数据
+     * @param exist 是否标记节点数据
      */
-    public TreeNode(T value, boolean marked) {
+    public TreeNode(T value, boolean exist) {
         this.value = value;
-        this.marked = marked;
+        this.exist = exist;
     }
 
     /**
@@ -160,21 +160,21 @@ public class TreeNode<T> {
     }
 
     /**
-     * 设置布尔值标记 *
+     * 设置节点是否存在
      *
      * @param value
      */
-    public void mark(boolean value) {
-        this.marked = value;
+    public void exist(boolean value) {
+        this.exist = value;
     }
 
     /**
-     * 获取布尔标记值
+     * 节点是否存在
      *
      * @return
      */
-    public boolean marked() {
-        return marked;
+    public boolean exist() {
+        return exist;
     }
 
     /**
@@ -219,7 +219,7 @@ public class TreeNode<T> {
      * 显示节点数据内容
      */
     public String toString() {
-        return value + "[" + marked + "]";
+        return value + "[" + exist + "]";
     }
 
 }

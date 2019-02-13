@@ -27,7 +27,7 @@ public class TrieTree {
         if (firstChild == null)
             return false;
         TreeNode node = find(firstChild, data);
-        return node != null ? node.marked() : false;
+        return node != null ? node.exist() : false;
 
     }
 
@@ -57,7 +57,7 @@ public class TrieTree {
             return;
         TreeNode node = find(firstChild, data);
         if (node != null)
-            node.mark(false);
+            node.exist(false);
     }
 
     /**
@@ -166,7 +166,7 @@ public class TrieTree {
     private void insert(TreeNode<String> node, String data) {
         String value = node.value();
         if (data.equals(value)) { // 插入数据存在
-            node.mark(true);
+            node.exist(true);
             return;
         }
         int index = mixed(data, value);
@@ -181,7 +181,7 @@ public class TrieTree {
             if (value.length() > index) {// 节点数据多于公共部分,则节点进行纵向分裂
                 // 将多余部分插入孩子节点
                 TreeNode temp = new TreeNode(value.substring(index),
-                        node.marked());
+                        node.exist());
                 TreeNode child = node.firstChild();
                 // 将原节点的孩子节点变为孙子节点
                 if (child != null) {
@@ -190,7 +190,7 @@ public class TrieTree {
                 // 原节点的数据更新为公共部分
                 node.value(value.substring(0, index));
                 // 公共部分是否为插入数据
-                node.mark(node.value().equals(data));
+                node.exist(node.value().equals(data));
                 node.firstChild(temp);
             }
             if (data.length() > index) {// 插入数据多于公共部分,则多余部分插入孩子节点
@@ -236,7 +236,7 @@ public class TrieTree {
         if (child == null)
             return;
         // 只有一个孩子节点,且父子节点数据都不存在
-        if (!node.marked() && !child.marked() && child.nextBrother() == null) {
+        if (!node.exist() && !child.exist() && child.nextBrother() == null) {
             // 合并内容
             node.value(node.value() + child.value());
             // 孙子节点变为孩子节点
@@ -279,7 +279,7 @@ public class TrieTree {
         if (value.startsWith(data)) {
             TreeNode<String> temp = new TreeNode(value.substring(data.length()));
             temp.firstChild(node.firstChild());
-            temp.mark(node.marked() && !temp.value().isEmpty());
+            temp.exist(node.exist() && !temp.value().isEmpty());
             return temp;
         }
         int index = mixed(data, value);
@@ -303,7 +303,7 @@ public class TrieTree {
     private void paths(TreeNode<String> node, List<String> list, StringBuilder sb) {
         sb.append(node.value());
         // 节点存在,加入路径
-        if (node.marked())
+        if (node.exist())
             list.add(sb.toString());
         if (node.firstChild() != null) {
             paths(node.firstChild(), list, sb);

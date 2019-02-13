@@ -2,67 +2,72 @@ package com.nianien.core.tree;
 
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.function.Predicate;
 
 /**
- * 构造树的工具类
+ * 构造树的工具类<p/>
+ * 树结构采用孩子兄弟链表表示法
  *
  * @author skyfalling
  */
 public class TreeBuilder {
 
     /**
-     * 根据Map对象的映射关系构建树形结构<br/>
-     * 其中,Key值表示子节点数据,Value值表示父节点数据<br/>
-     * 树结构采用孩子兄弟链表表示法<br/>
+     * 构建树形结构<br/>
      *
-     * @param relation   父子关系图,key表示当前节点数据,value表示父节点数据
-     * @param identifier 获取节点数据标识以确定节点在树形结构的位置.如未实现,请调用{@link #buildTree(java.util.Map)}方法
+     * @param list         节点数据列表,数据节点需要有唯一标识和父节点标识
+     * @param idGenerator  获取当前节点标识的函数
+     * @param pIdGenerator 获取父节点标识的函数
      * @param <T>
      * @return 返回一个虚拟根节点作为实际数据的根节点的根节点
      */
-    public static <T> TreeNode buildTree(Map<T, T> relation, Identifier identifier) {
+    public static <T> TreeNode buildTree(Collection<T> list, Function<T, Object> idGenerator, Function<T, Object> pIdGenerator) {
         // 虚拟根节点
-        TreeNode root = new TreeNode(null);
+        TreeNode<T> root = new TreeNode<>(null);
         // 全部节点的映射表
-        Map<Object, TreeNode> trees = new HashMap<Object, TreeNode>();
-        for (Entry<T, T> entry : relation.entrySet()) {
-            T p = entry.getValue();
-            T c = entry.getKey();
-            TreeNode parent = putIfAbsent(trees, p, identifier);
-            TreeNode child = putIfAbsent(trees, c, identifier);
-            parent.addChild(child);
+        Map<Object, TreeNode<T>> trees = new HashMap<>();
+        for (T t : list) {
+            putIfAbsent(trees, t, idGenerator);
         }
-        // 父节点为空的节点均为根节点的孩子节点,即实际的一级节点
-        for (TreeNode node : trees.values()) {
-            if (node.parent() == null) {
+        for (TreeNode<T> node : trees.values()) {
+            Object pId = pIdGenerator.apply(node.value());
+            if (trees.containsKey(pId)) {
+                trees.get(pId).addChild(node);
+            } else {
                 root.addChild(node);
             }
         }
         return root;
     }
 
+
     /**
-     * 根据Map对象的映射关系构建树形结构<br/>
-     * 其中,Key值表示子节点数据,Value值表示父节点数据<br/>
-     * 树结构采用孩子兄弟链表表示法<br/>
-     * 注意:这里将根据节点对象的hashCode确定其在树形结构中的位置,如有必要,请重写{@link #hashCode()}方法
+     * 构建树形结构<br/>
      *
-     * @param relation 父子关系图,key表示当前节点数据,value表示父节点数据
-     * @param <T>
+     * @param relation    父子关系图,key表示当前节点数据,value表示父节点数据,数据节点需要有唯一标识
+     * @param idGenerator 获取当前节点标识的函数
      * @return 返回一个虚拟根节点作为实际数据的根节点的根节点
      */
-    public static <T> TreeNode buildTree(Map<T, T> relation) {
-        return buildTree(relation, new Identifier() {
-            @Override
-            public Object id(Object node) {
-                return node == null ? null : node.hashCode();
-            }
-        });
+    public static <T> TreeNode buildTree(Map<T, T> relation, Function<T, Object> idGenerator) {
+        //数据映射表
+        Map<Object, T> dataMap = new HashMap<>();
+        //关系映射表
+        Map<Object, Object> relationMap = new HashMap<>();
+        for (Entry<T, T> entry : relation.entrySet()) {
+            Object id = idGenerator.apply(entry.getKey());
+            Object pid = idGenerator.apply(entry.getValue());
+            relationMap.put(id, pid);
+            dataMap.put(id, entry.getKey());
+            dataMap.put(pid, entry.getValue());
+        }
+        return buildTree(dataMap.values(), idGenerator, (v) -> relationMap.get(idGenerator.apply(v)));
     }
 
 
@@ -74,11 +79,11 @@ public class TreeBuilder {
      * @param selector
      * @return 当前节点是否保留
      */
-    public static <T> boolean minimize(TreeNode tree, Predicate<TreeNode<T>> selector) {
+    public static <T> boolean minimize(TreeNode<T> tree, Predicate<TreeNode<T>> selector) {
         //采取后根顺序从底自上进行最小化裁剪
         if (tree == null)
             return false;
-        TreeNode child = tree.firstChild();
+        TreeNode<T> child = tree.firstChild();
         boolean flag = false;
         while (child != null) {
             //裁剪当前孩子节点
@@ -86,12 +91,11 @@ public class TreeBuilder {
             //裁剪下一个孩子节点
             child = child.nextBrother();
         }
-
         //判断当前节点是否保留
         flag |= selector.test(tree);
         if (!flag && tree.parent() != null) {
             //当前节点需要被裁剪
-            TreeNode parent = tree.parent();
+            TreeNode<T> parent = tree.parent();
             if (parent.firstChild() == tree) {
                 //如果当前节点是第一个孩子节点,则只需将当前节点的下一个兄弟节点前移即完成裁剪
                 parent.firstChild(tree.nextBrother());
@@ -115,20 +119,21 @@ public class TreeBuilder {
      * 层次遍历树
      *
      * @param tree
-     * @param handler
+     * @param consumer
+     * @param <T>
      */
-    public static void traversal(TreeNode tree, TreeNodeHandler handler) {
+    public static <T> void traversal(TreeNode<T> tree, Consumer<TreeNode<T>> consumer) {
         List<TreeNode> list = new ArrayList<TreeNode>();
         list.add(tree);
         while (!list.isEmpty()) {
             TreeNode node = list.remove(0);
-            handler.handle(node);
+            consumer.accept(node);
             if (node.firstChild() != null) {
                 list.add(node.firstChild());
             }
             TreeNode brother = node.nextBrother();
             while (brother != null) {
-                handler.handle(brother);
+                consumer.accept(brother);
                 if (brother.firstChild() != null) {
                     list.add(brother.firstChild());
                 }
@@ -142,19 +147,20 @@ public class TreeBuilder {
      *
      * @param trees
      * @param value
-     * @param identifier
-     * @param <T>
+     * @param keyGen
      * @return
      */
-    private static <T> TreeNode putIfAbsent(Map<Object, TreeNode> trees, T value, Identifier identifier) {
-        Object key = identifier.id(value);
+    private static <T> TreeNode<T> putIfAbsent(Map<Object, TreeNode<T>> trees,
+                                               T value, Function<T, Object> keyGen) {
+        Object key = keyGen.apply(value);
         TreeNode node = trees.get(key);
         if (node == null) {
             // 如果父节点不存在,创建父节点
             node = new TreeNode(value);
             // 将该节点放入映射表中
             trees.put(key, node);
-        } else if (value != null) {
+        }
+        if (value != null) {
             node.value(value);
         }
         return node;

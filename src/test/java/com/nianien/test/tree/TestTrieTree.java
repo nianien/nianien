@@ -1,36 +1,33 @@
 package com.nianien.test.tree;
 
-import com.nianien.core.tree.TreeNode;
+import com.nianien.core.io.Files;
 import com.nianien.core.tree.TreeNodeHandler;
 import com.nianien.core.tree.TrieTree;
 import com.nianien.core.util.TimeCounter;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.util.ArrayList;
+import org.junit.BeforeClass;
+import org.junit.Test;
+
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 
 public class TestTrieTree {
 
-    public static void main(String[] args) throws Exception {
 
-        List<String> alist = getData("all200000.txt");
-        testSuggest("155", alist);
-        List<String> slist = getData("search20000.txt");
-        testSearch(alist, slist);
-        testDisplay();
+    private static List<String> alist;
+    private static List<String> slist;
+
+
+    @BeforeClass
+    public static void setUp() throws IOException {
+        alist = Files.readLines(TestTrieTree.class.getClassLoader().getResource("all200000.txt").openStream());
+        slist = Files.readLines(TestTrieTree.class.getClassLoader().getResource("search20000.txt").openStream());
     }
 
-    public static void testDisplay() {
-        TreeNodeHandler h = new TreeNodeHandler() {
-
-            @Override
-            public void handle(TreeNode node) {
-                System.out.println(node);
-
-            }
-        };
+    @Test
+    public void testDisplay() {
+        TreeNodeHandler h = node -> System.out.println(node);
         TrieTree tree = new TrieTree();
         tree.insert("a");
         tree.insert("b");
@@ -53,34 +50,23 @@ public class TestTrieTree {
         tree.visit(h);
     }
 
-    public static List<String> getData(String file) throws Exception {
-        file = TestTrieTree.class.getClassLoader().getResource(file).getFile();
-        System.out.println(file);
-        List<String> list = new ArrayList<String>();
-        BufferedReader reader = new BufferedReader(new FileReader(file));
-        String line = null;
-        while ((line = reader.readLine()) != null) {
-            list.add(line);
-        }
-        reader.close();
-        return list;
-    }
 
-    public static void testSuggest(String data, List<String> list)
-            throws Exception {
+    @Test
+    public void testSuggest() {
+        String data = "155";
         TrieTree tree = new TrieTree();
-        for (String str : list) {
+        for (String str : alist) {
             tree.insert(str);
         }
         TimeCounter tc = new TimeCounter();
         tc.start();
         int i = 0;
-        for (String str : list) {
+        for (String str : alist) {
             if (!data.equals(str) && str.startsWith(data))
                 i++;
         }
         tc.stop();
-        System.out.println("list used: " + tc.timePassed() + " ms, suggest: "
+        System.out.println("alist used: " + tc.timePassed() + " ms, suggest: "
                 + i);
 
         tc.start();
@@ -98,8 +84,9 @@ public class TestTrieTree {
 
     }
 
-    public static void testSearch(List<String> alist, List<String> slist)
-            throws Exception {
+
+    @Test
+    public void testSearch() {
 
         TrieTree tree = new TrieTree();
         HashMap<String, String> map = new HashMap<String, String>();
