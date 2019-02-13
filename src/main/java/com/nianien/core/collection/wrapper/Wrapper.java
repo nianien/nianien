@@ -9,5 +9,10 @@ package com.nianien.core.collection.wrapper;
  */
 public interface Wrapper<T> {
 
+    /**
+     * 返回原生对象
+     *
+     * @return
+     */
     T unwrap();
 }
