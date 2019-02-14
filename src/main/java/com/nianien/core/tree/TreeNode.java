@@ -11,11 +11,11 @@ public class TreeNode<T> {
     /**
      * 父节点
      */
-    private TreeNode parent;
+    private TreeNode<T> parent;
     /**
      * 第一个孩子节点
      */
-    private TreeNode firstChild;
+    private TreeNode<T> firstChild;
     /**
      * 布尔值标记
      */
@@ -23,50 +23,40 @@ public class TreeNode<T> {
     /**
      * 下一个兄弟节点
      */
-    private TreeNode nextBrother;
+    private TreeNode<T> nextBrother;
     /**
      * 节点数据
      */
-    private T value;
+    private T data;
 
     /**
      * 构造方法,指定节点数据
      *
-     * @param value
+     * @param data
      */
-    public TreeNode(T value) {
-        this(value, true);
+    public TreeNode(T data) {
+        this(data, true);
     }
 
     /**
      * 构造方法
      *
-     * @param value 节点数据
+     * @param data  节点数据
      * @param exist 是否标记节点数据
      */
-    public TreeNode(T value, boolean exist) {
-        this.value = value;
+    public TreeNode(T data, boolean exist) {
+        this.data = data;
         this.exist = exist;
     }
 
+
     /**
-     * 添加兄弟节点
+     * 获取父节点
      *
-     * @param node
+     * @return parent
      */
-    public void addBrother(TreeNode node) {
-        if (node == null)
-            return;
-        TreeNode brother = this.nextBrother;
-        if (brother != null) {
-            while (brother.nextBrother != null) {
-                brother = brother.nextBrother;
-            }
-            brother.nextBrother = node;
-        } else {
-            this.nextBrother = node;
-        }
-        node.parent = this.parent;
+    public TreeNode<T> parent() {
+        return this.parent;
     }
 
     /**
@@ -74,9 +64,9 @@ public class TreeNode<T> {
      *
      * @param node
      */
-    public void addChild(TreeNode node) {
+    public TreeNode<T> addChild(TreeNode<T> node) {
         if (node == null)
-            return;
+            return this;
         TreeNode child = this.firstChild;
         if (child != null) {
             while (child.nextBrother != null) {
@@ -87,26 +77,7 @@ public class TreeNode<T> {
             this.firstChild = node;
         }
         node.parent = this;
-    }
-
-    /**
-     * 如果节点数据相等,则认为是同一节点
-     */
-    @Override
-    public boolean equals(Object other) {
-        if (other != null && other instanceof TreeNode && this.value != null) {
-            this.value.equals(((TreeNode) other).value);
-        }
-        return false;
-    }
-
-    /**
-     * 获取父节点
-     *
-     * @return parent
-     */
-    public TreeNode parent() {
-        return this.parent;
+        return this;
     }
 
     /**
@@ -114,9 +85,10 @@ public class TreeNode<T> {
      *
      * @return children
      */
-    public TreeNode firstChild() {
+    public TreeNode<T> firstChild() {
         return this.firstChild;
     }
+
 
     /**
      * 设置第一个孩子节点
@@ -129,27 +101,13 @@ public class TreeNode<T> {
             firstChild.parent = this;
     }
 
-    /**
-     * 最后一个兄弟节点
-     *
-     * @return
-     */
-    public TreeNode lastBrother() {
-        TreeNode lastBrother = this.nextBrother;
-        if (lastBrother != null) {
-            while (lastBrother.nextBrother != null) {
-                lastBrother = lastBrother.nextBrother;
-            }
-        }
-        return lastBrother;
-    }
 
     /**
      * 最后一个孩子节点
      *
      * @return
      */
-    public TreeNode lastChild() {
+    public TreeNode<T> lastChild() {
         TreeNode lastChild = this.firstChild;
         if (lastChild != null) {
             while (lastChild.nextBrother != null) {
@@ -157,6 +115,64 @@ public class TreeNode<T> {
             }
         }
         return lastChild;
+    }
+
+
+    /**
+     * 添加兄弟节点
+     *
+     * @param treeNode
+     */
+    public TreeNode<T> addBrother(TreeNode<T> treeNode) {
+        if (treeNode == null)
+            return this;
+        TreeNode brother = this.nextBrother;
+        if (brother != null) {
+            while (brother.nextBrother != null) {
+                brother = brother.nextBrother;
+            }
+            brother.nextBrother = treeNode;
+        } else {
+            this.nextBrother = treeNode;
+        }
+        treeNode.parent = this.parent;
+        return this;
+    }
+
+    /**
+     * 设置下一个兄弟节点
+     *
+     * @param treeNode
+     */
+    public void nextBrother(TreeNode treeNode) {
+        this.nextBrother = treeNode;
+        if (treeNode != null) {
+            treeNode.parent = this.parent;
+        }
+    }
+
+    /**
+     * 获取下一个兄弟节点
+     *
+     * @return
+     */
+    public TreeNode<T> nextBrother() {
+        return nextBrother;
+    }
+
+    /**
+     * 最后一个兄弟节点
+     *
+     * @return
+     */
+    public TreeNode<T> lastBrother() {
+        TreeNode lastBrother = this.nextBrother;
+        if (lastBrother != null) {
+            while (lastBrother.nextBrother != null) {
+                lastBrother = lastBrother.nextBrother;
+            }
+        }
+        return lastBrother;
     }
 
     /**
@@ -178,32 +194,12 @@ public class TreeNode<T> {
     }
 
     /**
-     * 获取下一个兄弟节点
-     *
-     * @return
-     */
-    public TreeNode nextBrother() {
-        return nextBrother;
-    }
-
-    /**
-     * 设置下一个兄弟节点
-     *
-     * @param nextBrother
-     */
-    public void nextBrother(TreeNode nextBrother) {
-        this.nextBrother = nextBrother;
-        if (nextBrother != null)
-            nextBrother.parent = this.parent;
-    }
-
-    /**
      * 获取节点数据
      *
      * @return
      */
-    public T value() {
-        return value;
+    public T data() {
+        return data;
     }
 
     /**
@@ -211,15 +207,31 @@ public class TreeNode<T> {
      *
      * @param value
      */
-    public void value(T value) {
-        this.value = value;
+    public void data(T value) {
+        this.data = value;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        TreeNode<?> treeNode = (TreeNode<?>) o;
+
+        return data != null ? data.equals(treeNode.data) : treeNode.data == null;
+    }
+
+    @Override
+    public int hashCode() {
+        return data != null ? data.hashCode() : 0;
     }
 
     /**
      * 显示节点数据内容
      */
+    @Override
     public String toString() {
-        return value + "[" + exist + "]";
+        return data + "[" + exist + "]";
     }
 
 }

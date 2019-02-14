@@ -37,7 +37,7 @@ public class TreeBuilder {
             putIfAbsent(trees, t, idGenerator);
         }
         for (TreeNode<T> node : trees.values()) {
-            Object pId = pIdGenerator.apply(node.value());
+            Object pId = pIdGenerator.apply(node.data());
             if (trees.containsKey(pId)) {
                 trees.get(pId).addChild(node);
             } else {
@@ -161,7 +161,7 @@ public class TreeBuilder {
             trees.put(key, node);
         }
         if (value != null) {
-            node.value(value);
+            node.data(value);
         }
         return node;
     }

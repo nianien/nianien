@@ -51,8 +51,8 @@ public class TestTreeBuilder {
         TreeNode<Pair> tree = TreeBuilder.buildTree(map, Pair::getKey);
         TreeBuilder.traversal(tree, node -> System.out.println(node));
         TreeBuilder.minimize(tree, node -> {
-            if (node.value() != null) {
-                Pair pair = node.value();
+            if (node.data() != null) {
+                Pair pair = node.data();
                 Object key = pair.getKey();
                 return key.equals(20415) || key.equals(105);
             }

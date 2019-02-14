@@ -149,7 +149,7 @@ public class TrieTree {
      * @return
      */
     private void insert(TreeNode<String> node, String data) {
-        String value = node.value();
+        String value = node.data();
         if (data.equals(value)) { // 插入数据存在
             node.exist(true);
             return;
@@ -173,9 +173,9 @@ public class TrieTree {
                     temp.firstChild(child);
                 }
                 // 原节点的数据更新为公共部分
-                node.value(value.substring(0, index));
+                node.data(value.substring(0, index));
                 // 公共部分是否为插入数据
-                node.exist(node.value().equals(data));
+                node.exist(node.data().equals(data));
                 node.firstChild(temp);
             }
             if (data.length() > index) {// 插入数据多于公共部分,则多余部分插入孩子节点
@@ -196,7 +196,7 @@ public class TrieTree {
      * @param data
      */
     private TreeNode find(TreeNode<String> node, String data) {
-        String value = node.value();
+        String value = node.data();
         if (data.equals(value)) { // 查询数据存在
             return node;
         }
@@ -223,7 +223,7 @@ public class TrieTree {
         // 只有一个孩子节点,且父子节点数据都不存在
         if (!node.exist() && !child.exist() && child.nextBrother() == null) {
             // 合并内容
-            node.value(node.value() + child.value());
+            node.data(node.data() + child.data());
             // 孙子节点变为孩子节点
             node.firstChild(child.firstChild());
             optimize(node);
@@ -260,11 +260,11 @@ public class TrieTree {
      * @return
      */
     private TreeNode suggest(TreeNode<String> node, String data) {
-        String value = node.value();
+        String value = node.data();
         if (value.startsWith(data)) {
             TreeNode<String> temp = new TreeNode(value.substring(data.length()));
             temp.firstChild(node.firstChild());
-            temp.exist(node.exist() && !temp.value().isEmpty());
+            temp.exist(node.exist() && !temp.data().isEmpty());
             return temp;
         }
         int index = mixed(data, value);
@@ -286,7 +286,7 @@ public class TrieTree {
      * @param sb
      */
     private void paths(TreeNode<String> node, List<String> list, StringBuilder sb) {
-        sb.append(node.value());
+        sb.append(node.data());
         // 节点存在,加入路径
         if (node.exist())
             list.add(sb.toString());
@@ -294,7 +294,7 @@ public class TrieTree {
             paths(node.firstChild(), list, sb);
         }
         // 回退该节点,查找兄弟节点
-        sb.delete(sb.length() - node.value().length(), sb.length());
+        sb.delete(sb.length() - node.data().length(), sb.length());
         if (node.nextBrother() != null) {
             paths(node.nextBrother(), list, sb);
         }
