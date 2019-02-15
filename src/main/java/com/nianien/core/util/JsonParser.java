@@ -1,6 +1,9 @@
 package com.nianien.core.util;
 
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import com.fasterxml.jackson.annotation.JsonTypeInfo.As;
+import com.fasterxml.jackson.annotation.JsonTypeInfo.Id;
 import com.fasterxml.jackson.core.JsonParser.Feature;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JavaType;
@@ -27,6 +30,14 @@ import java.util.Map;
  * @author skyfalling
  */
 public class JsonParser {
+
+    /**
+     * 多态接口, 继承该接口的类,可以在序列化时加入类信息,使得反序列化时自动转换成对应类型
+     */
+    @JsonTypeInfo(use = Id.CLASS, include = As.PROPERTY)
+    interface Polymorphous {
+    }
+
     /**
      * 内置的ObjectMapper实例
      */
@@ -48,12 +59,12 @@ public class JsonParser {
                 .setSerializationInclusion(Include.NON_NULL)
                 // 允许字段名不用引号
                 .configure(Feature.ALLOW_UNQUOTED_FIELD_NAMES, true)
-                        // 允许使用单引号
+                // 允许使用单引号
                 .configure(Feature.ALLOW_SINGLE_QUOTES, true)
-                        // 允许数字含有前导0
+                // 允许数字含有前导0
                 .configure(Feature.ALLOW_NUMERIC_LEADING_ZEROS, true)
                 .configure(Feature.STRICT_DUPLICATE_DETECTION, true)
-                        // 允许未知的属性
+                // 允许未知的属性
                 .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
                 .configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
         this.setDatePatterns(new String[]{"yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd HH:mm", "yyyy-MM-dd", "MM-dd HH:mm"});
@@ -113,6 +124,7 @@ public class JsonParser {
         return toBean(json, Object.class);
     }
 
+
     /**
      * json转T对象
      *
@@ -139,7 +151,7 @@ public class JsonParser {
     public <T> T[] toArray(String json, Class<T> elementType) {
         try {
             JavaType eType = toJavaType(elementType);
-            return objectMapper.readValue(json, ArrayType.construct(eType, (TypeBindings)null));
+            return objectMapper.readValue(json, ArrayType.construct(eType, (TypeBindings) null));
         } catch (Exception e) {
             throw ExceptionHandler.throwException(e);
         }
@@ -160,9 +172,9 @@ public class JsonParser {
             return objectMapper.readValue(json,
                     CollectionType.construct(
                             List.class,
-                            TypeBindings.create(List.class,eType),
-                            (JavaType)null,
-                            (JavaType[])null,
+                            TypeBindings.create(List.class, eType),
+                            (JavaType) null,
+                            (JavaType[]) null,
                             eType));
         } catch (Exception e) {
             throw ExceptionHandler.throwException(e);
@@ -185,8 +197,8 @@ public class JsonParser {
                     MapType.construct(
                             Map.class,
                             TypeBindings.create(Map.class, kType, vType),
-                            (JavaType)null,
-                            (JavaType[])null,
+                            (JavaType) null,
+                            (JavaType[]) null,
                             kType,
                             vType));
         } catch (Exception e) {
@@ -218,20 +230,20 @@ public class JsonParser {
         if (clazz.isArray()) {
             return ArrayType.construct(
                     SimpleType.constructUnsafe(clazz.getComponentType()),
-                    (TypeBindings)null);
+                    (TypeBindings) null);
         } else if (Collection.class.isAssignableFrom(clazz)) {
             return CollectionType.construct(
                     clazz,
-                    (TypeBindings)null,
-                    (JavaType)null,
-                    (JavaType[])null,
+                    (TypeBindings) null,
+                    (JavaType) null,
+                    (JavaType[]) null,
                     SimpleType.constructUnsafe(Object.class));
         } else if (Map.class.isAssignableFrom(clazz)) {
             return MapType.construct(
                     clazz,
-                    (TypeBindings)null,
-                    (JavaType)null,
-                    (JavaType[])null,
+                    (TypeBindings) null,
+                    (JavaType) null,
+                    (JavaType[]) null,
                     SimpleType.constructUnsafe(Object.class),
                     SimpleType.constructUnsafe(Object.class));
         } else {
