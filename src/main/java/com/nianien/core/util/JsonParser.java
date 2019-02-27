@@ -167,7 +167,9 @@ public class JsonParser {
      */
     public <T> T[] toArray(String json, Class<T> elementType) {
         try {
-            return objectMapper.readValue(json, objectMapper.getTypeFactory().constructArrayType(elementType));
+            return objectMapper.readValue(json,
+                    objectMapper.getTypeFactory()
+                            .constructArrayType(elementType));
         } catch (Exception e) {
             throw ExceptionHandler.throwException(e);
         }
@@ -185,7 +187,8 @@ public class JsonParser {
     public <T> List<T> toList(String json, Class<T> elementType) {
         try {
             return objectMapper.readValue(json,
-                    objectMapper.getTypeFactory().constructCollectionType(ArrayList.class, elementType));
+                    objectMapper.getTypeFactory()
+                            .constructCollectionType(ArrayList.class, elementType));
         } catch (Exception e) {
             throw ExceptionHandler.throwException(e);
         }
@@ -201,8 +204,9 @@ public class JsonParser {
      */
     public <K, V> Map<K, V> toMap(String json, Class<K> keyType, Class<V> valueType) {
         try {
-            return objectMapper.readValue(json, objectMapper.getTypeFactory().constructMapType(LinkedHashMap.class, keyType,
-                    valueType));
+            return objectMapper.readValue(json,
+                    objectMapper.getTypeFactory()
+                            .constructMapType(LinkedHashMap.class, keyType, valueType));
         } catch (Exception e) {
             throw ExceptionHandler.throwException(e);
         }
