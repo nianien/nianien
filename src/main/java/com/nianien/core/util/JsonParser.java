@@ -7,6 +7,7 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo.Id;
 import com.fasterxml.jackson.core.JsonParser.Feature;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.nianien.core.date.DateFormatter;
@@ -19,6 +20,8 @@ import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+
+import lombok.SneakyThrows;
 
 /**
  * JSON与Java对象相互转换的工具类
@@ -105,6 +108,27 @@ public class JsonParser {
     }
 
     /**
+     * json转T对象
+     * <pre>
+     *     String json="{\"key\":[1,2,3]}";
+     *     TypeReference ref = new TypeReference<Map<String,String[]>>() { };
+     *     Map<String,String[]> map=toBean(json,ref)
+     * </pre>
+     *
+     * @param json
+     * @param typeReference
+     * @param <T>
+     * @return
+     */
+    @SneakyThrows
+    public <T> T toBean(String json, TypeReference<T> typeReference) {
+        if (json == null || json.isEmpty()) {
+            return null;
+        }
+        return objectMapper.readValue(json, typeReference);
+    }
+
+    /**
      * json转Object对象, 根据json字符串的结构自动调整为对应的数据类型, 具体对应关系如下：<br>
      * 1)字符串->String类型<br>
      * 2)整数->int类型<br>
@@ -122,28 +146,6 @@ public class JsonParser {
 
     /**
      * json转T对象
-     * <pre>
-     *     String json="{\"key\":[1,2,3]}";
-     *     TypeReference ref = new TypeReference<Map<String,String[]>>() { };
-     *     Map<String,String[]> map=toBean(json,ref)
-     * </pre>
-     *
-     * @param json
-     * @param typeReference
-     * @param <T>
-     * @return
-     */
-    public <T> T toBean(String json, TypeReference<T> typeReference) {
-        try {
-            return objectMapper.readValue(json, typeReference);
-        } catch (Exception e) {
-            throw ExceptionHandler.throwException(e);
-        }
-    }
-
-
-    /**
-     * json转T对象
      *
      * @param <T>
      * @param json
@@ -152,7 +154,7 @@ public class JsonParser {
      */
     public <T> T toBean(String json, Class<T> beanType) {
         try {
-            return objectMapper.readValue(json, beanType);
+            return readValue(json, objectMapper.getTypeFactory().constructType(beanType));
         } catch (Exception e) {
             throw ExceptionHandler.throwException(e);
         }
@@ -167,7 +169,7 @@ public class JsonParser {
      */
     public <T> T[] toArray(String json, Class<T> elementType) {
         try {
-            return objectMapper.readValue(json,
+            return readValue(json,
                     objectMapper.getTypeFactory()
                             .constructArrayType(elementType));
         } catch (Exception e) {
@@ -186,7 +188,7 @@ public class JsonParser {
      */
     public <T> List<T> toList(String json, Class<T> elementType) {
         try {
-            return objectMapper.readValue(json,
+            return readValue(json,
                     objectMapper.getTypeFactory()
                             .constructCollectionType(ArrayList.class, elementType));
         } catch (Exception e) {
@@ -204,7 +206,7 @@ public class JsonParser {
      */
     public <K, V> Map<K, V> toMap(String json, Class<K> keyType, Class<V> valueType) {
         try {
-            return objectMapper.readValue(json,
+            return readValue(json,
                     objectMapper.getTypeFactory()
                             .constructMapType(LinkedHashMap.class, keyType, valueType));
         } catch (Exception e) {
@@ -218,12 +220,25 @@ public class JsonParser {
      * @param obj
      * @return
      */
+    @SneakyThrows
     public String toJson(Object obj) {
-        try {
-            return objectMapper.writeValueAsString(obj);
-        } catch (Exception e) {
-            throw ExceptionHandler.throwException(e);
+        return objectMapper.writeValueAsString(obj);
+    }
+
+    /**
+     * 反序列化
+     *
+     * @param json
+     * @param valueType
+     * @param <T>
+     * @return
+     */
+    @SneakyThrows
+    private <T> T readValue(String json, JavaType valueType) {
+        if (json == null || json.isEmpty()) {
+            return null;
         }
+        return objectMapper.readValue(json, valueType);
     }
 
 
