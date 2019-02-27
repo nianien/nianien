@@ -5,22 +5,18 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.annotation.JsonTypeInfo.As;
 import com.fasterxml.jackson.annotation.JsonTypeInfo.Id;
 import com.fasterxml.jackson.core.JsonParser.Feature;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.databind.type.ArrayType;
-import com.fasterxml.jackson.databind.type.CollectionType;
-import com.fasterxml.jackson.databind.type.MapType;
-import com.fasterxml.jackson.databind.type.SimpleType;
-import com.fasterxml.jackson.databind.type.TypeBindings;
 import com.nianien.core.date.DateFormatter;
 import com.nianien.core.exception.ExceptionHandler;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Date;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -124,6 +120,27 @@ public class JsonParser {
         return toBean(json, Object.class);
     }
 
+    /**
+     * json转T对象
+     * <pre>
+     *     String json="{\"key\":[1,2,3]}";
+     *     TypeReference ref = new TypeReference<Map<String,String[]>>() { };
+     *     Map<String,String[]> map=toBean(json,ref)
+     * </pre>
+     *
+     * @param json
+     * @param typeReference
+     * @param <T>
+     * @return
+     */
+    public <T> T toBean(String json, TypeReference<T> typeReference) {
+        try {
+            return objectMapper.readValue(json, typeReference);
+        } catch (Exception e) {
+            throw ExceptionHandler.throwException(e);
+        }
+    }
+
 
     /**
      * json转T对象
@@ -150,8 +167,7 @@ public class JsonParser {
      */
     public <T> T[] toArray(String json, Class<T> elementType) {
         try {
-            JavaType eType = toJavaType(elementType);
-            return objectMapper.readValue(json, ArrayType.construct(eType, (TypeBindings) null));
+            return objectMapper.readValue(json, objectMapper.getTypeFactory().constructArrayType(elementType));
         } catch (Exception e) {
             throw ExceptionHandler.throwException(e);
         }
@@ -168,14 +184,8 @@ public class JsonParser {
      */
     public <T> List<T> toList(String json, Class<T> elementType) {
         try {
-            JavaType eType = toJavaType(elementType);
             return objectMapper.readValue(json,
-                    CollectionType.construct(
-                            List.class,
-                            TypeBindings.create(List.class, eType),
-                            (JavaType) null,
-                            (JavaType[]) null,
-                            eType));
+                    objectMapper.getTypeFactory().constructCollectionType(ArrayList.class, elementType));
         } catch (Exception e) {
             throw ExceptionHandler.throwException(e);
         }
@@ -191,16 +201,8 @@ public class JsonParser {
      */
     public <K, V> Map<K, V> toMap(String json, Class<K> keyType, Class<V> valueType) {
         try {
-            JavaType kType = toJavaType(keyType);
-            JavaType vType = toJavaType(valueType);
-            return objectMapper.readValue(json,
-                    MapType.construct(
-                            Map.class,
-                            TypeBindings.create(Map.class, kType, vType),
-                            (JavaType) null,
-                            (JavaType[]) null,
-                            kType,
-                            vType));
+            return objectMapper.readValue(json, objectMapper.getTypeFactory().constructMapType(LinkedHashMap.class, keyType,
+                    valueType));
         } catch (Exception e) {
             throw ExceptionHandler.throwException(e);
         }
@@ -220,35 +222,5 @@ public class JsonParser {
         }
     }
 
-    /**
-     * 获取对应的JavaType
-     *
-     * @param clazz
-     * @return May be: {@link SimpleType} or {@link ArrayType} or {@link CollectionType} or {@link MapType}
-     */
-    private JavaType toJavaType(Class<?> clazz) {
-        if (clazz.isArray()) {
-            return ArrayType.construct(
-                    SimpleType.constructUnsafe(clazz.getComponentType()),
-                    (TypeBindings) null);
-        } else if (Collection.class.isAssignableFrom(clazz)) {
-            return CollectionType.construct(
-                    clazz,
-                    (TypeBindings) null,
-                    (JavaType) null,
-                    (JavaType[]) null,
-                    SimpleType.constructUnsafe(Object.class));
-        } else if (Map.class.isAssignableFrom(clazz)) {
-            return MapType.construct(
-                    clazz,
-                    (TypeBindings) null,
-                    (JavaType) null,
-                    (JavaType[]) null,
-                    SimpleType.constructUnsafe(Object.class),
-                    SimpleType.constructUnsafe(Object.class));
-        } else {
-            return SimpleType.constructUnsafe(clazz);
-        }
-    }
 
 }
