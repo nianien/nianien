@@ -53,7 +53,7 @@ public class JsonParser {
      * "yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd HH:mm", "yyyy-MM-dd", "MM-dd","HH:mm:ss", "HH:mm"<br/>
      */
     public JsonParser() {
-        this.objectMapper = new ObjectMapper()
+        objectMapper = new ObjectMapper()
                 //不序列化null值
                 .setSerializationInclusion(Include.NON_NULL)
                 // 允许字段名不用引号
@@ -94,7 +94,7 @@ public class JsonParser {
      * @return
      */
     public JsonParser setDatePatterns(final String[] datePatterns) {
-        this.objectMapper.setDateFormat(new SimpleDateFormat(datePatterns[0]) {
+        objectMapper.setDateFormat(new SimpleDateFormat(datePatterns[0]) {
             @Override
             public Date parse(String source) {
                 try {
