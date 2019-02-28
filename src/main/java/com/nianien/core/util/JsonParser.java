@@ -120,12 +120,8 @@ public class JsonParser {
      * @param <T>
      * @return
      */
-    @SneakyThrows
     public <T> T toBean(String json, TypeReference<T> typeReference) {
-        if (json == null || json.isEmpty()) {
-            return null;
-        }
-        return objectMapper.readValue(json, typeReference);
+        return readValue(json, objectMapper.getTypeFactory().constructType(typeReference));
     }
 
     /**
