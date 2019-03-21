@@ -40,17 +40,17 @@ public class FineDecimal extends BigDecimal {
     /**
      * @param val 初始值
      */
-    private FineDecimal(double val) {
-        super(val, new MathContext(new BigDecimal(val).setScale(DEFAULT_SCALE.get(), ROUND_HALF_UP).precision(), RoundingMode.HALF_UP));
+    public FineDecimal(Number val) {
+        this(val == null ? 0 : val.doubleValue());
     }
-
 
     /**
      * @param val 初始值
      */
-    public FineDecimal(Number val) {
-        this(val == null ? 0 : val.doubleValue());
+    private FineDecimal(double val) {
+        super(val, new MathContext(new BigDecimal(val).setScale(DEFAULT_SCALE.get(), ROUND_HALF_UP).precision(), RoundingMode.HALF_UP));
     }
+
 
     @Override
     public FineDecimal add(BigDecimal augend) {
