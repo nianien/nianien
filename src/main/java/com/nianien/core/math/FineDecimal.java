@@ -5,7 +5,7 @@ import java.math.MathContext;
 import java.math.RoundingMode;
 
 /**
- * 统一浮点数精度
+ * 支持设置浮点精度scale和RoundingMode<br/>
  *
  * @author skyfalling
  * @version 1.0.0
@@ -16,39 +16,46 @@ public class FineDecimal extends BigDecimal {
     /**
      * 默认精度为4
      */
-    private static final ThreadLocal<Integer> DEFAULT_SCALE = ThreadLocal.withInitial(() -> 4);
+    private final int SCALE;
 
     /**
-     * 获取当前精度
+     * 构造方法<br/>
+     * 默认小数后4位精度,四舍五入
      *
-     * @return
-     */
-    public static int getDefaultScale() {
-        return DEFAULT_SCALE.get();
-    }
-
-    /**
-     * 设置当前精度
-     *
-     * @param scale
-     */
-    public static void setDefaultScale(int scale) {
-        DEFAULT_SCALE.set(scale);
-    }
-
-
-    /**
-     * @param val 初始值
+     * @param val
      */
     public FineDecimal(Number val) {
-        this(val == null ? 0 : val.doubleValue());
+        this(val, 4, RoundingMode.HALF_UP);
+    }
+
+    /**
+     * 构造方法<br/>
+     * 默认四舍五入
+     *
+     * @param val
+     * @param scale 精度
+     */
+    public FineDecimal(Number val, int scale) {
+        this(val, scale, RoundingMode.HALF_UP);
+    }
+
+    /**
+     * 构造方法
+     *
+     * @param val
+     * @param scale        精度
+     * @param roundingMode
+     */
+    public FineDecimal(Number val, int scale, RoundingMode roundingMode) {
+        this(val.doubleValue(), scale, roundingMode);
     }
 
     /**
      * @param val 初始值
      */
-    private FineDecimal(double val) {
-        super(val, new MathContext(new BigDecimal(val).setScale(DEFAULT_SCALE.get(), ROUND_HALF_UP).precision(), RoundingMode.HALF_UP));
+    private FineDecimal(double val, int scale, RoundingMode roundingMode) {
+        super(val, new MathContext(new BigDecimal(val).setScale(scale, roundingMode).precision(), RoundingMode.HALF_UP));
+        this.SCALE = scale;
     }
 
 
@@ -104,7 +111,7 @@ public class FineDecimal extends BigDecimal {
 
     @Override
     public FineDecimal divide(BigDecimal divisor) {
-        return $(super.divide(divisor, DEFAULT_SCALE.get(), RoundingMode.HALF_UP));
+        return $(super.divide(divisor, SCALE, RoundingMode.HALF_UP));
     }
 
     @Override
