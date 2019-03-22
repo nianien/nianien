@@ -161,6 +161,31 @@ public class SqlStatement {
         return StringUtils.fill(preparedSql(), '?', parameters).trim();
     }
 
+    /**
+     * 如果parameter等于零,则追加SQL
+     *
+     * @param sql
+     * @param parameter sql参数值
+     * @return
+     * @see #append(String, Object...)
+     */
+    public SqlStatement append$eq0(String sql, Number parameter) {
+        return append(sql, Params.eq(parameter, 0));
+    }
+
+
+    /**
+     * 如果parameter不等于零,则追加SQL
+     *
+     * @param sql
+     * @param parameter sql参数值
+     * @return
+     * @see #append(String, Object...)
+     */
+    public SqlStatement append$ne0(String sql, Number parameter) {
+        return append(sql, Params.ne(parameter, 0));
+    }
+
 
     /**
      * 如果parameter大于零,则追加SQL

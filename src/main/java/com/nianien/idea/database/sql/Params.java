@@ -36,6 +36,27 @@ public class Params {
         return with(obj).when(Objects::nonNull);
     }
 
+    /**
+     * 判断大于
+     *
+     * @param number
+     * @param other
+     * @return
+     */
+    public static Param<Number> eq(Number number, int other) {
+        return with(number).when(e -> e.intValue() == other);
+    }
+
+    /**
+     * 判断大于
+     *
+     * @param number
+     * @param other
+     * @return
+     */
+    public static Param<Number> ne(Number number, int other) {
+        return with(number).when(e -> e.intValue() != other);
+    }
 
     /**
      * 判断大于

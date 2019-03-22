@@ -6,7 +6,7 @@
 
     <groupId>com.nianien</groupId>
     <artifactId>nianien</artifactId>
-    <version>3.6-SNAPSHOT</version>
+    <version>3.6.1-SNAPSHOT</version>
 
     <!-- 设置编码 -->
     <properties>
@@ -122,7 +122,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.3</version>
+                <version>3.8.0</version>
                 <configuration>
                     <source>${java.version}</source>
                     <target>${java.version}</target>
