@@ -3,7 +3,7 @@ package com.nianien.idea.database.query;
 import com.nianien.core.exception.ExceptionHandler;
 import com.nianien.core.exception.NotImplementException;
 import com.nianien.core.io.Closer;
-import com.nianien.idea.database.sql.SqlBuilder;
+import com.nianien.idea.database.sql.SqlGenerator;
 import com.nianien.idea.database.sql.SqlStatement;
 import com.nianien.idea.database.table.DataField;
 
@@ -198,17 +198,17 @@ public class SqlQuery implements Query {
 
     @Override
     public <T> void insert(T bean) {
-        this.setSqlStatement(SqlBuilder.insertSql(bean)).executeUpdate();
+        this.setSqlStatement(SqlGenerator.insertSql(bean)).executeUpdate();
     }
 
     @Override
     public <T> void update(T bean, String... conditionFields) {
-        this.setSqlStatement(SqlBuilder.updateSql(bean, conditionFields)).executeUpdate();
+        this.setSqlStatement(SqlGenerator.updateSql(bean, conditionFields)).executeUpdate();
     }
 
     @Override
     public <T> void delete(T bean, String... conditionFields) {
-        this.setSqlStatement(SqlBuilder.deleteSql(bean, conditionFields)).executeUpdate();
+        this.setSqlStatement(SqlGenerator.deleteSql(bean, conditionFields)).executeUpdate();
     }
 
 

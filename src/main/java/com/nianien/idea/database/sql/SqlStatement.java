@@ -324,14 +324,14 @@ public class SqlStatement {
 
     /**
      * 追加SQL, 根据{@link Param}对象绑定参数<br/>
-     * 如果{@link Param#isValid()}返回值为true,则绑定{@link Param#get()}的返回值
+     * 如果{@link Param#validate()}返回值为true,则绑定{@link Param#get()}的返回值
      *
      * @param sql
      * @param param 参数对象
      * @return
      */
     public <T> SqlStatement append(String sql, Param<T> param) {
-        if (param.isValid()) {
+        if (param.validate()) {
             append(sql, param.get());
         }
         return this;

@@ -3,6 +3,8 @@ package com.nianien.idea.database.sql;
 import java.util.function.Supplier;
 
 /**
+ * 条件参数, 只有满足特定条件后,参数值生效
+ *
  * @author scorpio
  * @version 1.0.0
  * @email tengzhe.ln@alibaba-inc.com
@@ -10,11 +12,17 @@ import java.util.function.Supplier;
 public interface Param<T> extends Supplier<T> {
 
     /**
-     * 是否有效
+     * 是否满足条件
      *
      * @return
      */
-    boolean isValid();
+    boolean validate();
 
-
+    /**
+     * 返回参数值
+     *
+     * @return
+     */
+    @Override
+    T get();
 }

@@ -4,18 +4,28 @@ import com.nianien.idea.database.table.DataField;
 import com.nianien.idea.database.table.DataTable;
 import com.nianien.idea.database.table.DataTableFactory;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 
 /**
- * 构建SqlStatement对象的工具类,根据实体对象或者字段列表构建条件匹配的select,insert,update,delete等SQL语句<br/>
+ * SqlStatement对象的生成工具<br/>
+ * 根据实体对象或者字段列表构建条件匹配的select,insert,update,delete等SQL语句<br/>
  * 注:这里条件字段只匹配以下运算符: "="(非空字段),"is null"(空值字段),"in"(数组或集合)<br/>
- * 该类会根据实体类型获取{@link DataTable}对象,从而获取表名和字段名等信息
+ * 该工具类根据实体类型声明的注解{@link com.nianien.idea.database.table.Table}和{@link com.nianien.idea.database.table.Column}获取{@link DataTable}对象,从而获取表名和字段名等信息
  *
  * @author skyfalling
  * @see DataTable
+ * @see com.nianien.idea.database.table.Table
+ * @see com.nianien.idea.database.table.Column
  */
-public class SqlBuilder {
+public class SqlGenerator {
 
     /**
      * 构建select语句<br/>

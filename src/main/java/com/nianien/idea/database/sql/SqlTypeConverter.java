@@ -14,7 +14,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * 将SQL参数转换为字符串,用来拼装SQL语句<br/>
+ * 将SQL参数转换为字符串,用于拼装SQL语句<br/>
  *
  * @author skyfalling
  */
