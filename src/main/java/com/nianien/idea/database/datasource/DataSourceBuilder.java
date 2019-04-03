@@ -11,8 +11,10 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.Set;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
+import javax.annotation.PostConstruct;
 import javax.sql.DataSource;
 
 import lombok.Data;
@@ -31,22 +33,23 @@ public class DataSourceBuilder {
     /**
      * 默认配置
      */
-    private final Map<String, Object> defaultProperties = new HashMap<>();
+    private final static String DEFAULT_NAME = "default";
     /**
-     * 个性化配置
+     * 默认数据源配置
      */
-    private final Map<String, Map<String, Object>> namingProperties = new LinkedHashMap<>();
+    private final Map<String, Object> defaultProperties = new LinkedHashMap<>();
+    /**
+     * 数据源配置
+     */
+    private final Map<String, Map<String, Object>> properties = new LinkedHashMap<>();
 
 
-    /**
-     * 添加默认配置
-     *
-     * @param properties
-     * @return
-     */
-    public DataSourceBuilder addDefault(Map<String, Object> properties) {
-        this.defaultProperties.putAll(properties);
-        return this;
+    @PostConstruct
+    public void init() {
+        Map<String, Object> remove = properties.remove(DEFAULT_NAME);
+        if (remove != null) {
+            defaultProperties.putAll(remove);
+        }
     }
 
     /**
@@ -56,9 +59,9 @@ public class DataSourceBuilder {
      * @param properties
      * @return
      */
-    public DataSourceBuilder addNaming(String name, Map<String, Object> properties) {
-        this.namingProperties.computeIfAbsent(name, (key) -> new HashMap<>());
-        this.namingProperties.get(name).putAll(properties);
+    public DataSourceBuilder addProperties(String name, Map<String, Object> properties) {
+        this.properties.computeIfAbsent(name, (key) -> new HashMap<>());
+        this.properties.get(name).putAll(properties);
         return this;
     }
 
@@ -86,18 +89,31 @@ public class DataSourceBuilder {
         return dataSource;
     }
 
+
     /**
-     * 创建配置数据源列表
+     * 根据数据源名称选择创建数据源列表
+     *
+     * @param predicate 选择数据源名称
+     * @return
+     */
+    public LinkedHashMap<String, DataSource> build(Predicate<String> predicate) {
+        LinkedHashMap<String, DataSource> dataSourceMap = new LinkedHashMap<>();
+        for (String name : properties.keySet()) {
+            if (predicate.test(name)) {
+                DataSource dataSource = build(name);
+                dataSourceMap.put(name, dataSource);
+            }
+        }
+        return dataSourceMap;
+    }
+
+    /**
+     * 创建全部数据源列表,不包含默认数据源
      *
      * @return
      */
     public LinkedHashMap<String, DataSource> build() {
-        LinkedHashMap<String, DataSource> dataSourceMap = new LinkedHashMap<>();
-        for (String name : namingProperties.keySet()) {
-            DataSource dataSource = build(name);
-            dataSourceMap.put(name, dataSource);
-        }
-        return dataSourceMap;
+        return build((name) -> !DEFAULT_NAME.equalsIgnoreCase(name));
     }
 
 
@@ -109,8 +125,8 @@ public class DataSourceBuilder {
      */
     private Map<String, Object> renderConfig(String name) {
         Map<String, Object> config = new HashMap<>(defaultProperties);
-        if (namingProperties.containsKey(name)) {
-            config.putAll(namingProperties.get(name));
+        if (!DEFAULT_NAME.equals(name) && properties.containsKey(name)) {
+            config.putAll(properties.get(name));
         }
         Set<String> keys = new HashSet<>(config.keySet());
         for (String origin : keys) {
