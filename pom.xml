@@ -6,13 +6,12 @@
 
     <groupId>com.nianien</groupId>
     <artifactId>nianien</artifactId>
-    <version>3.6.1-SNAPSHOT</version>
+    <version>5.0.1-SNAPSHOT</version>
 
     <!-- 设置编码 -->
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <java.version>1.8</java.version>
-        <c3p0.version>0.9.5.2</c3p0.version>
         <jackson.version>2.9.7</jackson.version>
         <javassist.version>3.18.1-GA</javassist.version>
         <dom4j.version>1.6.1</dom4j.version>
@@ -46,13 +45,6 @@
         </dependency>
         <dependency>
             <!--for connection pool-->
-            <groupId>com.mchange</groupId>
-            <artifactId>c3p0</artifactId>
-            <version>${c3p0.version}</version>
-            <optional>true</optional>
-        </dependency>
-        <dependency>
-            <!--for connection pool-->
             <groupId>org.apache.tomcat</groupId>
             <artifactId>tomcat-jdbc</artifactId>
             <version>8.5.15</version>
@@ -72,28 +64,15 @@
         </dependency>
 
         <dependency>
-            <groupId>javax.servlet</groupId>
-            <artifactId>javax.servlet-api</artifactId>
-            <version>${javax.servlet-api.version}</version>
-            <scope>provided</scope>
-        </dependency>
-
-        <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
             <version>5.1.26</version>
-            <scope>test</scope>
+            <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <version>4.11</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>commons-collections</groupId>
-            <artifactId>commons-collections</artifactId>
-            <version>3.2.1</version>
             <scope>test</scope>
         </dependency>
         <dependency>

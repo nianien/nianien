@@ -1,6 +1,5 @@
 package com.nianien.idea.database.sql;
 
-import com.nianien.core.converter.TypeConverter;
 import com.nianien.core.date.DateFormatter;
 import com.nianien.core.date.DatePattern;
 import com.nianien.core.util.ArrayUtils;

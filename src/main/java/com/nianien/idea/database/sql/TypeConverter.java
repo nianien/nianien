@@ -1,4 +1,4 @@
-package com.nianien.core.converter;
+package com.nianien.idea.database.sql;
 
 /**
  * 类型转换接口声明

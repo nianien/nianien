@@ -47,13 +47,9 @@ public class Zipper {
      */
 
     public static void zip(List<File> files, File zipPath) {
-        zip(files, zipPath, new EntryHandler() {
-
-            @Override
-            public String getEntryName(File file) {
-                // 待压缩文件的名称
-                return file.getName();
-            }
+        zip(files, zipPath, file -> {
+            // 待压缩文件的名称
+            return file.getName();
         });
     }
 
@@ -66,14 +62,9 @@ public class Zipper {
 
     public static void zip(final Map<File, String> filesMap, File zipPath) {
         // 压缩文件
-        zip(filesMap.keySet(), zipPath, new EntryHandler() {
-
-            @Override
-            public String getEntryName(File file) {
-                // 压缩文件的映射名称
-                return filesMap.get(file);
-            }
-
+        zip(filesMap.keySet(), zipPath, file -> {
+            // 压缩文件的映射名称
+            return filesMap.get(file);
         });
     }
 
@@ -93,13 +84,7 @@ public class Zipper {
      * @param zipPath 压缩后的zip文件
      */
     public static void zip(File dir, File zipPath) {
-        zip(dir, zipPath, new FileFilter() {
-
-            @Override
-            public boolean accept(File pathname) {
-                return true;
-            }
-        });
+        zip(dir, zipPath, pathname -> true);
     }
 
     /**
@@ -111,14 +96,11 @@ public class Zipper {
      */
     public static void zip(File dir, File zipPath, FileFilter filter) {
         final String dirPath = dir.getAbsolutePath();
-        zip(FileSearcher.find(dir, filter), zipPath, new EntryHandler() {
-            @Override
-            public String getEntryName(File file) {
-                String filePath = file.getAbsolutePath();
-                int index = filePath.indexOf(dirPath);
-                // 压缩文件的相对路径
-                return filePath.substring(index + dirPath.length() + 1);
-            }
+        zip(FileSearcher.find(dir, filter), zipPath, file -> {
+            String filePath = file.getAbsolutePath();
+            int index = filePath.indexOf(dirPath);
+            // 压缩文件的相对路径
+            return filePath.substring(index + dirPath.length() + 1);
         });
     }
 

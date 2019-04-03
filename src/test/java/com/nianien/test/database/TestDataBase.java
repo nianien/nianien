@@ -1,6 +1,5 @@
 package com.nianien.test.database;
 
-import com.mchange.v2.c3p0.ComboPooledDataSource;
 import com.nianien.core.collection.wrapper.MapWrapper;
 import com.nianien.idea.database.datasource.DataSourceBuilder;
 import com.nianien.idea.database.datasource.DataSourceManager;
@@ -88,7 +87,7 @@ public class TestDataBase {
     public static Query getQuery() {
         Map<String, Object> map = new MapWrapper<String, Object>()
                 .append("driverClass", "com.mysql.jdbc.Driver")
-                .append("type", ComboPooledDataSource.class)
+                .append("type", org.apache.tomcat.jdbc.pool.DataSource.class)
                 .append("jdbcUrl", "jdbc:mysql://127.0.0.1:3306/test?autoReconnect=true&;useUnicode=true&;characterEncoding=utf8")
                 .append("user", "root")
                 .append("password", "root");

@@ -18,7 +18,7 @@ public class StringComparator implements Comparator<String> {
 	 * @author skyfalling
 	 * 
 	 */
-	public static enum SortType {
+	public enum SortType {
 
 		/**
 		 * 按字典顺序排序
