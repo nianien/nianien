@@ -107,7 +107,7 @@ public class BitValue {
      * @return
      */
     public String toString(boolean littleEndian) {
-        String valueString = StringUtils.lefPad(Long.toString(value, 2), length, '0');
+        String valueString = StringUtils.leftPad(Long.toString(value, 2), length, '0');
         return littleEndian ? new StringBuilder(valueString).reverse().toString() : valueString;
     }
 

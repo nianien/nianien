@@ -24,9 +24,9 @@ public class TestWildCard {
 
     @Test
     public void testPad() {
-        Assert.assertTrue(StringUtils.lefPad("abc", 5).equals("  abc"));
-        Assert.assertTrue(StringUtils.lefPad("abc", 5,' ').equals("  abc"));
-        Assert.assertTrue(StringUtils.lefPad("abc", 5, "test").equals("teabc"));
+        Assert.assertTrue(StringUtils.leftPad("abc", 5).equals("  abc"));
+        Assert.assertTrue(StringUtils.leftPad("abc", 5,' ').equals("  abc"));
+        Assert.assertTrue(StringUtils.leftPad("abc", 5, "test").equals("teabc"));
         Assert.assertTrue(StringUtils.rightPad("abc", 5).equals("abc  "));
         Assert.assertTrue(StringUtils.rightPad("abc", 5,' ').equals("abc  "));
         Assert.assertTrue(StringUtils.rightPad("abc", 5, "test").equals("abcte"));

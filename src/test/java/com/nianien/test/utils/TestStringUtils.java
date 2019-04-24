@@ -15,8 +15,8 @@ public class TestStringUtils {
 
     @Test
     public void test() throws Exception {
-        System.out.println(StringUtils.lefPad("a", 3, 'c'));
-        System.out.println(StringUtils.lefPad("!", 6, "abc"));
+        System.out.println(StringUtils.leftPad("a", 3, 'c'));
+        System.out.println(StringUtils.leftPad("!", 6, "abc"));
         System.out.println(StringUtils.fill("?a?b?c???", '?', "1", "2","3"));
         System.out.println(StringUtils.fill("a?b?c?", '?', "1", "2","3","4"));
         System.out.println(StringUtils.fill("a??b??c??","??", "1", "2","3","4"));

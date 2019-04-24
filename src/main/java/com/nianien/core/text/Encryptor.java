@@ -36,7 +36,7 @@ public class Encryptor {
         StringBuilder sb = new StringBuilder();
         for (char c : source.toCharArray()) {
             String str = RadixUtils.toRadix(c, charset);
-            sb.append(StringUtils.lefPad(str, getDigit(charset.length),
+            sb.append(StringUtils.leftPad(str, getDigit(charset.length),
                     charset[0]));
         }
         return sb.toString();
@@ -88,7 +88,7 @@ public class Encryptor {
         char[] chs = source.toCharArray();
         for (char c : chs) {
             String str = (int) c + "";
-            sb.append(StringUtils.lefPad(str, width, '0'));
+            sb.append(StringUtils.leftPad(str, width, '0'));
         }
         return sb.toString();
     }
