@@ -303,8 +303,8 @@ public class StringUtils {
      * @param width
      * @return 补齐后的字符串
      */
-    public static String lefPad(String source, int width) {
-        return lefPad(source, width, ' ');
+    public static String leftPad(String source, int width) {
+        return leftPad(source, width, ' ');
     }
 
     /**
@@ -315,7 +315,7 @@ public class StringUtils {
      * @param ch
      * @return 补齐后的字符串
      */
-    public static String lefPad(String source, int width, char ch) {
+    public static String leftPad(String source, int width, char ch) {
         int n = width - source.length();
         if (n <= 0)
             return source;
@@ -337,7 +337,7 @@ public class StringUtils {
      * @param str
      * @return 补齐后的字符串
      */
-    public static String lefPad(String source, int width, String str) {
+    public static String leftPad(String source, int width, String str) {
         int n = width - source.length();
         if (n <= 0)
             return source;
