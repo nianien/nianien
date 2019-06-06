@@ -25,11 +25,11 @@ public class Home {
 		return users;
 	}
 
-//    @Override
-//    public String toString() {
-//        return "Home{" +
-//                "users=" + users +
-//                ", address='" + address + '\'' +
-//                '}';
-//    }
+    @Override
+    public String toString() {
+        return "Home{" +
+                "users=" + users +
+                ", address='" + address + '\'' +
+                '}';
+    }
 }

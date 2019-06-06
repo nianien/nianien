@@ -1,5 +1,7 @@
 package com.nianien.idea.database.sql;
 
+import com.nianien.core.functions.Param;
+import com.nianien.core.functions.Params;
 import com.nianien.core.util.StringUtils;
 import com.nianien.idea.database.table.DataField;
 
@@ -324,14 +326,14 @@ public class SqlStatement {
 
     /**
      * 追加SQL, 根据{@link Param}对象绑定参数<br/>
-     * 如果{@link Param#validate()}返回值为true,则绑定{@link Param#get()}的返回值
+     * 如果{@link Param#test()} ()}返回值为true,则绑定{@link Param#get()}的返回值
      *
      * @param sql
      * @param param 参数对象
      * @return
      */
     public <T> SqlStatement append(String sql, Param<T> param) {
-        if (param.validate()) {
+        if (param.test()) {
             append(sql, param.get());
         }
         return this;

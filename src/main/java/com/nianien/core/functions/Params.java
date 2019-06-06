@@ -1,4 +1,4 @@
-package com.nianien.idea.database.sql;
+package com.nianien.core.functions;
 
 import com.nianien.core.util.ArrayUtils;
 import com.nianien.core.util.CollectionUtils;
@@ -10,7 +10,7 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 
 /**
- * 预定义参数
+ * 预定义{@link Param}对象
  *
  * @author scorpio
  * @version 1.0.0
@@ -62,7 +62,7 @@ public class Params {
 
 
     /**
-     * 判断等于某个数值
+     * 判断等于指定数值
      *
      * @param number
      * @param other
@@ -72,8 +72,19 @@ public class Params {
         return with(number).when(e -> e.intValue() == other);
     }
 
+
     /**
-     * 判断不等于某个数值
+     * 判断等于0
+     *
+     * @param number
+     * @return
+     */
+    public static Param<Number> eq0(Number number) {
+        return eq(number, 0);
+    }
+
+    /**
+     * 判断不等于指定数值
      *
      * @param number
      * @param other
@@ -83,8 +94,19 @@ public class Params {
         return with(number).when(e -> e.intValue() != other);
     }
 
+
     /**
-     * 判断参数大于某个数值
+     * 判断不等于0
+     *
+     * @param number
+     * @return
+     */
+    public static Param<Number> ne0(Number number) {
+        return ne(number, 0);
+    }
+
+    /**
+     * 判断参数大于指定数值
      *
      * @param number
      * @param other
@@ -92,6 +114,17 @@ public class Params {
      */
     public static Param<Number> gt(Number number, int other) {
         return with(number).when(e -> e.intValue() > other);
+    }
+
+
+    /**
+     * 判断参数大于0
+     *
+     * @param number
+     * @return
+     */
+    public static Param<Number> gt0(Number number) {
+        return gt(number, 0);
     }
 
     /**
@@ -106,7 +139,17 @@ public class Params {
     }
 
     /**
-     * 判断参数小于某个数值
+     * 判断参数大于等于指定数值
+     *
+     * @param number
+     * @return
+     */
+    public static Param<Number> ge0(Number number) {
+        return ge(number, 0);
+    }
+
+    /**
+     * 判断参数小于指定数值
      *
      * @param number
      * @param other
@@ -116,9 +159,18 @@ public class Params {
         return with(number).when(e -> e.intValue() < other);
     }
 
+    /**
+     * 判断参数小于0
+     *
+     * @param number
+     * @return
+     */
+    public static Param<Number> lt0(Number number) {
+        return lt(number, 0);
+    }
 
     /**
-     * 判断参数小于等于某个数值
+     * 判断参数小于等于指定数值
      *
      * @param number
      * @param other
@@ -126,6 +178,16 @@ public class Params {
      */
     public static Param<Number> le(Number number, int other) {
         return with(number).when(e -> e.intValue() <= other);
+    }
+
+    /**
+     * 判断参数小于等于0
+     *
+     * @param number
+     * @return
+     */
+    public static Param<Number> le0(Number number) {
+        return le(number, 0);
     }
 
 
@@ -170,11 +232,12 @@ public class Params {
      * @param predicate 条件断言
      * @param function  参数转换函数
      * @param <T>
+     * @param <P>
      * @return
      */
-    public static <T, R> ImmutableParam<T, R> with(T parameter,
-                                                   Predicate<T> predicate,
-                                                   Function<T, R> function) {
+    public static <T, P> ImmutableParam<T, P> with(P parameter,
+                                                   Predicate<P> predicate,
+                                                   Function<P, T> function) {
         return new ImmutableParam<>(parameter, predicate, function);
     }
 

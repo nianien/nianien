@@ -1,4 +1,4 @@
-package com.nianien.idea.database.sql;
+package com.nianien.core.functions;
 
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -6,34 +6,34 @@ import java.util.function.Predicate;
 /**
  * 不可变参数类型,通过条件断言和转换函数实现参数的校验和使用
  *
- * @param <U> 初始参数类型
- * @param <V> 处理后的参数类型
+ * @param <T> 输出参数类型
+ * @param <P> 输入参数类型
  * @author scorpio
  * @version 1.0.0
  * @email tengzhe.ln@alibaba-inc.com
  */
 
-public class ImmutableParam<U, V> implements Param<V> {
+public class ImmutableParam<T, P> implements Param<T> {
 
     /**
      * 初始参数
      */
-    private U parameter;
+    private P parameter;
     /**
      * 条件断言,用于条件判定
      */
-    private Predicate<U> condition;
+    private Predicate<P> condition;
     /**
      * 转换函数,用于参数处理
      */
-    private Function<U, V> resolver;
+    private Function<P, T> resolver;
 
     /**
      * @param parameter 原始参数
      * @param condition 条件断言
      * @param resolver  转换函数
      */
-    public ImmutableParam(U parameter, Predicate<U> condition, Function<U, V> resolver) {
+    public ImmutableParam(P parameter, Predicate<P> condition, Function<P, T> resolver) {
         this.parameter = parameter;
         this.condition = condition;
         this.resolver = resolver;
@@ -45,7 +45,7 @@ public class ImmutableParam<U, V> implements Param<V> {
      * @param condition
      * @return
      */
-    public ImmutableParam<U, U> when(Predicate<U> condition) {
+    public ImmutableParam<P, P> when(Predicate<P> condition) {
         return new ImmutableParam<>(parameter, condition, Function.identity());
     }
 
@@ -55,7 +55,7 @@ public class ImmutableParam<U, V> implements Param<V> {
      *
      * @return
      */
-    public ImmutableParam<U, V> negate() {
+    public ImmutableParam<T, P> negate() {
         return new ImmutableParam<>(parameter, condition.negate(), resolver);
     }
 
@@ -63,10 +63,10 @@ public class ImmutableParam<U, V> implements Param<V> {
      * 绑定转换函数
      *
      * @param resolver
-     * @param <R>
+     * @param <T>
      * @return
      */
-    public <R> ImmutableParam<U, R> then(Function<U, R> resolver) {
+    public <T> ImmutableParam<T, P> then(Function<P, T> resolver) {
         return new ImmutableParam<>(parameter, condition, resolver);
     }
 
@@ -76,7 +76,7 @@ public class ImmutableParam<U, V> implements Param<V> {
      * @return
      */
     @Override
-    public boolean validate() {
+    public boolean test() {
         return condition.test(parameter);
     }
 
@@ -86,7 +86,7 @@ public class ImmutableParam<U, V> implements Param<V> {
      * @return
      */
     @Override
-    public V get() {
+    public T get() {
         return resolver.apply(parameter);
     }
 

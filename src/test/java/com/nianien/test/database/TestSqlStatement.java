@@ -1,6 +1,7 @@
 package com.nianien.test.database;
 
 import com.nianien.core.date.DateFormatter;
+import com.nianien.core.functions.Params;
 import com.nianien.core.util.StringUtils;
 import com.nianien.idea.database.sql.SqlStatement;
 
@@ -10,7 +11,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
-import static com.nianien.idea.database.sql.Params.$;
+import static com.nianien.core.functions.Params.$;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertThat;
 
@@ -39,7 +40,7 @@ public class TestSqlStatement {
     public void testSqlFunc() {
         List<String> names = Arrays.asList(new String[]{"a", "b", "c"});
         SqlStatement sql = new SqlStatement("select * from user where 1=1");
-        sql.append(" name = ? ", $(names).when(e -> e.size() > 0));
+        sql.append(" name in ? ", Params.isNotEmpty(names));
         System.out.println(sql.expandSql());
 
     }
