@@ -14,4 +14,9 @@ public class Family {
     private String address;
     private People host;
     private Map<String, People> members;
+
+
+    public Family() {
+    }
+
 }

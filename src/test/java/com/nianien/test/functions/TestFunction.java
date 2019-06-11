@@ -9,6 +9,10 @@ import com.nianien.test.bean.People;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.BiFunction;
+import java.util.function.Function;
+
+import lombok.Data;
 
 import static com.nianien.core.functions.F.$;
 
@@ -21,6 +25,13 @@ public class TestFunction {
 
 
     public static void main(String[] args) {
+
+        System.out.println(
+                $(new Family()).$(Family::getHost).$(People::getContact).$(Contact::getAddress).$()
+        );
+        System.out.println(
+                $((Family) null).$(Family::getHost).$(People::getContact).$(Contact::getAddress).$()
+        );
 
         Family family = new Family();
 
@@ -129,5 +140,22 @@ public class TestFunction {
 
                 .$().toString();
     }
+
+    @Data
+    class User {
+        private long id;
+        private String name;
+    }
+
+
+    User user = new User();
+
+
+    BiFunction<User, Long, User> func = (u, id) -> {
+        u.setId(id);
+        return u;
+    };
+
+    Function<Long, User> setId = (id) -> func.apply(user, id);
 
 }
