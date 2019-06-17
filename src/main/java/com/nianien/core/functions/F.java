@@ -6,8 +6,31 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 
 /**
- * 构建Fluent API的Function工具，支持绑定函数流式调用
+ * 构建Fluent API的Function工具<br/>
+ * <p>
+ * <ul>
+ * <li>
+ * 执行函数，并持有函数执行结果<br/>
+ * {@link F#$(Function)}
+ * </li>
+ * <li>
+ * 执行函数，并忽略函数执行结果（持有对象不变）<br/>
+ * {@link F#$$(Consumer)}
+ * </li>
+ * <li>
+ * 绑定方法，并忽略返回结果（持有对象不变）<br/>
+ * {@link F#consumer(Consumer)} }
+ * </li>
+ * <li>
+ * 绑定方法，并持有返回结果（持有对象不变）<br/>
+ * {@link F#function(Function)} }
+ * </li>
+ * </ul>
+ * </p>
  *
+ * @param <T> 输出参数类型
+ * @param <U> 函数的第一个参数类型
+ * @param <V> 函数的第二个参数类型
  * @author scorpio
  * @version 1.0.0
  * @email tengzhe.ln@alibaba-inc.com
@@ -19,12 +42,30 @@ public class F<T, U, V> {
      */
     protected T target;
 
+    /**
+     * 绑定的无参方法
+     */
     protected Consumer<T> c1;
+    /**
+     * 含有单个参数的绑定方法
+     */
     protected BiConsumer<T, U> c2;
+    /**
+     * 含有两个参数的绑定方法
+     */
     protected TriConsumer<T, U, V> c3;
 
+    /**
+     * 绑定的无参方法
+     */
     protected Function<T, T> f1;
+    /**
+     * 含有单个参数的绑定方法
+     */
     protected BiFunction<T, U, T> f2;
+    /**
+     * 含有两个参数的绑定方法
+     */
     protected TriFunction<T, U, V, T> f3;
 
     /**
@@ -38,7 +79,7 @@ public class F<T, U, V> {
 
 
     /**
-     * 获取绑定对象
+     * 获取持有对象
      *
      * @return
      */
@@ -47,7 +88,7 @@ public class F<T, U, V> {
     }
 
     /**
-     * 绑定对象
+     * 持有对象
      *
      * @param target
      * @param <T>
@@ -58,7 +99,7 @@ public class F<T, U, V> {
     }
 
     /**
-     * 执行函数,绑定执行结果
+     * 执行函数，持有返回结果
      *
      * @param function
      * @param <R>      函数返回类型
@@ -73,12 +114,12 @@ public class F<T, U, V> {
     }
 
     /**
-     * 执行函数,绑定执行结果
+     * 执行函数，参数为p，持有返回结果
      *
      * @param function
-     * @param p
+     * @param p        函数参数
      * @param <R>      函数返回类型
-     * @param <P>      第一个参数类型
+     * @param <P>      参数类型
      * @return
      */
     public <R, P> F<R, U, V> $(BiFunction<T, P, R> function, P p) {
@@ -90,11 +131,11 @@ public class F<T, U, V> {
     }
 
     /**
-     * 执行函数,绑定执行结果
+     * 执行函数，参数为p和q，持有返回结果
      *
      * @param function
-     * @param p
-     * @param q
+     * @param p        第一个参数
+     * @param q        第二个参数
      * @param <R>      函数返回类型
      * @param <P>      第一个参数类型
      * @param <Q>      第二个参数类型
@@ -110,7 +151,7 @@ public class F<T, U, V> {
 
 
     /**
-     * 执行函数,绑定执行结果
+     * 执行函数，忽略返回结果
      *
      * @param consumer
      * @return
@@ -123,11 +164,11 @@ public class F<T, U, V> {
     }
 
     /**
-     * 执行函数,绑定执行结果
+     * 执行函数，参数为p，忽略返回结果
      *
      * @param consumer
      * @param p
-     * @param <P>      第一个参数类型
+     * @param <P>      参数类型
      * @return
      */
     public <P> F<T, U, V> $$(BiConsumer<T, P> consumer, P p) {
@@ -139,11 +180,13 @@ public class F<T, U, V> {
 
 
     /**
-     * 执行函数,绑定执行结果
+     * 执行函数，参数为p和q，忽略返回结果
      *
      * @param consumer
-     * @param p
+     * @param p        第一个参数
+     * @param q        第二个参数
      * @param <P>      第一个参数类型
+     * @param <P>      第二个参数类型
      * @return
      */
     public <P, Q> F<T, U, V> $$(TriConsumer<T, P, Q> consumer, P p, Q q) {
@@ -155,7 +198,7 @@ public class F<T, U, V> {
 
 
     /**
-     * 绑定无参方法
+     * 绑定无参方法，执行{@link #accept()}进行方法调用
      *
      * @param consumer
      * @return
@@ -167,7 +210,7 @@ public class F<T, U, V> {
 
 
     /**
-     * 绑定单个参数的方法
+     * 绑定方法，执行{@link #accept(U)}进行方法调用
      *
      * @param consumer
      * @return
@@ -180,7 +223,7 @@ public class F<T, U, V> {
 
 
     /**
-     * 绑定两个参数的方法
+     * 绑定方法，执行{@link #accept(U, V)}进行方法调用
      *
      * @param consumer
      * @return
@@ -192,7 +235,7 @@ public class F<T, U, V> {
     }
 
     /**
-     * 绑定无参方法作为function
+     * 绑定无参方法，执行{@link #apply()}进行方法调用
      *
      * @param function
      * @return
@@ -203,9 +246,10 @@ public class F<T, U, V> {
     }
 
     /**
-     * 绑定单个参数的方法作为function
+     * 绑定方法，执行{@link #apply(U)}进行方法调用
      *
      * @param function
+     * @param <U>      参数类型
      * @return
      */
     public <U> F<T, U, V> function2(BiFunction<T, U, T> function) {
@@ -215,9 +259,11 @@ public class F<T, U, V> {
     }
 
     /**
-     * 绑定两个参数的方法作为function
+     * 绑定方法，执行{@link #apply(U, V)}进行方法调用
      *
      * @param function
+     * @param <U>      第一个参数类型
+     * @param <V>      第二个参数类型
      * @return
      */
     public <U, V> F<T, U, V> function3(TriFunction<T, U, V, T> function) {
@@ -228,7 +274,7 @@ public class F<T, U, V> {
 
 
     /**
-     * 调用无参方法
+     * 调用无参方法，忽略方法执行结果
      *
      * @return
      */
@@ -240,8 +286,9 @@ public class F<T, U, V> {
     }
 
     /**
-     * 调用单个参数的方法
+     * 执行绑定方法，方法参数为u，忽略方法执行结果
      *
+     * @param u 方法参数
      * @return
      */
     public F<T, U, V> accept(U u) {
@@ -254,23 +301,12 @@ public class F<T, U, V> {
         return this;
     }
 
-    /**
-     * 调用单个参数的方法
-     *
-     * @return
-     */
-    public F<T, U, V> accept(Param<U> u) {
-        if (c2 != null) {
-            if (u.test()) {
-                c2.accept(target, u.get());
-            }
-        }
-        return this;
-    }
 
     /**
-     * 调用两个参数的方法
+     * 执行绑定方法，方法参数为u和v，忽略方法执行结果
      *
+     * @param u 第一个方法参数
+     * @param v 第二个方法参数
      * @return
      */
     public F<T, U, V> accept(U u, V v) {
@@ -281,7 +317,20 @@ public class F<T, U, V> {
     }
 
     /**
-     * 调用无参方法,绑定执行结果
+     * 如果{@link Param#test()}为真，执行绑定方法，方法参数为{@link Param#get()}，忽略方法执行结果
+     *
+     * @param u 条件参数
+     * @return
+     */
+    public F<T, U, V> accept(Param<U> u) {
+        if (c2 != null && u.test()) {
+            c2.accept(target, u.get());
+        }
+        return this;
+    }
+
+    /**
+     * 执行绑定的无参方法，持有方法执行结果
      *
      * @return
      */
@@ -294,25 +343,45 @@ public class F<T, U, V> {
 
 
     /**
-     * 调用单个参数的方法,绑定执行结果
+     * 执行绑定方法，方法参数为u，持有方法执行结果
      *
+     * @param u 方法参数
      * @return
      */
     public F<T, U, V> apply(U u) {
+        if (u instanceof Param) {
+            return apply((Param) u);
+        }
         if (f2 != null) {
             target = f2.apply(target, u);
         }
         return this;
     }
 
+
     /**
-     * 调用两个参数的方法,绑定执行结果
+     * 执行绑定方法，方法参数为u和v，持有方法执行结果
      *
+     * @param u 第一个方法参数
+     * @param v 第二个方法参数
      * @return
      */
     public F<T, U, V> apply(U u, V v) {
         if (f3 != null) {
             target = f3.apply(target, u, v);
+        }
+        return this;
+    }
+
+    /**
+     * 如果{@link Param#test()}为真，执行绑定方法，方法参数为{@link Param#get()}，持有方法执行结果
+     *
+     * @param u 条件参数
+     * @return
+     */
+    public F<T, U, V> apply(Param<U> u) {
+        if (f2 != null && u.test()) {
+            target = f2.apply(target, u.get());
         }
         return this;
     }
