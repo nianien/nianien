@@ -19,11 +19,11 @@ import java.util.function.Function;
  * </li>
  * <li>
  * 绑定方法，并忽略返回结果（持有对象不变）<br/>
- * {@link F#consumer(Consumer)} }
+ * {@link F#consumer(Consumer)} & {@link F#consumer2(BiConsumer)} & {@link F#consumer3(TriConsumer)}
  * </li>
  * <li>
  * 绑定方法，并持有返回结果（持有对象不变）<br/>
- * {@link F#function(Function)} }
+ * {@link F#function(Function)} & {@link F#function2(BiFunction)} & {@link F#function3(TriFunction)}
  * </li>
  * </ul>
  * </p>
