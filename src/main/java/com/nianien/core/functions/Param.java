@@ -1,7 +1,7 @@
 package com.nianien.core.functions;
 
 /**
- * 条件参数, 只有满足特定条件后,参数值生效
+ * 条件参数，当{@link #test()}为真时，可获取参数对象{@link #get()}
  *
  * @author scorpio
  * @version 1.0.0
