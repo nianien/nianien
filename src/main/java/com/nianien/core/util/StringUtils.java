@@ -4,9 +4,11 @@ import com.nianien.core.exception.ExceptionHandler;
 import com.nianien.core.text.RegexUtils;
 import com.nianien.core.text.TextAnalyzer;
 
+import java.util.Arrays;
 import java.util.Locale;
 import java.util.Map;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import static java.util.Locale.ENGLISH;
 
@@ -600,11 +602,24 @@ public class StringUtils {
      * @return 连接后的字符串
      */
     public static String join(String connector, String... parameters) {
+        return Arrays.stream(parameters).collect(Collectors.joining(connector));
+    }
+
+    /**
+     * 用字符串connector连接字符串集合parameters
+     *
+     * @param connector
+     * @param parameters
+     * @return 连接后的字符串
+     */
+    public static String join(String connector, Iterable<String> parameters) {
         StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < parameters.length; i++) {
-            if (i > 0)
+        int i = 0;
+        for (String parameter : parameters) {
+            if (i++ > 0) {
                 sb.append(connector);
-            sb.append(parameters[i]);
+            }
+            sb.append(parameter);
         }
         return sb.toString();
     }
