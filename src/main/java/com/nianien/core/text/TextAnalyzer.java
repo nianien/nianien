@@ -1,7 +1,6 @@
 package com.nianien.core.text;
 
 import com.nianien.core.comparator.StringComparator;
-import com.nianien.core.comparator.StringComparator.SortType;
 import com.nianien.core.util.ArrayUtils;
 import com.nianien.core.util.CollectionUtils;
 
@@ -280,14 +279,10 @@ public class TextAnalyzer {
         if (map.containsKey(text))
             return map.get(text);
         List<String> list = CollectionUtils.list(map.keySet());
-        Collections.sort(list, new StringComparator(SortType.LengthDesc));
-        return rebuild(text, analyze(text, list, false), new FragmentHandler() {
-
-            @Override
-            public String handle(String text, Fragment fragment) {
-                String value = fragment.content(text);
-                return fragment.isMatched() ? map.get(value) : value;
-            }
+        Collections.sort(list, StringComparator.LengthDesc);
+        return rebuild(text, analyze(text, list, false), (text1, fragment) -> {
+            String value = fragment.content(text1);
+            return fragment.isMatched() ? map.get(value) : value;
         });
     }
 

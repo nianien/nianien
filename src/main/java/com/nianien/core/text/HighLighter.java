@@ -56,8 +56,7 @@ public class HighLighter {
      * @param keywords
      */
     public void setKeywords(String[] keywords) {
-        Arrays.sort(keywords, new StringComparator(
-                StringComparator.SortType.LengthDesc));
+        Arrays.sort(keywords,StringComparator.LengthDesc);
         this.keywords = keywords;
     }
 
