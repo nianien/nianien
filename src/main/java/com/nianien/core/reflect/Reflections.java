@@ -274,7 +274,7 @@ public class Reflections {
      *
      * @param method
      * @return getter或setter方法对应的属性名<br />
-     * 注意:这里只对形如getXxx()或isXxx()或SetXxx()的方法有效,对应属性名为xxx<br/>
+     *         注意:这里只对形如getXxx()或isXxx()或SetXxx()的方法有效,对应属性名为xxx<br/>
      */
     public static String propertyName(Method method) {
         Property property = method.getAnnotation(Property.class);
@@ -315,43 +315,36 @@ public class Reflections {
      */
     public static Object invoke(String methodName, Object bean, Object[] parameters) throws Exception {
         Class beanClass = bean.getClass();
-        try {
-            Class<?>[] types = new Class<?>[parameters.length];
-            for (int i = 0; i < parameters.length; i++) {
-                types[i] = parameters[i].getClass();
-            }
-            return beanClass.getMethod(methodName, types).invoke(bean, parameters);
-        } catch (NoSuchMethodException e) {
-            List<Method> methods = getAllMethods(beanClass);
-            Iterator<Method> iterator = methods.iterator();
-            while (iterator.hasNext()) {
-                Method method = iterator.next();
-                if (method.getName().equals(methodName) && method.getParameterTypes().length == parameters.length) {
-                    if (instanceOfTypes(method.getParameterTypes(), parameters)) {
-                        return method.invoke(bean, parameters);
-                    }
-                } else {
-                    iterator.remove();
-                }
-            }
-
-            if (methods.size() != 1) {
-                throw new IllegalArgumentException(
-                        "no suitable method [" + methodName + "] for class [" + beanClass + "] with parameters: "
-                                + Arrays.toString(parameters));
-            }
-            Method method = methods.get(0);
-            Class[] parameterTypes = method.getParameterTypes();
-            Object[] castParams = new Object[parameters.length];
-            for (int i = 0; i < parameterTypes.length; i++) {
-                if (parameterTypes[i].isInstance(parameters[i])) {
-                    castParams[i] = parameters[i];
-                } else {
-                    castParams[i] = simpleInstance(parameterTypes[i], parameters[i].toString());
-                }
-            }
-            return method.invoke(bean, castParams);
+        Class<?>[] types = new Class<?>[parameters.length];
+        for (int i = 0; i < parameters.length; i++) {
+            types[i] = parameters[i].getClass();
         }
+        Method method = getMethod(beanClass, methodName, types);
+        if (method != null) {
+            return invoke(method, bean, parameters);
+        }
+        List<Method> methods = getAllMethods(beanClass);
+        Iterator<Method> iterator = methods.iterator();
+        while (iterator.hasNext()) {
+            Method candidate = iterator.next();
+            if (candidate.getName().equals(methodName) && candidate.getParameterTypes().length == parameters.length) {
+                if (instanceOfTypes(candidate.getParameterTypes(), parameters)) {
+                    return invoke(candidate, bean, parameters);
+                }
+            } else {
+                iterator.remove();
+            }
+        }
+        if (methods.size() != 1) {
+            throw new IllegalArgumentException(
+                    "no suitable method [" + methodName + "] for class [" + beanClass + "] with parameters: "
+                            + Arrays.toString(parameters));
+        }
+        method = methods.get(0);
+        Class[] parameterTypes = method.getParameterTypes();
+        // 构造参数转型
+        Object[] castParams = cast(parameters, parameterTypes);
+        return invoke(method, bean, castParams);
     }
 
     /**
@@ -363,15 +356,27 @@ public class Reflections {
      * @param parameters     实际参数值
      * @param parameterTypes 方法参数类型
      * @return
-     * @throws Exception
      */
-    public static Object invoke(String methodName, Object bean, Object[] parameters, Class[] parameterTypes) throws Exception {
+    public static Object invoke(String methodName, Object bean, Object[] parameters, Class[] parameterTypes) {
         if (parameterTypes.length != parameters.length) {
             throw new IllegalArgumentException("parameters and parameterTypes must have same size!");
         }
         Class beanClass = bean.getClass();
         Method method = getMethod(beanClass, methodName, parameterTypes);
         // 构造参数转型
+        Object[] castParams = cast(parameters, parameterTypes);
+        return invoke(method, bean, castParams);
+    }
+
+
+    /**
+     * 批量类型转换
+     *
+     * @param parameters
+     * @param parameterTypes
+     * @return
+     */
+    private static Object[] cast(Object[] parameters, Class[] parameterTypes) {
         Object[] castParams = new Object[parameters.length];
         for (int i = 0; i < parameterTypes.length; i++) {
             if (parameterTypes[i].isInstance(parameters[i])) {
@@ -380,9 +385,8 @@ public class Reflections {
                 castParams[i] = simpleInstance(parameterTypes[i], parameters[i].toString());
             }
         }
-        return method.invoke(bean, castParams);
+        return castParams;
     }
-
 
     /**
      * 判断是否为符合条件的getter方法,参数为null的条件被忽略
@@ -849,9 +853,8 @@ public class Reflections {
     public static boolean instanceOfTypes(Class<?>[] types, Object[] args) {
         if (types.length != args.length)
             return false;
-        int i = 0;
-        for (Object obj : args) {
-            if (!types[i].isInstance(obj))
+        for (int i = 0; i < types.length; i++) {
+            if (!types[i].isInstance(args[i]))
                 return false;
         }
         return true;
