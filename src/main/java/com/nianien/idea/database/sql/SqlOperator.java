@@ -74,9 +74,7 @@ public enum SqlOperator {
     /**
      * "exist"
      */
-    Exist("exist") {
-
-    },
+    Exist("exist"),
     /**
      * "not exist"
      */
