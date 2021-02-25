@@ -1,6 +1,5 @@
 package com.nianien.idea.database.datasource;
 
-import java.util.HashMap;
 import java.util.Map;
 
 import javax.sql.DataSource;
@@ -19,7 +18,7 @@ public class DataSourceManager {
     /**
      * 数据源映射
      */
-    protected Map<String, DataSource> sourceMapping = new HashMap<String, DataSource>();
+    protected Map<String, DataSource> sourceMapping;
 
     /**
      * @param builder

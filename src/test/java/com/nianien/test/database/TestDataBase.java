@@ -92,7 +92,7 @@ public class TestDataBase {
                 .append("user", "root")
                 .append("password", "root");
         DataSourceBuilder builder = new DataSourceBuilder();
-        builder.addProperties("default", new HashMap<>());
+        builder.addProperties("default", map);
         DataSourceManager manager = new DataSourceManager(builder);
         DataSource ds = manager.getDataSource();
         return new SqlQuery(ds);

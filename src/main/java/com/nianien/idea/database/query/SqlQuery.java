@@ -68,132 +68,67 @@ public class SqlQuery implements Query {
 
     @Override
     public List<Object> getColumns(final int index) {
-        return this.executeQuery(new ResultSetHandler<List<Object>>() {
-            @Override
-            public List<Object> handle(ResultSet resultset) throws NotImplementException {
-                return ResultSetAdapter.getColumns(resultset, index);
-            }
-        });
+        return this.executeQuery(resultset -> ResultSetAdapter.getColumns(resultset, index));
     }
 
     @Override
     public List<Object> getColumns(final String name) {
-        return executeQuery(new ResultSetHandler<List<Object>>() {
-            @Override
-            public List<Object> handle(ResultSet resultset) throws NotImplementException {
-                return ResultSetAdapter.getColumns(resultset, name);
-            }
-        });
+        return executeQuery(resultset -> ResultSetAdapter.getColumns(resultset, name));
     }
 
     @Override
     public Map<Object, Object> getColumnsMap(final int keyIndex, final int valueIndex) {
-        return executeQuery(new ResultSetHandler<Map<Object, Object>>() {
-            @Override
-            public Map<Object, Object> handle(ResultSet resultset) throws NotImplementException {
-                return ResultSetAdapter.getColumnsMap(resultset, keyIndex, valueIndex);
-            }
-        });
+        return executeQuery(resultset -> ResultSetAdapter.getColumnsMap(resultset, keyIndex, valueIndex));
     }
 
     @Override
     public Map<Object, Object> getColumnsMap(final String keyName, final String valueName) {
-        return executeQuery(new ResultSetHandler<Map<Object, Object>>() {
-            @Override
-            public Map<Object, Object> handle(ResultSet resultset) throws NotImplementException {
-                return ResultSetAdapter.getColumnsMap(resultset, keyName, valueName);
-            }
-        });
+        return executeQuery(resultset -> ResultSetAdapter.getColumnsMap(resultset, keyName, valueName));
     }
 
     @Override
     public Map<String, Object> getFirstRow() {
-        return executeQuery(new ResultSetHandler<Map<String, Object>>() {
-            @Override
-            public Map<String, Object> handle(ResultSet resultset) throws NotImplementException {
-                return ResultSetAdapter.getFirstRow(resultset);
-            }
-        });
+        return executeQuery(resultset -> ResultSetAdapter.getFirstRow(resultset));
     }
 
     @Override
     public <T> T getFirstRow(final Class<T> clazz) {
-        return executeQuery(new ResultSetHandler<T>() {
-            @Override
-            public T handle(ResultSet resultset) throws NotImplementException {
-                return ResultSetAdapter.getFirstRow(resultset, clazz);
-            }
-        });
+        return executeQuery(resultset -> ResultSetAdapter.getFirstRow(resultset, clazz));
     }
 
     @Override
     public List<Map<String, Object>> getRows() {
-        return executeQuery(new ResultSetHandler<List<Map<String, Object>>>() {
-            @Override
-            public List<Map<String, Object>> handle(ResultSet resultset) throws NotImplementException {
-                return ResultSetAdapter.getRows(resultset);
-            }
-        });
+        return executeQuery(resultset -> ResultSetAdapter.getRows(resultset));
     }
 
     @Override
     public <T> List<T> getRows(final Class<T> clazz) {
-        return executeQuery(new ResultSetHandler<List<T>>() {
-            @Override
-            public List<T> handle(ResultSet resultset) throws NotImplementException {
-                return ResultSetAdapter.getRows(resultset, clazz);
-            }
-        });
+        return executeQuery(resultset -> ResultSetAdapter.getRows(resultset, clazz));
     }
 
     @Override
     public List<Map<String, Object>> getRows(final int start, final int size) {
-        return executeQuery(new ResultSetHandler<List<Map<String, Object>>>() {
-            @Override
-            public List<Map<String, Object>> handle(ResultSet resultset) throws NotImplementException {
-                return ResultSetAdapter.getRows(resultset, start, size);
-            }
-        });
+        return executeQuery(resultset -> ResultSetAdapter.getRows(resultset, start, size));
     }
 
     @Override
     public <T> List<T> getRows(final Class<T> clazz, final int start, final int size) {
-        return executeQuery(new ResultSetHandler<List<T>>() {
-            @Override
-            public List<T> handle(ResultSet resultset) throws NotImplementException {
-                return ResultSetAdapter.getRows(resultset, start, size, clazz);
-            }
-        });
+        return executeQuery(resultset -> ResultSetAdapter.getRows(resultset, start, size, clazz));
     }
 
     @Override
     public int getRowsCount() {
-        return executeQuery(new ResultSetHandler<Integer>() {
-            @Override
-            public Integer handle(ResultSet resultset) throws NotImplementException {
-                return ResultSetAdapter.getRowsCount(resultset);
-            }
-        });
+        return executeQuery(resultset -> ResultSetAdapter.getRowsCount(resultset));
     }
 
     @Override
     public <T> Map<Object, T> getRowsMap(final Class<T> clazz, final int index) {
-        return executeQuery(new ResultSetHandler<Map<Object, T>>() {
-            @Override
-            public Map<Object, T> handle(ResultSet resultset) throws NotImplementException {
-                return ResultSetAdapter.getRowsMap(resultset, index, clazz);
-            }
-        });
+        return executeQuery(resultset -> ResultSetAdapter.getRowsMap(resultset, index, clazz));
     }
 
     @Override
     public <T> Map<Object, T> getRowsMap(final Class<T> clazz, final String name) {
-        return executeQuery(new ResultSetHandler<Map<Object, T>>() {
-            @Override
-            public Map<Object, T> handle(ResultSet resultset) throws NotImplementException {
-                return ResultSetAdapter.getRowsMap(resultset, name, clazz);
-            }
-        });
+        return executeQuery(resultset -> ResultSetAdapter.getRowsMap(resultset, name, clazz));
     }
 
     @Override
