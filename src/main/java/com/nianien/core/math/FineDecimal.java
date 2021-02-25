@@ -3,6 +3,7 @@ package com.nianien.core.math;
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.math.RoundingMode;
+import java.util.Arrays;
 
 /**
  * 支持设置浮点精度scale和RoundingMode<br/>
@@ -17,6 +18,7 @@ public class FineDecimal extends BigDecimal {
      * 默认精度为4
      */
     private final int scale;
+    private final RoundingMode roundingMode;
 
     /**
      * 构造方法<br/>
@@ -32,7 +34,7 @@ public class FineDecimal extends BigDecimal {
      * 构造方法<br/>
      * 默认四舍五入
      *
-     * @param val
+     * @param val   初始值
      * @param scale 精度
      */
     public FineDecimal(Number val, int scale) {
@@ -42,7 +44,7 @@ public class FineDecimal extends BigDecimal {
     /**
      * 构造方法
      *
-     * @param val
+     * @param val          初始值
      * @param scale        精度
      * @param roundingMode
      */
@@ -51,11 +53,14 @@ public class FineDecimal extends BigDecimal {
     }
 
     /**
-     * @param val 初始值
+     * @param val          初始值
+     * @param scale        精度
+     * @param roundingMode
      */
     private FineDecimal(double val, int scale, RoundingMode roundingMode) {
         super(val, new MathContext(new BigDecimal(val).setScale(scale, roundingMode).precision(), RoundingMode.HALF_UP));
         this.scale = scale;
+        this.roundingMode = roundingMode;
     }
 
 
@@ -236,16 +241,24 @@ public class FineDecimal extends BigDecimal {
         return o instanceof BigDecimal ? this.compareTo((BigDecimal) o) == 0 : false;
     }
 
+    /**
+     * 自动转换精度
+     *
+     * @param bigDecimal
+     * @return
+     */
     private FineDecimal $(BigDecimal bigDecimal) {
-        return new FineDecimal(bigDecimal, scale);
+        return new FineDecimal(bigDecimal, scale, roundingMode);
     }
 
+    /**
+     * 自动转换精度
+     *
+     * @param bigDecimals
+     * @return
+     */
     private FineDecimal[] $(BigDecimal[] bigDecimals) {
-        FineDecimal[] fineDecimals = new FineDecimal[bigDecimals.length];
-        for (int i = 0; i < bigDecimals.length; i++) {
-            fineDecimals[i] = $(bigDecimals[i]);
-        }
-        return fineDecimals;
+        return Arrays.stream(bigDecimals).map(this::$).toArray(n -> new FineDecimal[n]);
     }
 
 }
