@@ -1,25 +1,23 @@
 package com.nianien.idea.database.query;
 
-import java.sql.ResultSet;
 
-import com.nianien.core.exception.NotImplementException;
+import java.sql.ResultSet;
 
 /**
  * 声明处理数据库查询结果集的接口
- * 
+ *
+ * @param <T>
  * @author skyfalling
- * @param <T> 
- * 
  */
 public interface ResultSetHandler<T> {
 
-	/**
-	 * 处理结果集
-	 * 
-	 * @param resultSet
-	 * @return 返回处理结果
-	 * @throws NotImplementException 
-	 */
-	T handle(ResultSet resultSet) throws NotImplementException;
+    /**
+     * 处理结果集
+     *
+     * @param resultSet
+     * @return 返回处理结果
+     * @throws UnsupportedOperationException
+     */
+    T handle(ResultSet resultSet) throws UnsupportedOperationException;
 
 }

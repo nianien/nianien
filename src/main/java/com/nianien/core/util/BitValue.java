@@ -18,7 +18,7 @@ public class BitValue {
      * @param value
      */
     private void setValue(long value) {
-        ExceptionHandler.throwIf(value < 0, "参数value提供的数值不能为负: " + value);
+        ExceptionHandler.throwIf(value < 0, "value cannot be negative: " + value);
         this.value = value;
     }
 
@@ -82,7 +82,7 @@ public class BitValue {
      * @param value
      */
     public void set(int index, boolean value) {
-        ExceptionHandler.throwIf(index > 64 || index == 64 && value, "bit位的最大索引位置不能超过64:" + index);
+        ExceptionHandler.throwIf(index > 64 || index == 64 && value, "index cannot be larger than 64:" + index);
         if (value) {
             this.value |= (1L << index);
         } else {

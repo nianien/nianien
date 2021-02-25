@@ -1,7 +1,6 @@
 package com.nianien.idea.database.query;
 
 import com.nianien.core.exception.ExceptionHandler;
-import com.nianien.core.exception.NotImplementException;
 import com.nianien.core.io.Closer;
 import com.nianien.idea.database.sql.SqlGenerator;
 import com.nianien.idea.database.sql.SqlStatement;
@@ -68,67 +67,67 @@ public class SqlQuery implements Query {
 
     @Override
     public List<Object> getColumns(final int index) {
-        return this.executeQuery(resultset -> ResultSetAdapter.getColumns(resultset, index));
+        return this.executeQuery(resultSet -> ResultSetAdapter.getColumns(resultSet, index));
     }
 
     @Override
     public List<Object> getColumns(final String name) {
-        return executeQuery(resultset -> ResultSetAdapter.getColumns(resultset, name));
+        return executeQuery(resultSet -> ResultSetAdapter.getColumns(resultSet, name));
     }
 
     @Override
     public Map<Object, Object> getColumnsMap(final int keyIndex, final int valueIndex) {
-        return executeQuery(resultset -> ResultSetAdapter.getColumnsMap(resultset, keyIndex, valueIndex));
+        return executeQuery(resultSet -> ResultSetAdapter.getColumnsMap(resultSet, keyIndex, valueIndex));
     }
 
     @Override
     public Map<Object, Object> getColumnsMap(final String keyName, final String valueName) {
-        return executeQuery(resultset -> ResultSetAdapter.getColumnsMap(resultset, keyName, valueName));
+        return executeQuery(resultSet -> ResultSetAdapter.getColumnsMap(resultSet, keyName, valueName));
     }
 
     @Override
     public Map<String, Object> getFirstRow() {
-        return executeQuery(resultset -> ResultSetAdapter.getFirstRow(resultset));
+        return executeQuery(resultSet -> ResultSetAdapter.getFirstRow(resultSet));
     }
 
     @Override
     public <T> T getFirstRow(final Class<T> clazz) {
-        return executeQuery(resultset -> ResultSetAdapter.getFirstRow(resultset, clazz));
+        return executeQuery(resultSet -> ResultSetAdapter.getFirstRow(resultSet, clazz));
     }
 
     @Override
     public List<Map<String, Object>> getRows() {
-        return executeQuery(resultset -> ResultSetAdapter.getRows(resultset));
+        return executeQuery(resultSet -> ResultSetAdapter.getRows(resultSet));
     }
 
     @Override
     public <T> List<T> getRows(final Class<T> clazz) {
-        return executeQuery(resultset -> ResultSetAdapter.getRows(resultset, clazz));
+        return executeQuery(resultSet -> ResultSetAdapter.getRows(resultSet, clazz));
     }
 
     @Override
     public List<Map<String, Object>> getRows(final int start, final int size) {
-        return executeQuery(resultset -> ResultSetAdapter.getRows(resultset, start, size));
+        return executeQuery(resultSet -> ResultSetAdapter.getRows(resultSet, start, size));
     }
 
     @Override
     public <T> List<T> getRows(final Class<T> clazz, final int start, final int size) {
-        return executeQuery(resultset -> ResultSetAdapter.getRows(resultset, start, size, clazz));
+        return executeQuery(resultSet -> ResultSetAdapter.getRows(resultSet, start, size, clazz));
     }
 
     @Override
     public int getRowsCount() {
-        return executeQuery(resultset -> ResultSetAdapter.getRowsCount(resultset));
+        return executeQuery(resultSet -> ResultSetAdapter.getRowsCount(resultSet));
     }
 
     @Override
     public <T> Map<Object, T> getRowsMap(final Class<T> clazz, final int index) {
-        return executeQuery(resultset -> ResultSetAdapter.getRowsMap(resultset, index, clazz));
+        return executeQuery(resultSet -> ResultSetAdapter.getRowsMap(resultSet, index, clazz));
     }
 
     @Override
     public <T> Map<Object, T> getRowsMap(final Class<T> clazz, final String name) {
-        return executeQuery(resultset -> ResultSetAdapter.getRowsMap(resultset, name, clazz));
+        return executeQuery(resultSet -> ResultSetAdapter.getRowsMap(resultSet, name, clazz));
     }
 
     @Override

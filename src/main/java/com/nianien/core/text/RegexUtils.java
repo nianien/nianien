@@ -21,7 +21,7 @@ public class RegexUtils {
     /**
      * 正则表达式中的转义字符
      */
-    public final static char[] escapeChars = new char[]{'\\', '*', '+', '?',
+    private final static char[] escapeChars = new char[]{'\\', '*', '+', '?',
             '|', '{', '[', '(', ')', '^', '$', '.', '#'};
 
     /**

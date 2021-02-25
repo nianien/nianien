@@ -311,9 +311,8 @@ public class Reflections {
      * @param bean       方法关联的对象
      * @param parameters 实际参数值
      * @return
-     * @throws Exception
      */
-    public static Object invoke(String methodName, Object bean, Object[] parameters) throws Exception {
+    public static Object invoke(String methodName, Object bean, Object[] parameters) {
         Class beanClass = bean.getClass();
         Class<?>[] types = new Class<?>[parameters.length];
         for (int i = 0; i < parameters.length; i++) {
