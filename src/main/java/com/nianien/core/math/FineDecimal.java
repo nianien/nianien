@@ -16,7 +16,7 @@ public class FineDecimal extends BigDecimal {
     /**
      * 默认精度为4
      */
-    private final int SCALE;
+    private final int scale;
 
     /**
      * 构造方法<br/>
@@ -55,7 +55,7 @@ public class FineDecimal extends BigDecimal {
      */
     private FineDecimal(double val, int scale, RoundingMode roundingMode) {
         super(val, new MathContext(new BigDecimal(val).setScale(scale, roundingMode).precision(), RoundingMode.HALF_UP));
-        this.SCALE = scale;
+        this.scale = scale;
     }
 
 
@@ -111,7 +111,7 @@ public class FineDecimal extends BigDecimal {
 
     @Override
     public FineDecimal divide(BigDecimal divisor) {
-        return $(super.divide(divisor, SCALE, RoundingMode.HALF_UP));
+        return $(super.divide(divisor, scale, RoundingMode.HALF_UP));
     }
 
     @Override
@@ -237,7 +237,7 @@ public class FineDecimal extends BigDecimal {
     }
 
     private FineDecimal $(BigDecimal bigDecimal) {
-        return new FineDecimal(bigDecimal);
+        return new FineDecimal(bigDecimal, scale);
     }
 
     private FineDecimal[] $(BigDecimal[] bigDecimals) {
