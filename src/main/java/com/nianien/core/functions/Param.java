@@ -22,4 +22,14 @@ public interface Param<T> {
      * @return
      */
     T get();
+
+    /**
+     * 如果{@link #test()}为真,获取参数值,否则返回defaultValue
+     *
+     * @param defaultValue
+     * @return
+     */
+    default T compute(T defaultValue) {
+        return test() ? get() : defaultValue;
+    }
 }

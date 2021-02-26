@@ -12,6 +12,7 @@ import java.util.Date;
 import java.util.List;
 
 import static com.nianien.core.functions.Params.$;
+import static com.nianien.core.functions.Params.notEmpty;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertThat;
 
@@ -40,14 +41,14 @@ public class TestSqlStatement {
     public void testSqlFunc() {
         List<String> names = Arrays.asList(new String[]{"a", "b", "c"});
         SqlStatement sql = new SqlStatement("select * from user where 1=1");
-        sql.append(" name in ? ", Params.isNotEmpty(names));
+        sql.append(" name in ? ", notEmpty(names));
         System.out.println(sql.expandSql());
 
     }
 
     @Test
     public void testSql() {
-        String name = null;
+        String name = "";
         int age = 28;
         //MM-dd-yyyy HH:mm:ss
         Date now = new Date();

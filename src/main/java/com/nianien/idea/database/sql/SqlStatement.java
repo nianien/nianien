@@ -1,7 +1,6 @@
 package com.nianien.idea.database.sql;
 
 import com.nianien.core.functions.Param;
-import com.nianien.core.functions.Params;
 import com.nianien.core.util.StringUtils;
 import com.nianien.idea.database.table.DataField;
 
@@ -12,7 +11,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
-import java.util.function.Predicate;
 
 /**
  * 支持命名参数的SQL语句,参数形式为 :x,此外可以使用 :n(n=0,1,2...)表示位置参数<br/>
@@ -163,134 +161,6 @@ public class SqlStatement {
         return StringUtils.fill(preparedSql(), '?', parameters).trim();
     }
 
-    /**
-     * 如果parameter等于零,则追加SQL
-     *
-     * @param sql
-     * @param parameter sql参数值
-     * @return
-     * @see #append(String, Object...)
-     */
-    public SqlStatement append$eq0(String sql, Number parameter) {
-        return append(sql, Params.eq(parameter, 0));
-    }
-
-
-    /**
-     * 如果parameter不等于零,则追加SQL
-     *
-     * @param sql
-     * @param parameter sql参数值
-     * @return
-     * @see #append(String, Object...)
-     */
-    public SqlStatement append$ne0(String sql, Number parameter) {
-        return append(sql, Params.ne(parameter, 0));
-    }
-
-
-    /**
-     * 如果parameter大于零,则追加SQL
-     *
-     * @param sql
-     * @param parameter sql参数值
-     * @return
-     * @see #append(String, Object...)
-     */
-    public SqlStatement append$gt0(String sql, Number parameter) {
-        return append(sql, Params.gt(parameter, 0));
-    }
-
-
-    /**
-     * 如果parameter大于等于零,则追加SQL
-     *
-     * @param sql
-     * @param parameter sql参数值
-     * @return
-     * @see #append(String, Object...)
-     */
-    public SqlStatement append$ge0(String sql, Number parameter) {
-        return append(sql, Params.ge(parameter, 0));
-    }
-
-    /**
-     * 如果parameter小于零,则追加SQL
-     *
-     * @param sql
-     * @param parameter sql参数值
-     * @return
-     * @see #append(String, Object...)
-     */
-    public SqlStatement append$lt0(String sql, Number parameter) {
-        return append(sql, Params.lt(parameter, 0));
-    }
-
-    /**
-     * 如果parameter小于等于零,则追加SQL
-     *
-     * @param sql
-     * @param parameter sql参数值
-     * @return
-     * @see #append(String, Object...)
-     */
-    public SqlStatement append$le0(String sql, Number parameter) {
-        return append(sql, Params.le(parameter, 0));
-    }
-
-    /**
-     * 如果parameter不为null,则追加SQL
-     *
-     * @param sql
-     * @param parameter sql参数值
-     * @return
-     * @see #append(String, Object...)
-     */
-    public SqlStatement appendNotNull(String sql, Object parameter) {
-        return append(sql, Params.isNotNull(parameter));
-    }
-
-
-    /**
-     * 如果parameter不为空,则追加SQL
-     *
-     * @param sql
-     * @param parameter sql参数值
-     * @return
-     * @see #append(String, Object...)
-     */
-    public SqlStatement appendNotEmpty(String sql, String parameter) {
-        return append(sql, Params.isNotEmpty(parameter));
-    }
-
-
-    /**
-     * 如果predicate计算结果为true,则追加SQL,并代入参数parameter
-     *
-     * @param sql
-     * @param parameter sql参数值
-     * @return
-     * @see #append(String, Object...)
-     */
-    public <T> SqlStatement appendIf(String sql, T parameter, Predicate<T> predicate) {
-        return append(sql, Params.with(parameter).when(predicate));
-    }
-
-
-    /**
-     * 如果predicate计算结果为true,则追加SQL,并代入函数function返回值
-     *
-     * @param sql
-     * @param parameter
-     * @param predicate
-     * @param function
-     * @param <T>
-     * @return
-     * @see #append(String, Object...)
-     */
-    public <T, R> SqlStatement appendIf(String sql, T parameter, Predicate<T> predicate, Function<T, R> function) {
-        return append(sql, Params.with(parameter).when(predicate).then(function));
-    }
 
     /**
      * 如果expression为true,追加SQL

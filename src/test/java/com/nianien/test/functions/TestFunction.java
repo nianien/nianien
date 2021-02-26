@@ -1,5 +1,6 @@
 package com.nianien.test.functions;
 
+import com.nianien.core.functions.Fluent;
 import com.nianien.core.functions.Params;
 import com.nianien.core.util.StringUtils;
 import com.nianien.test.bean.Contact;
@@ -9,12 +10,9 @@ import com.nianien.test.bean.People;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.function.BiFunction;
-import java.util.function.Function;
 
-import lombok.Data;
-
-import static com.nianien.core.functions.F.$;
+import static com.nianien.core.functions.Fluent.of;
+import static com.nianien.core.functions.Params.gt0;
 
 /**
  * @author scorpio
@@ -26,91 +24,69 @@ public class TestFunction {
 
     public static void main(String[] args) {
 
+
         System.out.println(
-                $(new Family()).$(Family::getHost).$(People::getContact).$(Contact::getAddress).$()
+                of(new Family()).apply(Family::getHost).apply(People::getContact).apply(Contact::getAddress).get()
         );
         System.out.println(
-                $((Family) null).$(Family::getHost).$(People::getContact).$(Contact::getAddress).$()
+                of((Family) null).apply(Family::getHost).apply(People::getContact).apply(Contact::getAddress).get()
         );
 
         Family family = new Family();
 
-        $(family).$(Family::getHost).$(People::getContact).$(Contact::getAddress).$();
 
-        People people = $(new People())
-                .$$(People::setId, 101L)
-                .$$(People::setName, "name")
-                .$$(People::setSex, "male")
-                .$$(People::setBirthday, new Date())
-                .$$(People::setContact,
-                        $(new Contact())
-                                .$$(Contact::setAddress, "address*****")
-                                .$$(Contact::setTelephone, "137****")
-                                .$$(Contact::setEmail, "email****")
-                                .$()
-                ).$();
+        of(family).apply(Family::getHost).apply(People::getContact).apply(Contact::getAddress).get();
+
+
+        People people = of(new People())
+                .accept(People::setId, 101L)
+                .bind(People::setName)
+                .call("name")
+                .accept(People::setName, "name")
+                .accept(People::setName, "name")
+                .accept(People::setSex, "male")
+                .accept(People::setBirthday, new Date())
+                .accept(People::setContact,
+                        of(new Contact())
+                                .accept(Contact::setAddress, "address*****")
+                                .accept(Contact::setTelephone, "137****")
+                                .accept(Contact::setEmail, "email****")
+                                .get()
+                ).get();
+
+
+        Fluent.of(people)
+                .accept(gt0(people.getId()).then(id -> id.longValue()), (p, id) -> p.setId(id))
+                .apply(gt0(people.getId()).then(id -> id.longValue()), (p, id) -> {
+                    p.setId(id);
+                    return p;
+                });
 
         family.setHost(people);
+        System.out.println(of(family)
+                .accept(Family::setAddress, "a")
+                .accept(f -> f.setAddress("b"))
+                .accept(System.out::println)
+                .get());
 
-        System.out.println($(family)
-                .$$(Family::setAddress, "a")
-                .$$(Family::getMembers)
-                .$$(System.out::println)
-                .$());
-        $(family)
-                .consumer(e -> System.out.println(e))
-                .accept()
-                .accept();
-
-        String a = $("a").function(e -> e + ";" + e)
-                .apply()
-                .apply()
-                .$();
-        System.out.println(a);
-
-        String str =
-                $("")
-                        .<String>function2((s1, s2) -> s1 += s2)
-                        .apply("a")
-                        .apply("c")
-                        .<Integer>function2((s1, s2) -> s1 = s1 + s2)
-                        .apply(1)
-                        .apply(2)
-                        .$();
-        System.out.println(str);
-        String stringBuilder =
-                $(new StringBuilder())
-                        .<String>consumer2((s, v) -> {
-                            if (v != null) s.append(v);
-                        })
-                        .accept("a")
-                        .accept("c")
-                        .<Integer>consumer2((s, v) -> {
-                            if (v % 2 != 0) s.append(v);
-                        })
-                        .accept(1)
-                        .accept(2)
-                        .$().toString();
-
-        System.out.println(stringBuilder);
-
-
-        Map<String, String> map1 = new HashMap<>();
-        map1.put("a", "Alex");
-        map1.put("b", "Brown");
-        map1.put("c", "Charles");
-        map1.put("d", "Darwin");
-
-        Map<String, String> map2 = $(new HashMap())
-                .<String, String>consumer3(Map::put)
-                .accept("a", "Alex")
-                .accept("b", "Brown")
-                .accept("c", "Charles")
-                .accept("d", "Darwin")
-                .$();
+        Map<String, String> map1 = of(new HashMap<String, String>())
+                .accept(Map::put, "a", "Alex")
+                .accept(Map::put, "b", "Brown")
+                .accept(Map::put, "c", "Charles")
+                .accept(Map::put, "d", "Darwin")
+                .get();
+        System.out.println(map1);
+        Map<String, String> map2 = of(new HashMap<String, String>())
+                .<String, String>bind(Map::put)
+                .call("a", "Alex")
+                .call("b", "Brown")
+                .call("c", "Charles")
+                .call("d", "Darwin")
+                .<String>bind(Map::remove)
+                .call("b")
+                .get();
 
         System.out.println(map2);
-
 
         System.out.println(build1(1L, "test", ""));
         System.out.println(build2(1L, "test", ""));
@@ -132,30 +108,13 @@ public class TestFunction {
     }
 
     static String build2(long id, String name, String email) {
-        return $(new StringBuilder())
-                .consumer2(StringBuilder::append)
-                .accept(Params.lt(id, 0))
-                .accept(Params.isNotEmpty(name))
-                .accept(Params.isNotEmpty(email))
-
-                .$().toString();
+        return of(new StringBuilder())
+                .<String>bind(StringBuilder::append)
+                .call(Params.with(id).when(e -> e > 0).then(e -> e.toString()))
+                .call(Params.notEmpty(name))
+                .call(Params.notEmpty(email))
+                .get().toString();
     }
 
-    @Data
-    class User {
-        private long id;
-        private String name;
-    }
-
-
-    User user = new User();
-
-
-    BiFunction<User, Long, User> func = (u, id) -> {
-        u.setId(id);
-        return u;
-    };
-
-    Function<Long, User> setId = (id) -> func.apply(user, id);
 
 }

@@ -1,6 +1,7 @@
 package com.nianien.core.util;
 
 import com.nianien.core.reflect.Reflections;
+import com.sun.istack.internal.Nullable;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
@@ -149,7 +150,7 @@ public class CollectionUtils {
      * @deprecated replaced by {@link #list(Iterable, Function)}
      */
     public static <T> List<T> list(Iterable iterable, String propertyName, Class<T> propertyType) {
-        return list(iterable, e -> (T)getProperty(e, propertyName));
+        return list(iterable, e -> (T) getProperty(e, propertyName));
     }
 
 
@@ -431,6 +432,16 @@ public class CollectionUtils {
         return groupBy(iterable, e -> (K) getProperty(e, keyProperty), Function.identity());
     }
 
+
+    /**
+     * 数组对象转列表
+     *
+     * @param source
+     * @return
+     */
+    public static <T> List<T> arrayToList(@Nullable Object source) {
+        return (List<T>) Arrays.asList(ArrayUtils.toObjectArray(source));
+    }
 
     /**
      * 获取对象属性
