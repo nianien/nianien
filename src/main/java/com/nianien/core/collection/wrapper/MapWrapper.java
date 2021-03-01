@@ -58,36 +58,38 @@ public class MapWrapper<K, V> implements Map<K, V>, Wrapper<Map<K, V>> {
     }
 
     /**
-     * 调用{@link Map#put(K, V)}方法
+     * 添加键值对
      *
      * @param key
      * @param value
      * @return 返回当前对象
+     * @see Map#put(K, V)
      */
-    public MapWrapper<K, V> append(K key, V value) {
+    public MapWrapper<K, V> with(K key, V value) {
         map.put(key, value);
         return this;
     }
 
     /**
-     * 调用{@link Map#putAll(java.util.Map)}方法
+     * 添加键值对
      *
      * @param map
      * @return 返回当前对象
+     * @see Map#putAll(Map)
      */
-    public MapWrapper<K, V> append(Map<? extends K, ? extends V> map) {
+    public MapWrapper<K, V> with(Map<? extends K, ? extends V> map) {
         this.putAll(map);
         return this;
     }
 
     /**
-     * 调用{@link Map#remove(Object)}}方法
+     * 删除键值
      *
      * @param keys
      * @return 返回当前对象
+     * @see Map#remove(Object)
      */
-
-    public MapWrapper<K, V> delete(Collection keys) {
+    public MapWrapper<K, V> without(Collection keys) {
         for (Object key : keys) {
             this.remove(key);
         }
@@ -95,30 +97,15 @@ public class MapWrapper<K, V> implements Map<K, V>, Wrapper<Map<K, V>> {
     }
 
     /**
-     * 调用{@link Map#remove(Object)}}方法
+     * 删除键值
      *
      * @param keys
      * @return 返回当前对象
+     * @see Map#remove(Object)
      */
-
-    public MapWrapper<K, V> delete(Object... keys) {
+    public MapWrapper<K, V> without(Object... keys) {
         for (Object key : keys) {
             this.remove(key);
-        }
-        return this;
-    }
-
-
-    /**
-     * 如果表达式expression为true,,则调用{@link Map#put(K, V)}方法
-     *
-     * @param key
-     * @param value
-     * @return 返回当前对象
-     */
-    public MapWrapper<K, V> appendIf(boolean expression, K key, V value) {
-        if (expression) {
-            this.put(key, value);
         }
         return this;
     }

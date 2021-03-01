@@ -47,7 +47,7 @@ public class TestSqlGenerator {
 
         sqlStatement = SqlGenerator.whereSql(new SqlStatement("select * from users"), user, "userId", "userName");
         assertThat(sqlStatement.expandSql(), equalTo("select * from users where userId = 'skyfalling' and userName = 'who'"));
-        sqlStatement = SqlGenerator.whereSql(new SqlStatement("select * from users"), new MapWrapper<>("userId", "skyfalling").append("userName", "who"));
+        sqlStatement = SqlGenerator.whereSql(new SqlStatement("select * from users"), new MapWrapper<>("userId", "skyfalling").with("userName", "who"));
         assertThat(sqlStatement.expandSql(), equalTo("select * from users where userName = 'who' and userId = 'skyfalling'"));
 
     }

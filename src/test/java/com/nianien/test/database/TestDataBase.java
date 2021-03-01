@@ -11,7 +11,6 @@ import com.nianien.test.bean.User;
 
 import org.junit.Test;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -86,11 +85,11 @@ public class TestDataBase {
 
     public static Query getQuery() {
         Map<String, Object> map = new MapWrapper<String, Object>()
-                .append("driverClass", "com.mysql.jdbc.Driver")
-                .append("type", org.apache.tomcat.jdbc.pool.DataSource.class)
-                .append("jdbcUrl", "jdbc:mysql://127.0.0.1:3306/test?autoReconnect=true&;useUnicode=true&;characterEncoding=utf8")
-                .append("user", "root")
-                .append("password", "root");
+                .with("driverClass", "com.mysql.jdbc.Driver")
+                .with("type", org.apache.tomcat.jdbc.pool.DataSource.class)
+                .with("jdbcUrl", "jdbc:mysql://127.0.0.1:3306/test?autoReconnect=true&;useUnicode=true&;characterEncoding=utf8")
+                .with("user", "root")
+                .with("password", "root");
         DataSourceBuilder builder = new DataSourceBuilder();
         builder.addProperties("default", map);
         DataSourceManager manager = new DataSourceManager(builder);

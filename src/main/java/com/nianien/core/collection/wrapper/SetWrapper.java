@@ -24,7 +24,7 @@ public class SetWrapper<E> implements Set<E>, Wrapper<Set<E>> {
      * 构造方法,默认Set实例
      */
     public SetWrapper() {
-        this(new HashSet<E>());
+        this(new HashSet<>());
     }
 
     /**
@@ -44,71 +44,54 @@ public class SetWrapper<E> implements Set<E>, Wrapper<Set<E>> {
      */
     public SetWrapper(Set<E> set, E... elements) {
         this.set = set;
-        this.append(elements);
+        this.with(elements);
     }
 
     /**
-     * 调用{@link Set#addAll(java.util.Collection)}方法
+     * 添加元素
      *
      * @param elements
      * @return 返回当前对象
+     * @see Set#addAll(java.util.Collection)
      */
-    public SetWrapper<E> append(E... elements) {
+    public SetWrapper<E> with(E... elements) {
         set.addAll(Arrays.asList(elements));
         return this;
     }
 
     /**
-     * 调用{@link Set#addAll(java.util.Collection)}方法
+     * 添加元素
      *
      * @param elements
      * @return 返回当前对象
+     * @see Set#addAll(java.util.Collection)
      */
-    public SetWrapper<E> append(Collection<? extends E> elements) {
+    public SetWrapper<E> with(Collection<? extends E> elements) {
         set.addAll(elements);
         return this;
     }
 
-    /**
-     * 调用{@link Set#retainAll(java.util.Collection)}方法
-     *
-     * @param elements
-     * @return 返回当前对象
-     */
-    public SetWrapper<E> remain(E... elements) {
-        set.retainAll(Arrays.asList(elements));
-        return this;
-    }
 
     /**
-     * 调用{@link Set#retainAll(java.util.Collection)}方法
+     * 移除键值
      *
      * @param elements
      * @return 返回当前对象
+     * @see Set#removeAll(java.util.Collection)
      */
-    public SetWrapper<E> remain(Collection<? extends E> elements) {
-        set.retainAll(elements);
-        return this;
-    }
-
-    /**
-     * 调用{@link Set#removeAll(java.util.Collection)}
-     *
-     * @param elements
-     * @return 返回当前对象
-     */
-    public SetWrapper<E> delete(E... elements) {
+    public SetWrapper<E> without(E... elements) {
         set.removeAll(Arrays.asList(elements));
         return this;
     }
 
     /**
-     * 调用{@link Set#removeAll(java.util.Collection)}
+     * 移除键值
      *
      * @param elements
      * @return 返回当前对象
+     * @see Set#removeAll(java.util.Collection)
      */
-    public SetWrapper<E> delete(Collection<? extends E> elements) {
+    public SetWrapper<E> without(Collection<? extends E> elements) {
         set.removeAll(elements);
         return this;
     }

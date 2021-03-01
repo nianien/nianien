@@ -39,107 +39,89 @@ public class ListWrapper<E> implements List<E>, Wrapper<List<E>> {
      */
     public ListWrapper(List<E> list, E... elements) {
         this.list = list;
-        this.append(elements);
+        this.with(elements);
     }
 
 
     /**
-     * 调用{@link List#addAll(java.util.Collection)}方法
+     * 添加元素
      *
      * @param elements
      * @return
+     * @see List#addAll(java.util.Collection)}
      */
-    public ListWrapper<E> append(E... elements) {
+    public ListWrapper<E> with(E... elements) {
         list.addAll(Arrays.asList(elements));
         return this;
     }
 
     /**
-     * 调用{@link List#addAll(java.util.Collection)}方法
+     * 添加元素
      *
      * @param elements
-     * @return 返回当前对象
+     * @return
+     * @see List#addAll(java.util.Collection)}
      */
-    public ListWrapper<E> append(Collection<? extends E> elements) {
+    public ListWrapper<E> with(Collection<? extends E> elements) {
         list.addAll(elements);
         return this;
     }
 
     /**
-     * 调用{@link List#add(int, Object)}方法
+     * 在指定索引位置添加元素
      *
-     * @param index
      * @param elements
-     * @return 返回当前对象
+     * @return
+     * @see List#addAll(int, Collection)
      */
-    public ListWrapper<E> insert(int index, E... elements) {
+    public ListWrapper<E> with(int index, E... elements) {
         list.addAll(index, Arrays.asList(elements));
         return this;
     }
 
     /**
-     * 调用{@link List#addAll(int, java.util.Collection)}方法
+     * 在指定索引位置添加元素
      *
-     * @param index
      * @param elements
-     * @return 返回当前对象
+     * @return
+     * @see List#addAll(int, Collection)
      */
-    public ListWrapper<E> insert(int index, Collection<? extends E> elements) {
+    public ListWrapper<E> with(int index, Collection<? extends E> elements) {
         list.addAll(index, elements);
         return this;
     }
 
-    /**
-     * 调用{@link List#retainAll(java.util.Collection)}方法
-     *
-     * @param elements
-     * @return 返回当前对象
-     */
-    public ListWrapper<E> remain(E... elements) {
-        list.retainAll(Arrays.asList(elements));
-        return this;
-    }
 
     /**
-     * 调用{@link List#retainAll(java.util.Collection)}方法
-     *
-     * @param elements
-     * @return 返回当前对象
-     */
-    public ListWrapper<E> remain(Collection<? extends E> elements) {
-        list.retainAll(elements);
-        return this;
-    }
-
-    /**
-     * 调用{@link List#remove(int)}方法
+     * 删除指定索引位置元素
      *
      * @param index
      * @return 返回当前对象
+     * @see List#remove(int)
      */
-    public ListWrapper<E> delete(int index) {
+    public ListWrapper<E> without(int index) {
         list.remove(index);
         return this;
     }
 
     /**
-     * 调用{@link List#removeAll(java.util.Collection)}方法
+     * 删除指定元素
      *
-     * @param elements
      * @return 返回当前对象
+     * @see List#removeAll(Collection)
      */
-    public ListWrapper<E> delete(E... elements) {
+    public ListWrapper<E> without(E... elements) {
         list.retainAll(Arrays.asList(elements));
         return this;
     }
 
     /**
-     * 调用{@link List#removeAll(java.util.Collection)}方法
+     * 删除指定元素
      *
-     * @param elements
      * @return 返回当前对象
+     * @see List#removeAll(Collection)
      */
-    public ListWrapper<E> delete(Collection<? extends E> elements) {
+    public ListWrapper<E> without(Collection<? extends E> elements) {
         list.retainAll(elements);
         return this;
     }
