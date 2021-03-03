@@ -20,7 +20,7 @@ import java.util.function.Function;
  * @version 1.0.0
  * @email tengzhe.ln@alibaba-inc.com
  */
-public class Conditions extends Fluent<Condition> {
+public class FluentCondition extends Fluent<Condition> {
     /**
      * 连接符
      */
@@ -32,7 +32,7 @@ public class Conditions extends Fluent<Condition> {
      * @param target
      * @param op     连接符
      */
-    protected Conditions(Condition target, BinaryOperator<Condition> op) {
+    protected FluentCondition(Condition target, BinaryOperator<Condition> op) {
         super(target);
         this.op = op;
     }
@@ -44,8 +44,8 @@ public class Conditions extends Fluent<Condition> {
      * @param target
      * @return
      */
-    public static Conditions and(Condition target) {
-        return new Conditions(target, (c1, c2) -> c1.and(c2));
+    public static FluentCondition and(Condition target) {
+        return new FluentCondition(target, (c1, c2) -> c1.and(c2));
     }
 
     /**
@@ -54,8 +54,8 @@ public class Conditions extends Fluent<Condition> {
      * @param target
      * @return
      */
-    public static Conditions or(Condition target) {
-        return new Conditions(target, (c1, c2) -> c1.or(c2));
+    public static FluentCondition or(Condition target) {
+        return new FluentCondition(target, (c1, c2) -> c1.or(c2));
     }
 
 
@@ -66,7 +66,7 @@ public class Conditions extends Fluent<Condition> {
      * @param field 表字段
      * @return
      */
-    public <P> Conditions with(P param, Field field) {
+    public <P> FluentCondition with(P param, Field field) {
         return when(Params.notNull(param), field);
     }
 
@@ -78,8 +78,8 @@ public class Conditions extends Fluent<Condition> {
      * @param <P>      参数类型&函数第二个参数类型
      * @return
      */
-    public <P> Conditions with(P param,
-                               Function<P, Condition> function) {
+    public <P> FluentCondition with(P param,
+                                    Function<P, Condition> function) {
         return when(Params.notNull(param), function);
     }
 
@@ -93,8 +93,8 @@ public class Conditions extends Fluent<Condition> {
      * @param <P>      参数类型&函数第二个参数类型
      * @return
      */
-    public <P, F> Conditions with(P param, Field<F> field,
-                                  BiFunction<Field<F>, P, Condition> function) {
+    public <P, F> FluentCondition with(P param, Field<F> field,
+                                       BiFunction<Field<F>, P, Condition> function) {
         return when(Params.notNull(param), field, function);
     }
 
@@ -106,7 +106,7 @@ public class Conditions extends Fluent<Condition> {
      * @param field 表字段
      * @return
      */
-    public <P> Conditions when(Param<P> param, Field field) {
+    public <P> FluentCondition when(Param<P> param, Field field) {
         return this.when(param, field,
                 (f, p) -> {
                     if (p instanceof Collection) {
@@ -128,8 +128,8 @@ public class Conditions extends Fluent<Condition> {
      * @param <P>      参数类型&函数第二个参数类型
      * @return
      */
-    public <P> Conditions when(Param<P> param, Function<P, Condition> function) {
-        return (Conditions) this.apply(param, (c, p) -> op.apply(c, function.apply(p)));
+    public <P> FluentCondition when(Param<P> param, Function<P, Condition> function) {
+        return (FluentCondition) this.apply(param, (c, p) -> op.apply(c, function.apply(p)));
     }
 
     /**
@@ -141,9 +141,9 @@ public class Conditions extends Fluent<Condition> {
      * @param <P>      参数类型&函数第二个参数类型
      * @return
      */
-    public <P, F> Conditions when(Param<P> param, Field<F> field,
-                                  BiFunction<Field<F>, P, Condition> function) {
-        return (Conditions) this.apply(param, (c, p) -> op.apply(c, function.apply(field, p)));
+    public <P, F> FluentCondition when(Param<P> param, Field<F> field,
+                                       BiFunction<Field<F>, P, Condition> function) {
+        return (FluentCondition) this.apply(param, (c, p) -> op.apply(c, function.apply(field, p)));
     }
 
 

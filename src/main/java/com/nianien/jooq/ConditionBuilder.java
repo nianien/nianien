@@ -16,46 +16,37 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Function;
-import java.util.function.Predicate;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
 /**
- * 匹配条件适配器<br/>
+ * 匹配条件构造器<br/>
  * scm.com Inc.
  * Copyright (c) 2004-2021 All Rights Reserved.
  *
  * @see Match
  */
-public class ConditionAdapter {
-
-    private Object query;
-    private Predicate<java.lang.reflect.Field> fieldFilter;
+public class ConditionBuilder {
 
     /**
-     * 匹配对象
-     *
-     * @param query
+     * 承载查询条件的POJO对象
      */
-    public ConditionAdapter(Object query) {
-        this(query, null);
-    }
-
-
-    public ConditionAdapter(Object query, Predicate<java.lang.reflect.Field> fieldFilter) {
-        this.query = query;
-        this.fieldFilter = fieldFilter;
-    }
+    private Object queryBean;
+    /**
+     * 用于生成匹配字段的函数
+     */
+    private Function<String, Field> fieldGenerator;
 
     /**
      * 属性字段驼峰转下划线作为匹配条件
      *
      * @return
      */
-    public Condition toCondition() {
-        return toCondition(FieldGenerator.byUnderLine());
+    public ConditionBuilder(Object queryBean) {
+        this(queryBean, FieldGenerator.byUnderLine());
     }
+
 
     /**
      * 数据库表中对应的字段作为匹配条件
@@ -63,21 +54,64 @@ public class ConditionAdapter {
      * @param table
      * @return
      */
-    public Condition toCondition(Table table) {
-        return toCondition(FieldGenerator.byTable(table));
+    public ConditionBuilder(Object queryBean, Table table) {
+        this(queryBean, FieldGenerator.byTable(table));
     }
 
     /**
      * 函数生成的字段作为匹配条件
      *
-     * @param fieldFunc
+     * @param fieldGenerator
      * @return
      */
-    public Condition toCondition(Function<String, Field> fieldFunc) {
+    public ConditionBuilder(Object queryBean, Function<String, Field> fieldGenerator) {
+        this.queryBean = queryBean;
+        this.fieldGenerator = fieldGenerator;
+    }
+
+
+    /**
+     * 使用默认转换逻辑
+     *
+     * @return
+     */
+    public Condition build() {
+        return toCondition(queryBean, fieldGenerator);
+    }
+
+    /**
+     * 数据库表中对应的字段作为匹配条件
+     *
+     * @param queryBean
+     * @return
+     */
+    public static Condition toCondition(Object queryBean) {
+        return toCondition(queryBean, FieldGenerator.byUnderLine());
+    }
+
+
+    /**
+     * 数据库表中对应的字段作为匹配条件
+     *
+     * @param table
+     * @return
+     */
+    public static Condition toCondition(Object queryBean, Table table) {
+        return toCondition(queryBean, FieldGenerator.byTable(table));
+    }
+
+    /**
+     * 函数生成的字段作为匹配条件
+     *
+     * @param queryBean
+     * @param fieldGenerator
+     * @return
+     */
+    public static Condition toCondition(Object queryBean, Function<String, Field> fieldGenerator) {
         Condition condition = DSL.trueCondition();
-        List<QueryField> queryFields = getFieldInfos(query);
+        List<QueryField> queryFields = getFieldInfos(queryBean);
         for (QueryField info : queryFields) {
-            Field field = fieldFunc.apply(info.name);
+            Field field = fieldGenerator.apply(info.name);
             if (field == null) {
                 continue;
             }
@@ -155,8 +189,8 @@ public class ConditionAdapter {
      * @param query
      * @return
      */
-    private List<QueryField> getFieldInfos(Object query) {
-        List<java.lang.reflect.Field> fields = Reflections.getFields(query.getClass(), null, fieldFilter);
+    private static List<QueryField> getFieldInfos(Object query) {
+        List<java.lang.reflect.Field> fields = Reflections.getFields(query.getClass(), null, null);
         List<QueryField> queryFields = new ArrayList<>(fields.size());
         for (java.lang.reflect.Field field : fields) {
             Operator operator = Operator.EQ;
