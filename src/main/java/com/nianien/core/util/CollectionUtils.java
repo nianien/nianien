@@ -447,7 +447,7 @@ public class CollectionUtils {
      * 获取对象属性
      */
     private static Object getProperty(Object obj, String property) {
-        return obj instanceof Map ? ((Map) obj).get(property) : Reflections.getProperty(obj, property);
+        return obj instanceof Map ? ((Map) obj).get(property) : Reflections.getPropertyValue(obj, property);
     }
 
 }

@@ -1,10 +1,11 @@
 package com.nianien.core.reflect;
 
 import com.nianien.core.annotation.Property;
-import com.nianien.core.reflect.selector.GetterSelector;
-import com.nianien.core.reflect.selector.SetterSelector;
+import com.nianien.core.util.CollectionUtils;
 import com.nianien.core.util.EnumUtils;
 
+import java.lang.annotation.Annotation;
+import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -15,6 +16,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.function.Predicate;
 
 import static com.nianien.core.exception.ExceptionHandler.throwException;
@@ -65,20 +67,33 @@ public class Reflections {
 
     }
 
+    /**
+     * 获取指定类型的注解
+     *
+     * @param annotatedElement
+     * @param annotationClass
+     * @param <T>
+     * @return
+     */
+    public static <T extends Annotation> T findAnnotation(AnnotatedElement annotatedElement, Class<T> annotationClass) {
+        try {
+            return annotatedElement.getAnnotation(annotationClass);
+        } catch (Exception e) {
+            //e.printStackTrace();
+            return null;
+        }
+    }
+
 
     /**
-     * 选择非Object定义的方法
+     * 是否声明指定类型的注解
+     *
+     * @return
      */
-    public static final Predicate<Method> notObjectSelector = method -> method.getDeclaringClass() != Object.class;
-    /**
-     * 选择getter方法
-     */
-    public static final Predicate<Method> getterSelector = new GetterSelector();
-
-    /**
-     * 选择setter方法
-     */
-    public static final Predicate<Method> setterSelector = new SetterSelector();
+    public static <T extends Annotation> boolean hasAnnotation(AnnotatedElement annotatedElement,
+                                                               Class<T> annotationClass) {
+        return annotatedElement.isAnnotationPresent(annotationClass);
+    }
 
     /**
      * 查找指定名称和参数类型的方法<br/>
@@ -104,6 +119,38 @@ public class Reflections {
             return null;
         }
     }
+
+
+    /**
+     * 获取clazz及其父类声明的public方法
+     *
+     * @param clazz
+     * @return
+     */
+    public static List<Method> getMethods(Class<?> clazz) {
+        return getMethods(clazz, Object.class, IS_STATIC_METHOD.negate());
+    }
+
+
+    /**
+     * 获取clazz及其父类声明的符合条件的方法
+     *
+     * @param clazz
+     * @param filter
+     * @return
+     */
+    public static List<Method> getMethods(Class<?> clazz, Class baseExcludeClass, Predicate<Method> filter) {
+        filter = nullable(filter);
+        List<Method> list = new ArrayList<Method>();
+        for (; clazz != null; clazz = clazz.getSuperclass()) {
+            if (clazz == baseExcludeClass) {
+                break;
+            }
+            Arrays.stream(clazz.getDeclaredMethods()).filter(filter).forEach(list::add);
+        }
+        return list;
+    }
+
 
     /**
      * 查找指定名称的字段<br/>
@@ -131,139 +178,32 @@ public class Reflections {
     }
 
     /**
-     * 获取clazz及其父类声明的public方法
-     *
-     * @param clazz
-     * @return
-     */
-    public static List<Method> getMethods(Class<?> clazz) {
-        return getMethods(clazz, null);
-    }
-
-
-    /**
-     * 获取clazz及其父类声明的符合条件的public方法
-     *
-     * @param clazz
-     * @param selector
-     * @return
-     */
-    public static List<Method> getMethods(Class<?> clazz, Predicate<Method> selector) {
-        List<Method> list = new ArrayList<Method>();
-        for (Method method : clazz.getMethods()) {
-            if (selector.test(method))
-                list.add(method);
-        }
-        return list;
-    }
-
-    /**
-     * 获取clazz及其父类({@link Object}除外)声明的public方法
-     *
-     * @param clazz
-     * @return
-     */
-    public static List<Method> getDefinedMethods(Class<?> clazz) {
-        return getMethods(clazz, notObjectSelector);
-    }
-
-
-    /**
-     * 获取clazz及其父类({@link Object}除外)声明的符合条件的public方法
-     *
-     * @param clazz
-     * @param selector
-     * @return
-     */
-    public static List<Method> getDefinedMethods(Class<?> clazz, Predicate<Method> selector) {
-        return
-                getMethods(clazz, notObjectSelector.and(selector));
-    }
-
-
-    /**
-     * 获取clazz及其父类声明的方法
-     *
-     * @param clazz
-     * @return
-     */
-    public static List<Method> getAllMethods(Class<?> clazz) {
-        return getAllMethods(clazz, null);
-    }
-
-
-    /**
-     * 获取clazz及其父类声明的符合条件的方法
-     *
-     * @param clazz
-     * @param selector
-     * @return
-     */
-    public static List<Method> getAllMethods(Class<?> clazz, Predicate<Method> selector) {
-        List<Method> list = new ArrayList<Method>();
-        for (; clazz != null; clazz = clazz.getSuperclass()) {
-            for (Method method : clazz.getDeclaredMethods()) {
-                if (selector == null || selector.test(method)) {
-                    list.add(method);
-                }
-            }
-        }
-        return list;
-    }
-
-    /**
      * 获取clazz及其父类声明的public字段
      *
      * @param clazz
      * @return
      */
     public static List<Field> getFields(Class<?> clazz) {
-        return getFields(clazz, null);
+        return getFields(clazz, Object.class, null);
     }
 
 
     /**
-     * 获取clazz及其父类声明的符合条件的public字段
+     * 获取clazz及其父类声明的符合条件的成员字段, 不包含excludeBaseClass及其父类声明的字段
      *
      * @param clazz
-     * @param selector
+     * @param baseExcludeClass
+     * @param filter
      * @return
      */
-    public static List<Field> getFields(Class<?> clazz, Predicate<Field> selector) {
-        List<Field> list = new ArrayList<Field>();
-        for (Field field : clazz.getFields()) {
-            if (selector == null || selector.test(field))
-                list.add(field);
-        }
-        return list;
-    }
-
-
-    /**
-     * 获取clazz及其父类声明的字段
-     *
-     * @param clazz
-     * @return
-     */
-    public static List<Field> getAllFields(Class<?> clazz) {
-        return getAllFields(clazz, null);
-    }
-
-    /**
-     * 获取clazz及其父类声明的符合条件的字段
-     *
-     * @param clazz
-     * @param selector
-     * @return
-     */
-    public static List<Field> getAllFields(Class<?> clazz, Predicate<Field> selector) {
-        List<Field> list = new ArrayList<Field>();
+    public static List<Field> getFields(Class<?> clazz, Class baseExcludeClass, Predicate<Field> filter) {
+        filter = nullable(filter);
+        List<Field> list = new ArrayList<>();
         for (; clazz != null; clazz = clazz.getSuperclass()) {
-            for (Field field : clazz.getDeclaredFields()) {
-                if (selector == null || selector.test(field)) {
-                    list.add(field);
-                }
+            if (clazz == baseExcludeClass) {
+                break;
             }
+            Arrays.stream(clazz.getDeclaredFields()).filter(filter).forEach(list::add);
         }
         return list;
     }
@@ -290,14 +230,14 @@ public class Reflections {
      * 执行指定方法,返回执行结果
      *
      * @param method
-     * @param obj    声明该方法的实例对象
+     * @param bean   声明该方法的实例对象
      * @param args   方法的参数
      * @return 方法的执行结果<br />
      */
-    public static Object invoke(Method method, Object obj, Object... args) {
+    public static Object invoke(Method method, Object bean, Object... args) {
         try {
             method.setAccessible(true);
-            return method.invoke(obj, args);
+            return method.invoke(bean, args);
         } catch (Exception e) {
             throw throwException(e);
         }
@@ -322,7 +262,7 @@ public class Reflections {
         if (method != null) {
             return invoke(method, bean, parameters);
         }
-        List<Method> methods = getAllMethods(beanClass);
+        List<Method> methods = getMethods(beanClass);
         Iterator<Method> iterator = methods.iterator();
         while (iterator.hasNext()) {
             Method candidate = iterator.next();
@@ -387,27 +327,6 @@ public class Reflections {
         return castParams;
     }
 
-    /**
-     * 判断是否为符合条件的getter方法,参数为null的条件被忽略
-     *
-     * @param method
-     * @return
-     */
-    public static boolean isGetter(Method method) {
-        return getterSelector.test(method);
-    }
-
-
-    /**
-     * 判断是否为符合条件的setter方法,参数为null的条件被忽略
-     *
-     * @param method
-     * @return
-     */
-    public static boolean isSetter(Method method) {
-        return setterSelector.test(method);
-    }
-
 
     /**
      * 获取public getter方法, 如果不存在,则返回null
@@ -417,7 +336,8 @@ public class Reflections {
      * @return
      */
     public static Method getter(Class<?> clazz, String propertyName) {
-        return method(clazz, new GetterSelector(propertyName, null));
+        return getters(clazz, m -> propertyName(m).equals(propertyName))
+                .stream().findAny().orElse(null);
     }
 
     /**
@@ -429,7 +349,11 @@ public class Reflections {
      * @return
      */
     public static Method getter(Class<?> clazz, String propertyName, Class<?> propertyType) {
-        return method(clazz, new GetterSelector(propertyName, propertyType));
+        Method getter = getter(clazz, propertyName);
+        if (getter != null && getter.getReturnType() == propertyType) {
+            return getter;
+        }
+        return null;
     }
 
     /**
@@ -440,7 +364,8 @@ public class Reflections {
      * @return
      */
     public static Method setter(Class<?> clazz, String propertyName) {
-        return method(clazz, new SetterSelector(propertyName, null, null));
+        return setters(clazz, m -> propertyName(m).equals(propertyName))
+                .stream().findAny().orElse(null);
     }
 
     /**
@@ -452,7 +377,11 @@ public class Reflections {
      * @return
      */
     public static Method setter(Class<?> clazz, String propertyName, Class<?> propertyType) {
-        return method(clazz, new SetterSelector(propertyName, propertyType, null));
+        Method setter = getter(clazz, propertyName);
+        if (setter != null && setter.getParameterTypes()[0] == propertyType) {
+            return setter;
+        }
+        return null;
     }
 
     /**
@@ -464,22 +393,13 @@ public class Reflections {
      * @return
      */
     public static Method setter(Class<?> clazz, String propertyName, Object propertyValue) {
-        return method(clazz, new SetterSelector(propertyName, null, propertyValue));
-    }
-
-    /**
-     * 获取符合条件的方法, 如果不存在,则返回null
-     *
-     * @param clazz
-     * @return
-     */
-    public static Method method(Class<?> clazz, Predicate<Method> selector) {
-        for (Method method : clazz.getMethods()) {
-            if (selector.test(method))
-                return method;
+        Method setter = getter(clazz, propertyName);
+        if (setter != null && setter.getParameterTypes()[0].isInstance(propertyValue)) {
+            return setter;
         }
         return null;
     }
+
 
     /**
      * 获取getter方法列表,不包含{@link Object}声明的getter方法
@@ -488,7 +408,7 @@ public class Reflections {
      * @return getter方法列表
      */
     public static List<Method> getters(Class<?> clazz) {
-        return getDefinedMethods(clazz, getterSelector);
+        return getters(clazz, null);
     }
 
     /**
@@ -497,8 +417,8 @@ public class Reflections {
      * @param clazz
      * @return getter方法列表
      */
-    public static List<Method> getters(Class<?> clazz, Predicate<Method> selector) {
-        return getDefinedMethods(clazz, getterSelector.and(selector));
+    public static List<Method> getters(Class<?> clazz, Predicate<Method> filter) {
+        return getMethods(clazz, null, IS_GETTER.and(filter));
     }
 
     /**
@@ -508,7 +428,7 @@ public class Reflections {
      * @return getter方法列表
      */
     public static List<Method> setters(Class<?> clazz) {
-        return getDefinedMethods(clazz, setterSelector);
+        return setters(clazz, null);
     }
 
     /**
@@ -517,8 +437,8 @@ public class Reflections {
      * @param clazz
      * @return getter方法列表
      */
-    public static List<Method> setters(Class<?> clazz, Predicate<Method> selector) {
-        return getDefinedMethods(clazz, setterSelector.and(selector));
+    public static List<Method> setters(Class<?> clazz, Predicate<Method> filter) {
+        return getMethods(clazz, null, IS_SETTER.and(nullable(filter)));
     }
 
     /**
@@ -562,22 +482,20 @@ public class Reflections {
 
 
     /**
-     * 获取指定名称的public属性值
-     * 即方法getXxx()或方法isXxx()的执行结果
+     * 调用方法getXxx()或方法isXxx()获取属性值
      *
      * @param obj
      * @param propertyName
      * @return 属性值
      */
-    public static Object getProperty(Object obj, String propertyName) {
+    public static Object getPropertyValue(Object obj, String propertyName) {
         Method getter = getter(obj.getClass(), propertyName);
         throwIfNull(getter, new NoSuchMethodException("No such getter Method for property: " + propertyName));
         return invoke(getter, obj);
     }
 
     /**
-     * 设置指定名称的public属性值<br/>
-     * 即执行方法setXxx(propertyValue)
+     * 调用方法setXxx(propertyValue)设置属性值
      *
      * @param obj
      * @param propertyName
@@ -653,48 +571,21 @@ public class Reflections {
      * @param to
      */
     public static void copyProperties(Object to, Object from) {
-        List<Method> setters = setters(to.getClass());
-        Class<?> fromClass = from.getClass();
-        for (Method setter : setters) {
-            try {
-                // 获取getter方法
-                Method getter = getter(fromClass, propertyName(setter));
-                // 调用setter方法赋值
-                if (getter != null && setter.getParameterTypes()[0].isAssignableFrom(getter.getReturnType())) {
-                    setter.invoke(to, getter.invoke(from));
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-    /**
-     * 将from实例中的字段值赋值给to实例中的同名字段<br/>
-     * 其中to中的final字段不被赋值<br/>
-     * 另外,如果同名字段类型不兼容,也不赋值
-     *
-     * @param src
-     * @param dest
-     */
-    public static void copyFields(Object dest, Object src) {
-        List<Field> destFields = getAllFields(dest.getClass());
-        List<Field> srcFields = getAllFields(src.getClass());
-        for (Field destField : destFields) {
-            try {
-                for (Field srcField : srcFields) {
-                    if (!Modifier.isFinal(destField.getModifiers()) && destField.getType().isAssignableFrom(srcField.getType())) {
-                        // 设置私有字段
-                        srcField.setAccessible(true);
-                        destField.setAccessible(true);
-                        destField.set(dest, srcField.get(src));
-                        break;
+        Map<String, Method> setters = CollectionUtils.map(setters(to.getClass()), Reflections::propertyName);
+        Map<String, Method> getters = CollectionUtils.map(getters(from.getClass()), Reflections::propertyName);
+        setters.forEach(
+                (n, setter) -> {
+                    try {
+                        Method getter = getters.get(n);
+                        // 调用setter方法赋值
+                        if (getter != null && setter.getParameterTypes()[0].isAssignableFrom(getter.getReturnType())) {
+                            setter.invoke(to, getter.invoke(from));
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
                     }
                 }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
+        );
     }
 
 
@@ -743,7 +634,7 @@ public class Reflections {
             return (T) Enum.valueOf((Class<Enum>) clazz, valueString);
         }
         try {
-            return (T) clazz.getConstructor(String.class).newInstance(valueString);
+            return clazz.getConstructor(String.class).newInstance(valueString);
         } catch (Exception e) {
             throw throwException(e);
         }
@@ -859,17 +750,6 @@ public class Reflections {
         return true;
     }
 
-    /**
-     * 判断给定的sub类型是否为base类型的继承类
-     *
-     * @param sub
-     * @param base
-     * @return 如果是返回true, 否则返回false
-     */
-    public static boolean isSubClass(Class<?> base, Class<?> sub) {
-        return base.isAssignableFrom(sub);
-    }
-
 
     /**
      * 判断clazz类型是否为抽象类型
@@ -905,4 +785,42 @@ public class Reflections {
         return Generics.find(clazz, genericClass, index);
     }
 
+    /**
+     * 判断getter方法
+     *
+     * @param method
+     * @return
+     */
+    public static boolean isGetter(Method method) {
+        return Modifier.isStatic(method.getModifiers())
+                && method.getReturnType() != Void.TYPE
+                && method.getParameterTypes().length == 0
+                && (method.getName().startsWith("get")
+                && method.getName().length() > 3
+                || method.getName().startsWith("is")
+                && method.getReturnType() == Boolean.TYPE
+                && method.getName().length() > 2);
+    }
+
+
+    /**
+     * 判断setter方法
+     */
+    public static boolean isSetter(Method method) {
+        return Modifier.isStatic(method.getModifiers())
+                && method.getReturnType() == Void.TYPE
+                && method.getParameterTypes().length == 1
+                && method.getName().startsWith("set")
+                && method.getName().length() > 3;
+    }
+
+
+    private static <T> Predicate<T> nullable(Predicate<T> filter) {
+        return Optional.ofNullable(filter).orElse((f) -> true);
+    }
+
+    public final static Predicate<Method> IS_STATIC_METHOD = method -> Modifier.isStatic(method.getModifiers());
+    public final static Predicate<Method> IS_SETTER = Reflections::isSetter;
+    public final static Predicate<Method> IS_GETTER = Reflections::isGetter;
+    public final static Predicate<Field> IS_FINAL_FIELD = field -> Modifier.isFinal(field.getModifiers());
 }
