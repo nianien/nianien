@@ -20,7 +20,7 @@ public @interface Match {
      *
      * @return
      */
-    Operator value() default Operator.EQ;
+    Operator op() default Operator.EQ;
 
     /**
      * 用于匹配的字段名
@@ -29,11 +29,10 @@ public @interface Match {
      */
     String name() default "";
 
-
     /**
-     * 是否忽略
+     * 是否停用
      *
      * @return
      */
-    boolean ignore() default false;
+    boolean disable() default false;
 }

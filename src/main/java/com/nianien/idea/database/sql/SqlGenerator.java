@@ -362,7 +362,7 @@ public class SqlGenerator {
      */
     private static <T> SqlStatement deleteSql(DataTable<T> table, T entity, String... conditionFields) {
         if (conditionFields == null) {
-            return deleteSql(table.getName(), new ArrayList<DataField>());
+            return deleteSql(table.getName(), new ArrayList<>());
         }
         if (conditionFields.length == 0) {
             return deleteSql(table.getName(), notNull(table.getFields(entity)));
