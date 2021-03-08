@@ -2,12 +2,18 @@ package com.nianien.test.utils;
 
 import com.nianien.core.collection.map.CounterMap;
 import com.nianien.core.util.ConsistentHash;
+
 import org.apache.commons.collections.MultiMap;
 import org.apache.commons.collections.map.MultiValueMap;
 import org.junit.Test;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Map.Entry;
+import java.util.Random;
 
 public class TestConsistentHash {
 
@@ -30,7 +36,7 @@ public class TestConsistentHash {
      */
     @Test
     public void testHit() {
-        List<String> keys = new ArrayList<String>(Arrays.asList("1", "2", "3", "4", "5"));
+        List<String> keys = new ArrayList<String>(Arrays.asList("a", "b", "c", "d", "e"));
         Collection<String> data = new HashSet(getAllData(100000));
         MultiMap multiMap = new MultiValueMap();
         test(data, keys, multiMap);
@@ -49,24 +55,24 @@ public class TestConsistentHash {
     }
 
 
-    private static void test(Collection<String> data, List<String> keys, MultiMap multiMap) {
+    private static void test(Collection<String> list, List<String> keys, MultiMap multiMap) {
         CounterMap<String> counterMap = new CounterMap<String>();
-        ConsistentHash<String> hash = new ConsistentHash<String>(keys);
-        for (String key : data) {
-            String target = hash.getTarget(key);
+        ConsistentHash<String> hash = new ConsistentHash<>(keys);
+        for (String data : list) {
+            //判断data在哪个节点上, target is one of keys
+            String target = hash.getTarget(data);
             counterMap.increase(target);
             if (multiMap != null)
-                multiMap.put(key, target);
+                multiMap.put(data, target);
         }
-        System.out.println("\nkeys count : " + keys.size() + ", data count : "
-                + data.size() + ", Normal percent : " + (float) 100
+        System.out.println("\nkeys count : " + keys.size() + ", list count : "
+                + list.size() + ", Normal percent : " + (float) 100
                 / keys.size() + "%");
-        System.out
-                .println("-------------------- boundary  ----------------------");
+        System.out.println("-------------------- boundary  ----------------------");
         for (Entry<String, Integer> entry : counterMap.entrySet()) {
             System.out.println("key :" + entry.getKey() + " - Times : "
                     + entry.getValue() + " - Percent : "
-                    + (float) entry.getValue() / data.size() * 100 + "%");
+                    + (float) entry.getValue() / list.size() * 100 + "%");
         }
     }
 
