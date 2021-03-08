@@ -2,6 +2,8 @@ package com.nianien.core.text;
 
 import com.nianien.core.exception.ExceptionHandler;
 
+import java.util.stream.IntStream;
+
 /**
  * 支持进十进制与N进制相互转换的工具类
  *
@@ -12,13 +14,13 @@ public class RadixUtils {
     /**
      * 默认字符集合[0-9A-Za-z]
      */
-    public final static char[] defaultCharset = Characters.NumberAndLetter;
+    public final static char[] defaultCharset = Characters.NUMBER_LETTER;
 
     /**
      * 将十进制的数字转换为radix进制<br>
      * 这里采用[0-9A-Za-z]字符集合,最大表示可表示62进制
      *
-     * @param num  十进制数
+     * @param num   十进制数
      * @param radix 进制基数
      * @return N进制数字字符串
      */
@@ -59,7 +61,7 @@ public class RadixUtils {
      * 这里采用[0-9A-Za-z]字符集合,最大表示可表示62进制
      *
      * @param source N进制字符串
-     * @param radix   进制基数
+     * @param radix  进制基数
      * @return 转换后的十进制数
      */
     public static long toNumber(String source, int radix) {
@@ -95,7 +97,7 @@ public class RadixUtils {
         long sum = 0;
         for (int i = 0; i < len; i++) {
             sum = sum * N;
-            int n = toNumber(source.charAt(i), charset);
+            int n = toNumber(source.charAt(i), charset, charset.length);
             if (n != 0) {
                 sum += n;
             }
@@ -107,23 +109,14 @@ public class RadixUtils {
     /**
      * 获取base进制字符ch在默认字符集[0-9A-Za-z]中对应的十进制数
      *
-     * @param ch   字符集中的字符
+     * @param ch    目标字符
      * @param radix 进制基数
      * @return
      */
     private static int toNumber(char ch, int radix) {
-        char[] charset = defaultCharset;
-        int n = -1;
-        int len = charset.length < radix ? charset.length : radix;
-        for (int i = 0; i < len; i++) {
-            if (ch == charset[i]) {
-                n = i;
-                break;
-            }
-        }
-        ExceptionHandler.throwIf(n == -1, "no responding value for char[" + ch + "]");
-        return n;
+        return toNumber(ch, defaultCharset, radix);
     }
+
 
     /**
      * 获取字符ch在给定字符集charset中对应的十进制数值
@@ -132,15 +125,9 @@ public class RadixUtils {
      * @param charset
      * @return
      */
-    private static int toNumber(char ch, char[] charset) {
-        int n = -1;
-        int len = charset.length;
-        for (int i = 0; i < len; i++) {
-            if (ch == charset[i]) {
-                n = i;
-                break;
-            }
-        }
+    private static int toNumber(char ch, char[] charset, int radix) {
+        int len = charset.length < radix ? charset.length : radix;
+        int n = IntStream.range(0, len).filter(i -> ch == charset[i]).findFirst().orElse(-1);
         ExceptionHandler.throwIf(n == -1, "no responding value for char[" + ch + "]");
         return n;
     }

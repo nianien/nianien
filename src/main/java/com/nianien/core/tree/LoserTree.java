@@ -34,14 +34,7 @@ public class LoserTree<T> {
      * 构造方法,按照元素的Comparable接口实现进行排序
      */
     public LoserTree(List<Iterator<T>> branches) {
-        this(branches, new Comparator<T>() {
-
-            @SuppressWarnings("unchecked")
-            @Override
-            public int compare(T o1, T o2) {
-                return ((Comparable<T>) o1).compareTo(o2);
-            }
-        });
+        this(branches, (o1, o2) -> ((Comparable<T>) o1).compareTo(o2));
     }
 
     /**

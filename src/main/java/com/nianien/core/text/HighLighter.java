@@ -93,14 +93,10 @@ public class HighLighter {
          * 正则表达式分割HTML标签和正文内容,匹配正则式的为标签,不匹配的为正文
          */
         return TextAnalyzer.rebuild(html, TextAnalyzer.analyze(html, "<.*?>"),
-                new FragmentHandler() {
-
-                    @Override
-                    public String handle(String html, Fragment fragment) {
-                        String value = fragment.content(html);
-                        return fragment.isMatched() ? value
-                                : highLightText(value);
-                    }
+                (html1, fragment) -> {
+                    String value = fragment.content(html1);
+                    return fragment.isMatched() ? value
+                            : highLightText(value);
                 });
     }
 
@@ -114,13 +110,9 @@ public class HighLighter {
 
         return TextAnalyzer.rebuild(text,
                 TextAnalyzer.analyze(text, keywords, ignoreCase),
-                new FragmentHandler() {
-
-                    @Override
-                    public String handle(String text, Fragment fragment) {
-                        String value = fragment.content(text);
-                        return fragment.isMatched() ? highLight(value) : value;
-                    }
+                (text1, fragment) -> {
+                    String value = fragment.content(text1);
+                    return fragment.isMatched() ? highLight(value) : value;
                 });
     }
 

@@ -197,7 +197,7 @@ public class RegexUtils {
      * @return 替换后的字符串
      */
     public static String replace(String source, String regex,
-                                 final Map<String, String> replacement) {
+                                 Map<String, String> replacement) {
         return replace(source, regex, replacement, null);
     }
 
@@ -211,7 +211,7 @@ public class RegexUtils {
      * @return 替换后的字符串
      */
     public static String replace(String source, String regex,
-                                 final String replacement) {
+                                 String replacement) {
         return replace(source, regex, Collections.<String, String>emptyMap(), StringUtils.defaultIfNull(replacement, ""));
     }
 
@@ -227,13 +227,7 @@ public class RegexUtils {
      */
     public static String replace(String source, String regex,
                                  final Map<String, String> replacement, final String instead) {
-        return replace(source, regex, new Function<String, String>() {
-
-            @Override
-            public String apply(String matched) {
-                return replacement.containsKey(matched) ? replacement.get(matched) : instead;
-            }
-        });
+        return replace(source, regex, matched -> replacement.containsKey(matched) ? replacement.get(matched) : instead);
     }
 
 
@@ -256,8 +250,8 @@ public class RegexUtils {
         int i = 0;
         while (matcher.find()) {
             matched = matcher.group();
-            sb.append(source.substring(i, matcher.start())).append(
-                    function.apply(matched));
+            sb.append(source, i, matcher.start())
+                    .append(function.apply(matched));
             i = matcher.end();
         }
         // 剩余未匹配的字符串

@@ -469,20 +469,18 @@ public class StringUtils {
      * @param source
      * @param array
      * @return array中元素首次出现的索引位置<br>
-     * 如果array元素为空,返回-1
+     *         如果array元素为空,返回-1
      */
     public static int indexOfAny(String source, char[] array) {
         if (array.length == 0) {
             return -1;
         }
-        int index = -1;
         for (int i = 0; i < source.length(); i++) {
             if (ArrayUtils.contains(array, source.charAt(i))) {
-                index = i;
-                break;
+                return i;
             }
         }
-        return index;
+        return -1;
     }
 
     /**
@@ -491,7 +489,7 @@ public class StringUtils {
      * @param source
      * @param parameters
      * @return parameters中参数值首次出现的索引位置<br>
-     * 如果未指定parameters,则返回-1
+     *         如果未指定parameters,则返回-1
      */
     public static int indexOfAny(String source, String... parameters) {
         if (parameters.length == 0)
@@ -514,7 +512,7 @@ public class StringUtils {
      * @param pattern
      * @param count
      * @return 第count次匹配pattern的子串索引位置<br>
-     * 如果source包含pattern的个数小于count,返回-1<br>
+     *         如果source包含pattern的个数小于count,返回-1<br>
      */
     public static int indexOfTimes(String source, String pattern, int count) {
         if (count <= 0)
@@ -630,18 +628,18 @@ public class StringUtils {
      * @param source
      * @param array
      * @return array中元素的最后一次出现的索引位置<br>
-     * 如果array元素为空,返回-1
+     *         如果array元素为空,返回-1
      */
     public static int lastIndexOfAny(String source, char[] array) {
         if (array.length == 0) {
             return -1;
         }
-        int index = -1;
-        for (int i = 0; i < source.length(); i++) {
-            if (ArrayUtils.contains(array, source.charAt(i)))
-                index = i;
+        for (int i = source.length() - 1; i >= 0; i--) {
+            if (ArrayUtils.contains(array, source.charAt(i))) {
+                return i;
+            }
         }
-        return index;
+        return -1;
     }
 
     /**
@@ -650,7 +648,7 @@ public class StringUtils {
      * @param source
      * @param parameters
      * @return 返回parameters中参数值的最后一次出现的索引位置<br>
-     * 如果未指定parameters参数,返回-1;
+     *         如果未指定parameters参数,返回-1;
      */
     public static int lastIndexOfAny(String source, String... parameters) {
         if (parameters.length == 0)
@@ -674,12 +672,12 @@ public class StringUtils {
      * @param target
      * @param count
      * @return 倒数第count次匹配pattern的子串索引位置<br>
-     * 如果source包含pattern的个数小于count,返回-1<br>
-     * 如果pattern为空,返回-1<br>
+     *         如果source包含pattern的个数小于count,返回-1<br>
+     *         如果pattern为空,返回-1<br>
      */
     public static int lastIndexOfTimes(String source, String target, int count) {
         if (count <= 0) {
-            throw new IllegalArgumentException("参数:count必须大于0!");
+            throw new IllegalArgumentException("count cannot be less than 0!");
         }
         int i = -1;
         String subString = source;
@@ -781,7 +779,7 @@ public class StringUtils {
      * @param target
      * @param replacement
      * @return 处理后的字符串<br>
-     * 如果source为空,则返回源字符串<br>
+     *         如果source为空,则返回源字符串<br>
      */
     public static String replace(String source, char target, String replacement) {
         if (isEmpty(source))
@@ -958,7 +956,7 @@ public class StringUtils {
      * @param source
      * @param array
      * @return 处理后的字符串<br>
-     * 如果array元素为空,则返回源字符串
+     *         如果array元素为空,则返回源字符串
      */
     public static String trim(String source, char[] array) {
         return trimRight(trimLeft(source, array), array);
@@ -970,7 +968,7 @@ public class StringUtils {
      * @param source
      * @param target
      * @return 处理后的字符串<br>
-     * 如果target为空,则返回源字符串
+     *         如果target为空,则返回源字符串
      */
     public static String trim(String source, String target) {
         String pattern = Pattern.quote(target);
@@ -985,7 +983,7 @@ public class StringUtils {
      * @param source
      * @param array
      * @return 处理后的字符串<br>
-     * 如果array元素为空,返回源字符串
+     *         如果array元素为空,返回源字符串
      */
     public static String trimLeft(String source, char[] array) {
         if (isEmpty(source) || array.length == 0)
@@ -1007,7 +1005,7 @@ public class StringUtils {
      * @param source
      * @param target
      * @return 处理后的字符串<br>
-     * 如果target为空,则返回源字符串
+     *         如果target为空,则返回源字符串
      */
     public static String trimLeft(String source, String target) {
         String pattern = "^(" + Pattern.quote(target) + ")+";
@@ -1020,7 +1018,7 @@ public class StringUtils {
      * @param source
      * @param array
      * @return 处理后的字符串<br>
-     * 如果array元素为空,返回源字符串
+     *         如果array元素为空,返回源字符串
      */
     public static String trimRight(String source, char[] array) {
         if (isEmpty(source) || array.length == 0)
@@ -1042,7 +1040,7 @@ public class StringUtils {
      * @param source
      * @param target
      * @return 处理后的字符串<br>
-     * 如果source或target为空,则返回源字符串.
+     *         如果source或target为空,则返回源字符串.
      */
     public static String trimRight(String source, String target) {
         String pattern = "(" + Pattern.quote(target) + ")+$";
@@ -1077,7 +1075,7 @@ public class StringUtils {
      * @param str       the String to get a substring from, may be null
      * @param separator the String to search for, may be null
      * @return the substring before the first occurrence of the separator,
-     * {@code null} if null String input
+     *         {@code null} if null String input
      * @since 2.0
      */
     public static String substringBefore(final String str, final String separator) {
@@ -1119,7 +1117,7 @@ public class StringUtils {
      * @param str       the String to get a substring from, may be null
      * @param separator the String to search for, may be null
      * @return the substring after the first occurrence of the separator,
-     * {@code null} if null String input
+     *         {@code null} if null String input
      * @since 2.0
      */
     public static String substringAfter(final String str, final String separator) {
@@ -1160,7 +1158,7 @@ public class StringUtils {
      * @param str       the String to get a substring from, may be null
      * @param separator the String to search for, may be null
      * @return the substring before the last occurrence of the separator,
-     * {@code null} if null String input
+     *         {@code null} if null String input
      * @since 2.0
      */
     public static String substringBeforeLast(final String str, final String separator) {
@@ -1200,7 +1198,7 @@ public class StringUtils {
      * @param str       the String to get a substring from, may be null
      * @param separator the String to search for, may be null
      * @return the substring after the last occurrence of the separator,
-     * {@code null} if null String input
+     *         {@code null} if null String input
      * @since 2.0
      */
     public static String substringAfterLast(final String str, final String separator) {

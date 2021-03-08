@@ -3,8 +3,9 @@ package com.nianien.core.util;
 import com.sun.istack.internal.Nullable;
 
 import java.lang.reflect.Array;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Arrays;
+
+import static java.util.Arrays.binarySearch;
 
 /**
  * 支持数组操作的工具类
@@ -127,12 +128,7 @@ public class ArrayUtils {
      * @return 如果array包含true, 否则返回false
      */
     public static boolean contains(char[] array, char target) {
-        for (char t : array) {
-            if (t == target) {
-                return true;
-            }
-        }
-        return false;
+        return binarySearch(array, target) >= 0;
     }
 
     /**
@@ -143,12 +139,7 @@ public class ArrayUtils {
      * @return 如果array包含true, 否则返回false
      */
     public static boolean contains(short[] array, int target) {
-        for (short t : array) {
-            if (t == target) {
-                return true;
-            }
-        }
-        return false;
+        return binarySearch(array, (short) target) >= 0;
     }
 
     /**
@@ -159,12 +150,7 @@ public class ArrayUtils {
      * @return 如果array包含true, 否则返回false
      */
     public static boolean contains(int[] array, int target) {
-        for (int t : array) {
-            if (t == target) {
-                return true;
-            }
-        }
-        return false;
+        return binarySearch(array, target) >= 0;
     }
 
     /**
@@ -175,12 +161,7 @@ public class ArrayUtils {
      * @return 如果array包含true, 否则返回false
      */
     public static boolean contains(long[] array, long target) {
-        for (long t : array) {
-            if (t == target) {
-                return true;
-            }
-        }
-        return false;
+        return binarySearch(array, target) >= 0;
     }
 
     /**
@@ -191,12 +172,7 @@ public class ArrayUtils {
      * @return 如果array包含true, 否则返回false
      */
     public static boolean contains(float[] array, float target) {
-        for (float t : array) {
-            if (t == target) {
-                return true;
-            }
-        }
-        return false;
+        return binarySearch(array, target) >= 0;
     }
 
     /**
@@ -207,12 +183,7 @@ public class ArrayUtils {
      * @return 如果array包含true, 否则返回false
      */
     public static boolean contains(double[] array, double target) {
-        for (double t : array) {
-            if (t == target) {
-                return true;
-            }
-        }
-        return false;
+        return binarySearch(array, target) >= 0;
     }
 
     /**
@@ -224,12 +195,7 @@ public class ArrayUtils {
      * @return 如果array包含true, 否则返回false
      */
     public static <T> boolean contains(T[] array, T target) {
-        for (T t : array) {
-            if (t.equals(target)) {
-                return true;
-            }
-        }
-        return false;
+        return binarySearch(array, target) >= 0;
     }
 
     /**
@@ -242,18 +208,16 @@ public class ArrayUtils {
     public static boolean[] intersect(boolean[] arr1, boolean[] arr2) {
         if (arr1.length == 0 || arr2.length == 0)
             return new boolean[0];
-        List<Boolean> list = new ArrayList<Boolean>();
-        for (boolean t : arr1) {
-            if (contains(arr2, t))
-                list.add(t);
-        }
-        boolean[] bools = new boolean[list.size()];
+        boolean[] arr = new boolean[arr1.length];
         int i = 0;
-        for (boolean t : list) {
-            bools[i++] = t;
+        for (boolean t : arr1) {
+            if (contains(arr2, t)) {
+                arr[i++] = t;
+            }
         }
-        return bools;
+        return Arrays.copyOf(arr, i);
     }
+
 
     /**
      * 数组求交集
@@ -265,17 +229,14 @@ public class ArrayUtils {
     public static byte[] intersect(byte[] arr1, byte[] arr2) {
         if (arr1.length == 0 || arr2.length == 0)
             return new byte[0];
-        List<Byte> list = new ArrayList<Byte>();
-        for (byte t : arr1) {
-            if (contains(arr2, t))
-                list.add(t);
-        }
-        byte[] bytes = new byte[list.size()];
+        byte[] arr = new byte[arr1.length];
         int i = 0;
-        for (byte t : list) {
-            bytes[i++] = t;
+        for (byte t : arr1) {
+            if (contains(arr2, t)) {
+                arr[i++] = t;
+            }
         }
-        return bytes;
+        return Arrays.copyOf(arr, i);
     }
 
     /**
@@ -288,17 +249,14 @@ public class ArrayUtils {
     public static char[] intersect(char[] arr1, char[] arr2) {
         if (arr1.length == 0 || arr2.length == 0)
             return new char[0];
-        List<Character> list = new ArrayList<Character>();
-        for (char t : arr1) {
-            if (contains(arr2, t))
-                list.add(t);
-        }
-        char[] chars = new char[list.size()];
+        char[] arr = new char[arr1.length];
         int i = 0;
-        for (char t : list) {
-            chars[i++] = t;
+        for (char t : arr1) {
+            if (contains(arr2, t)) {
+                arr[i++] = t;
+            }
         }
-        return chars;
+        return Arrays.copyOf(arr, i);
     }
 
     /**
@@ -311,17 +269,14 @@ public class ArrayUtils {
     public static short[] intersect(short[] arr1, short[] arr2) {
         if (arr1.length == 0 || arr2.length == 0)
             return new short[0];
-        List<Short> list = new ArrayList<Short>();
-        for (short t : arr1) {
-            if (contains(arr2, t))
-                list.add(t);
-        }
-        short[] shorts = new short[list.size()];
+        short[] arr = new short[arr1.length];
         int i = 0;
-        for (short t : list) {
-            shorts[i++] = t;
+        for (short t : arr1) {
+            if (contains(arr2, t)) {
+                arr[i++] = t;
+            }
         }
-        return shorts;
+        return Arrays.copyOf(arr, i);
     }
 
     /**
@@ -334,17 +289,14 @@ public class ArrayUtils {
     public static int[] intersect(int[] arr1, int[] arr2) {
         if (arr1.length == 0 || arr2.length == 0)
             return new int[0];
-        List<Integer> list = new ArrayList<Integer>();
-        for (int t : arr1) {
-            if (contains(arr2, t))
-                list.add(t);
-        }
-        int[] ints = new int[list.size()];
+        int[] arr = new int[arr1.length];
         int i = 0;
-        for (int t : list) {
-            ints[i++] = t;
+        for (int t : arr1) {
+            if (contains(arr2, t)) {
+                arr[i++] = t;
+            }
         }
-        return ints;
+        return Arrays.copyOf(arr, i);
     }
 
     /**
@@ -357,17 +309,14 @@ public class ArrayUtils {
     public static long[] intersect(long[] arr1, long[] arr2) {
         if (arr1.length == 0 || arr2.length == 0)
             return new long[0];
-        List<Long> list = new ArrayList<Long>();
-        for (long t : arr1) {
-            if (contains(arr2, t))
-                list.add(t);
-        }
-        long[] longs = new long[list.size()];
+        long[] arr = new long[arr1.length];
         int i = 0;
-        for (long t : list) {
-            longs[i++] = t;
+        for (long t : arr1) {
+            if (contains(arr2, t)) {
+                arr[i++] = t;
+            }
         }
-        return longs;
+        return Arrays.copyOf(arr, i);
     }
 
     /**
@@ -380,17 +329,14 @@ public class ArrayUtils {
     public static float[] intersect(float[] arr1, float[] arr2) {
         if (arr1.length == 0 || arr2.length == 0)
             return new float[0];
-        List<Float> list = new ArrayList<Float>();
-        for (float t : arr1) {
-            if (contains(arr2, t))
-                list.add(t);
-        }
-        float[] floats = new float[list.size()];
+        float[] arr = new float[arr1.length];
         int i = 0;
-        for (float t : list) {
-            floats[i++] = t;
+        for (float t : arr1) {
+            if (contains(arr2, t)) {
+                arr[i++] = t;
+            }
         }
-        return floats;
+        return Arrays.copyOf(arr, i);
     }
 
     /**
@@ -403,17 +349,14 @@ public class ArrayUtils {
     public static double[] intersect(double[] arr1, double[] arr2) {
         if (arr1.length == 0 || arr2.length == 0)
             return new double[0];
-        List<Double> list = new ArrayList<Double>();
-        for (double t : arr1) {
-            if (contains(arr2, t))
-                list.add(t);
-        }
-        double[] doubles = new double[list.size()];
+        double[] arr = new double[arr1.length];
         int i = 0;
-        for (double t : list) {
-            doubles[i++] = t;
+        for (double t : arr1) {
+            if (contains(arr2, t)) {
+                arr[i++] = t;
+            }
         }
-        return doubles;
+        return Arrays.copyOf(arr, i);
     }
 
     /**
@@ -429,13 +372,16 @@ public class ArrayUtils {
     public static <T> T[] intersect(T[] arr1, T[] arr2, Class<T> clazz) {
         if (arr1.length == 0 || arr2.length == 0)
             return (T[]) Array.newInstance(clazz, 0);
-        List<T> list = new ArrayList<T>();
+        T[] arr = (T[]) Array.newInstance(clazz, arr1.length);
+        int i = 0;
         for (T t : arr1) {
-            if (contains(arr2, t))
-                list.add(t);
+            if (contains(arr2, t)) {
+                arr[i++] = t;
+            }
         }
-        return list.toArray((T[]) Array.newInstance(clazz, list.size()));
+        return Arrays.copyOf(arr, i);
     }
+
 
     /**
      * 数组求差集
@@ -447,17 +393,14 @@ public class ArrayUtils {
     public static boolean[] subtract(boolean[] arr1, boolean[] arr2) {
         if (arr1.length == 0 || arr2.length == 0)
             return new boolean[0];
-        List<Boolean> list = new ArrayList<Boolean>();
-        for (boolean t : arr1) {
-            if (!contains(arr2, t))
-                list.add(t);
-        }
-        boolean[] bools = new boolean[list.size()];
+        boolean[] arr = new boolean[arr1.length];
         int i = 0;
-        for (boolean t : list) {
-            bools[i++] = t;
+        for (boolean t : arr1) {
+            if (!contains(arr2, t)) {
+                arr[i++] = t;
+            }
         }
-        return bools;
+        return Arrays.copyOf(arr, i);
     }
 
     /**
@@ -470,17 +413,14 @@ public class ArrayUtils {
     public static byte[] subtract(byte[] arr1, byte[] arr2) {
         if (arr1.length == 0 || arr2.length == 0)
             return new byte[0];
-        List<Byte> list = new ArrayList<Byte>();
-        for (byte t : arr1) {
-            if (!contains(arr2, t))
-                list.add(t);
-        }
-        byte[] bytes = new byte[list.size()];
+        byte[] arr = new byte[arr1.length];
         int i = 0;
-        for (byte t : list) {
-            bytes[i++] = t;
+        for (byte t : arr1) {
+            if (!contains(arr2, t)) {
+                arr[i++] = t;
+            }
         }
-        return bytes;
+        return Arrays.copyOf(arr, i);
     }
 
     /**
@@ -493,17 +433,14 @@ public class ArrayUtils {
     public static char[] subtract(char[] arr1, char[] arr2) {
         if (arr1.length == 0 || arr2.length == 0)
             return new char[0];
-        List<Character> list = new ArrayList<Character>();
-        for (char t : arr1) {
-            if (!contains(arr2, t))
-                list.add(t);
-        }
-        char[] chars = new char[list.size()];
+        char[] arr = new char[arr1.length];
         int i = 0;
-        for (char t : list) {
-            chars[i++] = t;
+        for (char t : arr1) {
+            if (!contains(arr2, t)) {
+                arr[i++] = t;
+            }
         }
-        return chars;
+        return Arrays.copyOf(arr, i);
     }
 
     /**
@@ -516,17 +453,14 @@ public class ArrayUtils {
     public static short[] subtract(short[] arr1, short[] arr2) {
         if (arr1.length == 0 || arr2.length == 0)
             return new short[0];
-        List<Short> list = new ArrayList<Short>();
-        for (short t : arr1) {
-            if (!contains(arr2, t))
-                list.add(t);
-        }
-        short[] shorts = new short[list.size()];
+        short[] arr = new short[arr1.length];
         int i = 0;
-        for (short t : list) {
-            shorts[i++] = t;
+        for (short t : arr1) {
+            if (!contains(arr2, t)) {
+                arr[i++] = t;
+            }
         }
-        return shorts;
+        return Arrays.copyOf(arr, i);
     }
 
     /**
@@ -539,17 +473,14 @@ public class ArrayUtils {
     public static int[] subtract(int[] arr1, int[] arr2) {
         if (arr1.length == 0 || arr2.length == 0)
             return new int[0];
-        List<Integer> list = new ArrayList<Integer>();
-        for (int t : arr1) {
-            if (!contains(arr2, t))
-                list.add(t);
-        }
-        int[] ints = new int[list.size()];
+        int[] arr = new int[arr1.length];
         int i = 0;
-        for (int t : list) {
-            ints[i++] = t;
+        for (int t : arr1) {
+            if (!contains(arr2, t)) {
+                arr[i++] = t;
+            }
         }
-        return ints;
+        return Arrays.copyOf(arr, i);
     }
 
     /**
@@ -562,17 +493,14 @@ public class ArrayUtils {
     public static long[] subtract(long[] arr1, long[] arr2) {
         if (arr1.length == 0 || arr2.length == 0)
             return new long[0];
-        List<Long> list = new ArrayList<Long>();
-        for (long t : arr1) {
-            if (!contains(arr2, t))
-                list.add(t);
-        }
-        long[] longs = new long[list.size()];
+        long[] arr = new long[arr1.length];
         int i = 0;
-        for (long t : list) {
-            longs[i++] = t;
+        for (long t : arr1) {
+            if (!contains(arr2, t)) {
+                arr[i++] = t;
+            }
         }
-        return longs;
+        return Arrays.copyOf(arr, i);
     }
 
     /**
@@ -585,17 +513,14 @@ public class ArrayUtils {
     public static float[] subtract(float[] arr1, float[] arr2) {
         if (arr1.length == 0 || arr2.length == 0)
             return new float[0];
-        List<Float> list = new ArrayList<Float>();
-        for (float t : arr1) {
-            if (!contains(arr2, t))
-                list.add(t);
-        }
-        float[] floats = new float[list.size()];
+        float[] arr = new float[arr1.length];
         int i = 0;
-        for (float t : list) {
-            floats[i++] = t;
+        for (float t : arr1) {
+            if (!contains(arr2, t)) {
+                arr[i++] = t;
+            }
         }
-        return floats;
+        return Arrays.copyOf(arr, i);
     }
 
     /**
@@ -608,17 +533,14 @@ public class ArrayUtils {
     public static double[] subtract(double[] arr1, double[] arr2) {
         if (arr1.length == 0 || arr2.length == 0)
             return new double[0];
-        List<Double> list = new ArrayList<Double>();
-        for (double t : arr1) {
-            if (!contains(arr2, t))
-                list.add(t);
-        }
-        double[] doubles = new double[list.size()];
+        double[] arr = new double[arr1.length];
         int i = 0;
-        for (double t : list) {
-            doubles[i++] = t;
+        for (double t : arr1) {
+            if (!contains(arr2, t)) {
+                arr[i++] = t;
+            }
         }
-        return doubles;
+        return Arrays.copyOf(arr, i);
     }
 
     /**
@@ -634,12 +556,14 @@ public class ArrayUtils {
     public static <T> T[] subtract(T[] arr1, T[] arr2, Class<T> clazz) {
         if (arr1.length == 0 || arr2.length == 0)
             return (T[]) Array.newInstance(clazz, 0);
-        List<T> list = new ArrayList<T>();
+        T[] arr = (T[]) Array.newInstance(clazz, arr1.length);
+        int i = 0;
         for (T t : arr1) {
-            if (!contains(arr2, t))
-                list.add(t);
+            if (!contains(arr2, t)) {
+                arr[i++] = t;
+            }
         }
-        return list.toArray((T[]) Array.newInstance(clazz, list.size()));
+        return Arrays.copyOf(arr, i);
     }
 
     /**
@@ -1067,9 +991,8 @@ public class ArrayUtils {
         if (arr1.length == 0)
             return arr2;
         if (arr2.length == 0)
-            return arr2;
-        int len = arr1.length + arr2.length;
-        boolean[] booleans = new boolean[len];
+            return arr1;
+        boolean[] booleans = new boolean[arr1.length + arr2.length];
         int i = 0;
         for (boolean b : arr1) {
             booleans[i++] = b;
@@ -1091,9 +1014,8 @@ public class ArrayUtils {
         if (arr1.length == 0)
             return arr2;
         if (arr2.length == 0)
-            return arr2;
-        int len = arr1.length + arr2.length;
-        byte[] bytes = new byte[len];
+            return arr1;
+        byte[] bytes = new byte[arr1.length + arr2.length];
         int i = 0;
         for (byte b : arr1) {
             bytes[i++] = b;
@@ -1115,9 +1037,8 @@ public class ArrayUtils {
         if (arr1.length == 0)
             return arr2;
         if (arr2.length == 0)
-            return arr2;
-        int len = arr1.length + arr2.length;
-        char[] chars = new char[len];
+            return arr1;
+        char[] chars = new char[arr1.length + arr2.length];
         int i = 0;
         for (char b : arr1) {
             chars[i++] = b;
@@ -1139,9 +1060,8 @@ public class ArrayUtils {
         if (arr1.length == 0)
             return arr2;
         if (arr2.length == 0)
-            return arr2;
-        int len = arr1.length + arr2.length;
-        double[] doubles = new double[len];
+            return arr1;
+        double[] doubles = new double[arr1.length + arr2.length];
         int i = 0;
         for (double b : arr1) {
             doubles[i++] = b;
@@ -1163,9 +1083,8 @@ public class ArrayUtils {
         if (arr1.length == 0)
             return arr2;
         if (arr2.length == 0)
-            return arr2;
-        int len = arr1.length + arr2.length;
-        float[] floats = new float[len];
+            return arr1;
+        float[] floats = new float[arr1.length + arr2.length];
         int i = 0;
         for (float b : arr1) {
             floats[i++] = b;
@@ -1187,9 +1106,8 @@ public class ArrayUtils {
         if (arr1.length == 0)
             return arr2;
         if (arr2.length == 0)
-            return arr2;
-        int len = arr1.length + arr2.length;
-        int[] ints = new int[len];
+            return arr1;
+        int[] ints = new int[arr1.length + arr2.length];
         int i = 0;
         for (int b : arr1) {
             ints[i++] = b;
@@ -1211,9 +1129,8 @@ public class ArrayUtils {
         if (arr1.length == 0)
             return arr2;
         if (arr2.length == 0)
-            return arr2;
-        int len = arr1.length + arr2.length;
-        long[] longs = new long[len];
+            return arr1;
+        long[] longs = new long[arr1.length + arr2.length];
         int i = 0;
         for (long b : arr1) {
             longs[i++] = b;
@@ -1232,17 +1149,14 @@ public class ArrayUtils {
      * @param arr2
      * @param clazz
      * @return 并集
-     * @throws Exception
      */
     @SuppressWarnings("unchecked")
-    public static <T> T[] union(T[] arr1, T[] arr2, Class<T> clazz)
-            throws Exception {
+    public static <T> T[] union(T[] arr1, T[] arr2, Class<T> clazz) {
         if (arr1.length == 0)
             return arr2;
         if (arr2.length == 0)
-            return arr2;
-        int len = arr1.length + arr2.length;
-        T[] array = (T[]) Array.newInstance(clazz, len);
+            return arr1;
+        T[] array = (T[]) Array.newInstance(clazz, arr1.length + arr2.length);
         int i = 0;
         for (T t : arr1) {
             array[i++] = t;

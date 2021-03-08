@@ -12,7 +12,7 @@ public class Encryptor {
     /**
      * 默认字符集合[0-9A-Za-z]
      */
-    public final static char[] defaultCharset = Characters.NumberAndLetter;
+    public final static char[] defaultCharset = Characters.NUMBER_LETTER;
 
     /**
      * 采用默认的字符集进行编码<br>
@@ -159,10 +159,10 @@ public class Encryptor {
         int len = source.length() % length == 0 ? source.length() / length
                 : source.length() / length + 1;
         String[] arr = new String[len];
-        int begin = 0;
+        int begin;
         for (int i = len; i > 0; i--) {
             begin = source.length() > length ? source.length() - length : 0;
-            arr[i - 1] = source.substring(begin, source.length());
+            arr[i - 1] = source.substring(begin);
             source = source.substring(0, begin);
 
         }
